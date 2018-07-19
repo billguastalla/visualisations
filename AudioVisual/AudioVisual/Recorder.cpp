@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "Includes\portaudio\portaudio.h"
+#include <portaudio/portaudio.h>
 
 #define SAMPLE_RATE  (44100)
 #define FRAMES_PER_BUFFER (512)

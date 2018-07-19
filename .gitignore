@@ -23,7 +23,9 @@ bld/
 [Ll]og/
 
 [Ll]ibraries/
+[Ii]ncludes/
 PortAudio/
+FFTW/
 
 # Visual Studio 2015 cache/options directory
 .vs/

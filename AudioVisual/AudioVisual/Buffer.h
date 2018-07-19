@@ -1,5 +1,5 @@
 #pragma once
-#include "Includes\portaudio\portaudio.h"
+#include <portaudio/portaudio.h>
 #include <mutex>
 #include <vector>
 class Buffer
@@ -16,6 +16,8 @@ public:
 	float amplitude_average();
 	float amplitude_minimum();
 
+	int channelCount() const { return m_channelCount; }
+	std::vector<float> data() const { return m_data; }
 private:
 	PaSampleFormat m_format; // We're only supporting float32's cause we don't need others atm.
 	int m_channelCount;
