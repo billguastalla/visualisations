@@ -104,6 +104,48 @@ void Renderer::renderLoop(const Recorder & recorder)
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 
+
+		float max = buf.amplitude_peak();
+		float average = buf.amplitude_average();
+		float min = buf.amplitude_minimum();
+
+		std::vector<vertex> maxVerts = std::vector<vertex>{ vertex{ -1.0f,max,0.0f },vertex{ 1.0f,max,0.0f } };
+		std::vector<vertex> averageVerts = std::vector<vertex>{ vertex{ -1.0f,average,0.0f },vertex{ 1.0f,average,0.0f } };
+		std::vector<vertex> minVerts = std::vector<vertex>{ vertex{ -1.0f,min,0.0f },vertex{ 1.0f,min,0.0f } };
+		glBindVertexArray(m_VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO); /* bind VBO to as current GL_ARRAY_BUFFER. Any subsequent calls modify the data at VBO. */
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertex)*(__int64)maxVerts.size(), &maxVerts[0], GL_DYNAMIC_DRAW); /* Copy vertex data into buffer. */
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+		glEnableVertexAttribArray(0);
+		m_shader->use();
+		glDrawArrays(GL_LINES, 0, (GLsizei)maxVerts.size());
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		glBindVertexArray(m_VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO); /* bind VBO to as current GL_ARRAY_BUFFER. Any subsequent calls modify the data at VBO. */
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertex)*(__int64)averageVerts.size(), &averageVerts[0], GL_DYNAMIC_DRAW); /* Copy vertex data into buffer. */
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+		glEnableVertexAttribArray(0);
+		m_shader->use();
+		glDrawArrays(GL_LINES, 0, (GLsizei)averageVerts.size());
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+		glBindVertexArray(m_VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO); /* bind VBO to as current GL_ARRAY_BUFFER. Any subsequent calls modify the data at VBO. */
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertex)*(__int64)minVerts.size(), &minVerts[0], GL_DYNAMIC_DRAW); /* Copy vertex data into buffer. */
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+		glEnableVertexAttribArray(0);
+		m_shader->use();
+		glDrawArrays(GL_LINES, 0, (GLsizei)minVerts.size());
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+
+
 		processInput(m_window);
 		glfwSwapBuffers(m_window);
 		glfwPollEvents();
