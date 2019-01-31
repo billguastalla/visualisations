@@ -6,7 +6,6 @@
 #include "Recorder.h"
 #include "Buffer.h"
 
-
 #include <GLM\glm.hpp>
 
 void framebufferSizeCallback(GLFWwindow * window, int width, int height)
@@ -109,6 +108,7 @@ void Renderer::renderLoop(const Recorder & recorder)
 		float average = buf.amplitude_average();
 		float min = buf.amplitude_minimum();
 
+		
 		std::vector<vertex> maxVerts = std::vector<vertex>{ vertex{ -1.0f,max,0.0f },vertex{ 1.0f,max,0.0f } };
 		std::vector<vertex> averageVerts = std::vector<vertex>{ vertex{ -1.0f,average,0.0f },vertex{ 1.0f,average,0.0f } };
 		std::vector<vertex> minVerts = std::vector<vertex>{ vertex{ -1.0f,min,0.0f },vertex{ 1.0f,min,0.0f } };
@@ -142,6 +142,9 @@ void Renderer::renderLoop(const Recorder & recorder)
 		glDrawArrays(GL_LINES, 0, (GLsizei)minVerts.size());
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+
 
 
 

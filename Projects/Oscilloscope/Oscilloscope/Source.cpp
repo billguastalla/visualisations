@@ -4,8 +4,6 @@
 
 int main()
 {
-
-
 	Recorder test{};
 	test.startMonitoring();
 

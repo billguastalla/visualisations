@@ -5,7 +5,7 @@
 #include <portaudio/portaudio.h>
 
 #define SAMPLE_RATE  (44100)
-#define FRAMES_PER_BUFFER (8192)
+#define FRAMES_PER_BUFFER (2048)
 #define NUM_SECONDS     (5)
 #define NUM_CHANNELS    (2)
 
@@ -13,15 +13,6 @@
 #define PA_SAMPLE_TYPE  paFloat32
 typedef float SAMPLE;
 #define SAMPLE_SILENCE  (0.0f)
-
-typedef struct
-{
-	int          frameIndex;  /* Index into sample array. */
-	int          maxFrameIndex;
-	SAMPLE      *recordedSamples;
-}
-paTestData;
-
 
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData)
 {
@@ -61,7 +52,7 @@ Recorder::Recorder()
 	m_inputParameters.suggestedLatency = Pa_GetDeviceInfo(m_inputParameters.device)->defaultLowInputLatency;
 	m_inputParameters.hostApiSpecificStreamInfo = NULL;
 
-	Buffer buf{ 512,m_inputParameters };
+	Buffer buf{ FRAMES_PER_BUFFER,m_inputParameters };
 	m_lockedBuffer = new LockableBuffer{ buf };
 
 }
@@ -95,4 +86,10 @@ void Recorder::stopMonitoring()
 Buffer Recorder::getBuffer() const
 {
 	return m_lockedBuffer->buffer();
+}
+
+int Recorder::sampleRate() const
+{
+	/* If it's flexible later, which it should become */
+	return SAMPLE_RATE;
 }
