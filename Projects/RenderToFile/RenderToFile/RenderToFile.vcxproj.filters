@@ -13,15 +13,24 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\DLL Implementation">
+      <UniqueIdentifier>{c3a62308-6f71-4525-a2c6-713e4acf931c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Includes\glad\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ffmpeg_cmd.cpp">
+    <ClCompile Include="2b-BasicLighting.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="2b-BasicLighting.cpp">
+    <ClCompile Include="ffmpeg_template-cmd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ffmpeg_template-dll.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FFMPEG_Encoder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -31,6 +40,12 @@
     </ClInclude>
     <ClInclude Include="Shader.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FFMPEG_Encoder.h">
+      <Filter>Header Files\DLL Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="LIBPNG_Capture.h">
+      <Filter>Header Files\DLL Implementation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

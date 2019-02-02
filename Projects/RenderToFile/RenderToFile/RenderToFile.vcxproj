@@ -76,7 +76,18 @@
     <Import Project="..\Includes\Includes_PropertySheet.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>..\Includes;..\Includes\LIBPNG\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>..\Includes;..\Includes\LIBPNG\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>..\Includes;..\Includes\LIBPNG\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>..\Includes;..\Includes\LIBPNG\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -124,10 +135,14 @@
   <ItemGroup>
     <ClCompile Include="..\Includes\glad\glad.c" />
     <ClCompile Include="2b-BasicLighting.cpp" />
-    <ClCompile Include="ffmpeg_cmd.cpp" />
+    <ClCompile Include="FFMPEG_Encoder.cpp" />
+    <ClCompile Include="ffmpeg_template-cmd.cpp" />
+    <ClCompile Include="ffmpeg_template-dll.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="FFMPEG_Encoder.h" />
+    <ClInclude Include="LIBPNG_Capture.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
