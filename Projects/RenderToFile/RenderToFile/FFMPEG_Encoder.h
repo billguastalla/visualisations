@@ -16,19 +16,41 @@ TODO:
 	-> Destructor should delete appropriately.
 	-> All "Exits" should be substituted: stop the stream & reset variables.
 */
-
 class FFMPEG_Encoder
 {
 public:
 	FFMPEG_Encoder();
 
+	enum class StartResult
+	{
+		Success,
+		CodecNotFound,
+		ContextAllocationFailed,
+		CodecUnopenable,
+		FileUnopenable,
+		AVFrameAllocationFailed,
+		PictureBufferAllocationFailed,
+		EncoderAlreadyStarted
+	};
+	enum class FinishResult
+	{
+		Success,
+		AVFrameEncodingFailed
+	};
+
 	/* Start: run once before render loop, after building scene */
-	void ffmpeg_encoder_start(const char *filename, AVCodecID codec_id, int fps, int width, int height);
+	StartResult ffmpeg_encoder_start(const char *filename, AVCodecID codec_id, int fps, int width, int height);
 	/* */
 	void ffmpeg_encoder_render_frame();
-	/* Finish: run once after render loop */
-	void ffmpeg_encoder_finish(void);
+	/* Finish: */
+	FinishResult ffmpeg_encoder_finish();
+
 private:
+	void allocate();
+	void unallocate();
+
+	bool m_started;
+
 	void ffmpeg_encoder_glread_rgb(uint8_t **rgb, GLubyte **pixels, unsigned int width, unsigned int height);
 	void ffmpeg_encoder_set_frame_yuv_from_rgb(uint8_t *rgb);
 	void ffmpeg_encoder_encode_frame(uint8_t *rgb);
@@ -41,6 +63,12 @@ private:
 	AVFrame * m_AVFrame;
 	AVPacket m_AVPacket;
 	FILE * m_file;
-	struct SwsContext * m_swsContext = NULL;
+	SwsContext * m_swsContext = NULL;
 	uint8_t * m_rgb = NULL;
+	GLubyte * m_pixels = NULL;
+
+	/* Frame counting */
+	bool m_countFrames = true;
+	int m_maxFrames = -1;
+	int m_frameCount = 0;
 };

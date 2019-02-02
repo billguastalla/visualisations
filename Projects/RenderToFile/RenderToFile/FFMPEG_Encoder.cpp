@@ -17,92 +17,131 @@ void FFMPEG_Encoder::ffmpeg_encoder_set_frame_yuv_from_rgb(uint8_t *rgb) {
 		m_AVCodecContext->height, m_AVFrame->data, m_AVFrame->linesize);
 }
 
-void FFMPEG_Encoder::ffmpeg_encoder_start(const char *filename, AVCodecID codec_id, int fps, int width, int height) {
-	AVCodec *codec;
-	int ret;
-	avcodec_register_all();
-	codec = avcodec_find_encoder(codec_id);
-	if (!codec) {
-		fprintf(stderr, "Codec not found\n");
-		exit(1);
-	}
-	m_AVCodecContext = avcodec_alloc_context3(codec);
-	if (!m_AVCodecContext) {
-		fprintf(stderr, "Could not allocate video codec context\n");
-		exit(1);
-	}
-	m_AVCodecContext->bit_rate = 400000;
-	m_AVCodecContext->width = width;
-	m_AVCodecContext->height = height;
-	m_AVCodecContext->time_base.num = 1;
-	m_AVCodecContext->time_base.den = fps;
-	m_AVCodecContext->gop_size = 10;
-	m_AVCodecContext->max_b_frames = 1;
-	m_AVCodecContext->pix_fmt = AV_PIX_FMT_YUV420P;
-	if (codec_id == AV_CODEC_ID_H264)
-		av_opt_set(m_AVCodecContext->priv_data, "preset", "slow", 0);
-	if (avcodec_open2(m_AVCodecContext, codec, NULL) < 0) {
-		fprintf(stderr, "Could not open codec\n");
-		exit(1);
-	}
-	m_file = fopen(filename, "wb");
-	if (!m_file) {
-		fprintf(stderr, "Could not open %s\n", filename);
-		exit(1);
-	}
-	m_AVFrame = av_frame_alloc();
-	if (!m_AVFrame) {
-		fprintf(stderr, "Could not allocate video m_AVFrame\n");
-		exit(1);
-	}
-	m_AVFrame->format = m_AVCodecContext->pix_fmt;
-	m_AVFrame->width = m_AVCodecContext->width;
-	m_AVFrame->height = m_AVCodecContext->height;
+FFMPEG_Encoder::FFMPEG_Encoder()
+	: m_started{ false }
+{
+}
 
-	ret = av_image_alloc(m_AVFrame->data, m_AVFrame->linesize, m_AVCodecContext->width, m_AVCodecContext->height, m_AVCodecContext->pix_fmt, 32);
-	if (ret < 0) {
-		fprintf(stderr, "Could not allocate raw picture buffer\n");
-		exit(1);
+FFMPEG_Encoder::StartResult FFMPEG_Encoder::ffmpeg_encoder_start(const char *filename, AVCodecID codec_id, int fps, int width, int height)
+{
+	if (!m_started)
+	{
+		AVCodec *codec;
+		int ret;
+		avcodec_register_all();
+		codec = avcodec_find_encoder(codec_id);
+		if (!codec) {
+			fprintf(stderr, "Codec not found\n");
+			exit(1);
+			return StartResult::CodecNotFound;
+		}
+		m_AVCodecContext = avcodec_alloc_context3(codec);
+		if (!m_AVCodecContext) {
+			fprintf(stderr, "Could not allocate video codec context\n");
+			exit(1);
+			return StartResult::ContextAllocationFailed;
+		}
+		m_AVCodecContext->bit_rate = 400000;
+		m_AVCodecContext->width = width;
+		m_AVCodecContext->height = height;
+		m_AVCodecContext->time_base.num = 1;
+		m_AVCodecContext->time_base.den = fps;
+		m_AVCodecContext->gop_size = 10;
+		m_AVCodecContext->max_b_frames = 1;
+		m_AVCodecContext->pix_fmt = AV_PIX_FMT_YUV420P;
+		if (codec_id == AV_CODEC_ID_H264)
+			av_opt_set(m_AVCodecContext->priv_data, "preset", "slow", 0);
+		if (avcodec_open2(m_AVCodecContext, codec, NULL) < 0) {
+			fprintf(stderr, "Could not open codec\n");
+			exit(1);
+			return StartResult::CodecUnopenable;
+		}
+		m_file = fopen(filename, "wb");
+		if (!m_file) {
+			fprintf(stderr, "Could not open %s\n", filename);
+			exit(1);
+			return StartResult::FileUnopenable;
+		}
+		m_AVFrame = av_frame_alloc();
+		if (!m_AVFrame) {
+			fprintf(stderr, "Could not allocate video frame\n");
+			exit(1);
+			return StartResult::AVFrameAllocationFailed;
+		}
+		m_AVFrame->format = m_AVCodecContext->pix_fmt;
+		m_AVFrame->width = m_AVCodecContext->width;
+		m_AVFrame->height = m_AVCodecContext->height;
+
+		ret = av_image_alloc(m_AVFrame->data, m_AVFrame->linesize, m_AVCodecContext->width, m_AVCodecContext->height, m_AVCodecContext->pix_fmt, 32);
+		if (ret < 0) {
+			fprintf(stderr, "Could not allocate raw picture buffer\n");
+			exit(1);
+			return StartResult::PictureBufferAllocationFailed;
+		}
 	}
+	else
+		return StartResult::EncoderAlreadyStarted;
+	m_started = true;
 }
 
 void FFMPEG_Encoder::ffmpeg_encoder_render_frame()
 {
-	/* BILL: Use PPM if PNG is not available: We can remove this if we just want video, good to know.. */
-	//if (output_formats & PPM_BIT) {
-	//	snprintf(filename, SCREENSHOT_MAX_FILENAME, "tmp.%d.ppm", nframes);
-	//	screenshot_ppm(filename, width, height, &pixels);
-	//}
-	//if (output_formats & LIBPNG_BIT) {
-	//	snprintf(filename, SCREENSHOT_MAX_FILENAME, "tmp.%d.png", nframes);
-	//	screenshot_png(filename, width, height, &pixels, &png_bytes, &png_rows);
-	//}
-	m_AVFrame->pts = nframes;
-	ffmpeg_encoder_glread_rgb(&m_rgb, &pixels, width, height);
-	ffmpeg_encoder_encode_frame(m_rgb);
+	if (m_started)
+	{
+		/* BILL: Use PPM if PNG is not available: We can remove this if we just want video, good to know.. */
+		//if (output_formats & PPM_BIT) {
+		//	snprintf(filename, SCREENSHOT_MAX_FILENAME, "tmp.%d.ppm", nframes);
+		//	screenshot_ppm(filename, width, height, &pixels);
+		//}
+		//if (output_formats & LIBPNG_BIT) {
+		//	snprintf(filename, SCREENSHOT_MAX_FILENAME, "tmp.%d.png", nframes);
+		//	screenshot_png(filename, width, height, &pixels, &png_bytes, &png_rows);
+		//}
+		m_AVFrame->pts = m_frameCount;
+		ffmpeg_encoder_glread_rgb(&m_rgb, &m_pixels, m_AVCodecContext->width, m_AVCodecContext->height);
+		ffmpeg_encoder_encode_frame(m_rgb);
+
+		/* We've rendered a frame. */
+		++m_frameCount;
+		if (m_maxFrames != -1)
+		{
+			/* If we're done, finish: */
+			if (m_maxFrames <= m_frameCount)
+				ffmpeg_encoder_finish();
+		}
+	}
 }
 
-void  FFMPEG_Encoder::ffmpeg_encoder_finish(void) {
-	uint8_t endcode[] = { 0, 0, 1, 0xb7 };
-	int got_output, ret;
-	do {
-		fflush(stdout);
-		ret = avcodec_encode_video2(m_AVCodecContext, &m_AVPacket, NULL, &got_output);
-		if (ret < 0) {
-			fprintf(stderr, "Error encoding m_AVFrame\n");
-			exit(1);
-		}
-		if (got_output) {
-			fwrite(m_AVPacket.data, 1, m_AVPacket.size, m_file);
-			av_packet_unref(&m_AVPacket);
-		}
-	} while (got_output);
-	fwrite(endcode, 1, sizeof(endcode), m_file);
-	fclose(m_file);
-	avcodec_close(m_AVCodecContext);
-	av_free(m_AVCodecContext);
-	av_freep(&m_AVFrame->data[0]);
-	av_frame_free(&m_AVFrame);
+FFMPEG_Encoder::FinishResult FFMPEG_Encoder::ffmpeg_encoder_finish()
+{
+	if (m_started)
+	{
+		uint8_t endcode[] = { 0, 0, 1, 0xb7 };
+		int got_output, ret;
+		do {
+			fflush(stdout);
+			ret = avcodec_encode_video2(m_AVCodecContext, &m_AVPacket, NULL, &got_output);
+			if (ret < 0) {
+				fprintf(stderr, "Error encoding m_AVFrame\n");
+				exit(1);
+
+			}
+			if (got_output) {
+				fwrite(m_AVPacket.data, 1, m_AVPacket.size, m_file);
+				av_packet_unref(&m_AVPacket);
+			}
+		} while (got_output);
+
+		fwrite(endcode, 1, sizeof(endcode), m_file);
+		fclose(m_file);
+
+		avcodec_close(m_AVCodecContext);
+		av_free(m_AVCodecContext);
+		av_freep(&m_AVFrame->data[0]);
+		av_frame_free(&m_AVFrame);
+
+		m_started = false;
+	}
 }
 
 void  FFMPEG_Encoder::ffmpeg_encoder_encode_frame(uint8_t *rgb) {
