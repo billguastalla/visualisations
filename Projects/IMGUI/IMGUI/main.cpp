@@ -31,10 +31,11 @@ int main(int, char**)
 
 	// GL 3.0 + GLSL 130
 	const char* glsl_version = "#version 330";
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); /* 4.5 is our latest version, reduce this for public release. */
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
+	glfwWindowHint(GLFW_SAMPLES, 4); /* MSAA */
 
 	// Create window with graphics context
 	GLFWwindow* window = glfwCreateWindow(1920, 1080, "Visualisations", NULL, NULL);
@@ -49,6 +50,7 @@ int main(int, char**)
 		return -1;
 	}
 
+	glEnable(GL_MULTISAMPLE); /* MSAA */
 
 	// Setup Dear ImGui binding
 	IMGUI_CHECKVERSION();
