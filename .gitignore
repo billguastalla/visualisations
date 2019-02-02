@@ -3,6 +3,8 @@
 
 # Dependencies folder
 dependencies_ignore/
+# Published Binaries
+Published/
 
 # User-specific files
 *.suo

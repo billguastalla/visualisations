@@ -1,11 +1,11 @@
-#include "Shader.h"
-#include <glad\glad.h>
-#include <GLFW\glfw3.h>
-#include <iostream>
 #include "Visualisation_Oscilloscope.h"
+#include "Shader.h"
 #include "Recorder.h"
 #include "Buffer.h"
 
+#include <iostream>
+#include <glad\glad.h>
+#include <GLFW\glfw3.h>
 #include <GLM\glm.hpp>
 
 void framebufferSizeCallback(GLFWwindow * window, int width, int height)

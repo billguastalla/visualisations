@@ -172,6 +172,7 @@
     <ClCompile Include="..\Includes\imgui\imgui.cpp" />
     <ClCompile Include="..\Includes\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\Includes\imgui\imgui_draw.cpp" />
+    <ClCompile Include="Visualisation_Cubes.cpp" />
     <ClCompile Include="Visualisation_Oscilloscope.cpp" />
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="Recorder.cpp" />
@@ -187,6 +188,8 @@
     <ClInclude Include="..\Includes\imgui\stb_truetype.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Recorder.h" />
+    <ClInclude Include="Visualisation.h" />
+    <ClInclude Include="Visualisation_Cubes.h" />
     <ClInclude Include="Visualisation_Oscilloscope.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Vertex.h" />

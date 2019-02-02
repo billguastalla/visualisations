@@ -16,17 +16,8 @@
     <Filter Include="Header Files\Graphics">
       <UniqueIdentifier>{efa638b5-0549-452d-a352-4c8abc5e1476}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Graphics">
-      <UniqueIdentifier>{8de58a76-91c9-4a7f-b1ec-9ea084ab5c39}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Graphics\imgui">
-      <UniqueIdentifier>{a5ff7cdd-1aac-44c2-91bd-839bf630311c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Graphics\imgui">
       <UniqueIdentifier>{e7f893fd-02d3-4d62-840f-afa3e28a72b5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Includes">
-      <UniqueIdentifier>{3b16f034-704a-4b5c-b6c2-f9cf78182104}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Audio Modules">
       <UniqueIdentifier>{cd4ecbc4-642d-47e7-90c9-82757c6008cc}</UniqueIdentifier>
@@ -34,11 +25,35 @@
     <Filter Include="Source Files\Audio Modules">
       <UniqueIdentifier>{2dbeffd9-2404-4644-8fc1-d594fad7c77b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Graphics\Visualisations">
+      <UniqueIdentifier>{86764f44-ae0a-4bd8-bc68-97077704019d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Visualisations\Engine">
+      <UniqueIdentifier>{73b7d8f6-17b0-45e6-8827-075c751d52b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Visualisations\Implementations">
+      <UniqueIdentifier>{67d455ff-9e3a-4a96-9d12-7b1f79458306}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics">
+      <UniqueIdentifier>{8de58a76-91c9-4a7f-b1ec-9ea084ab5c39}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files\Graphics\Visualisations">
       <UniqueIdentifier>{8aff6159-ffe3-410d-b4b0-6870590f13be}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Graphics\Visualisations">
-      <UniqueIdentifier>{86764f44-ae0a-4bd8-bc68-97077704019d}</UniqueIdentifier>
+    <Filter Include="Source Files\Graphics\Visualisations\Engine">
+      <UniqueIdentifier>{3e4ca746-88fa-4ef2-aeed-cbd3eb798b00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Visualisations\Implementations">
+      <UniqueIdentifier>{f647b7b1-f187-40e2-a324-c7b524420a09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI">
+      <UniqueIdentifier>{59668d22-d40f-4ebd-838e-83d1d920ad03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI\imgui">
+      <UniqueIdentifier>{a5ff7cdd-1aac-44c2-91bd-839bf630311c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Program">
+      <UniqueIdentifier>{7a6e4d02-6480-40cc-8dd1-b2c554ed2494}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -55,25 +70,28 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Includes\imgui\imgui.cpp">
-      <Filter>Source Files\Graphics\imgui</Filter>
+      <Filter>Source Files\UI\imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\Includes\imgui\examples\imgui_impl_glfw.cpp">
-      <Filter>Source Files\Graphics\imgui</Filter>
+      <Filter>Source Files\UI\imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\Includes\imgui\examples\imgui_impl_opengl3.cpp">
-      <Filter>Source Files\Graphics\imgui</Filter>
+      <Filter>Source Files\UI\imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\Includes\imgui\imgui_draw.cpp">
-      <Filter>Source Files\Graphics\imgui</Filter>
+      <Filter>Source Files\UI\imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\Includes\imgui\imgui_demo.cpp">
-      <Filter>Source Files\Graphics\imgui</Filter>
+      <Filter>Source Files\UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation_Cubes.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
     </ClCompile>
     <ClCompile Include="Visualisation_Oscilloscope.cpp">
-      <Filter>Source Files\Graphics\Visualisations</Filter>
+      <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
-      <Filter>Source Files\Graphics\Visualisations</Filter>
+      <Filter>Source Files\Graphics\Visualisations\Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -101,14 +119,20 @@
     <ClInclude Include="..\Includes\imgui\stb_truetype.h">
       <Filter>Header Files\Graphics\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Visualisation_Oscilloscope.h">
-      <Filter>Header Files\Graphics\Visualisations</Filter>
+    <ClInclude Include="Vertex.h">
+      <Filter>Header Files\Graphics\Visualisations\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
-      <Filter>Header Files\Graphics\Visualisations</Filter>
+      <Filter>Header Files\Graphics\Visualisations\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Vertex.h">
-      <Filter>Header Files\Graphics\Visualisations</Filter>
+    <ClInclude Include="Visualisation_Oscilloscope.h">
+      <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_Cubes.h">
+      <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation.h">
+      <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
