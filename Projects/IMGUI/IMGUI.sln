@@ -5,6 +5,11 @@ VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IMGUI", "IMGUI\IMGUI.vcxproj", "{D3EFA864-3E11-4387-A37F-8919CB3082F3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTests", "UnitTests\UnitTests.vcxproj", "{8328C08B-9712-4F69-AA2A-C549EAD85085}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D3EFA864-3E11-4387-A37F-8919CB3082F3} = {D3EFA864-3E11-4387-A37F-8919CB3082F3}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +26,14 @@ Global
 		{D3EFA864-3E11-4387-A37F-8919CB3082F3}.Release|x64.Build.0 = Release|x64
 		{D3EFA864-3E11-4387-A37F-8919CB3082F3}.Release|x86.ActiveCfg = Release|Win32
 		{D3EFA864-3E11-4387-A37F-8919CB3082F3}.Release|x86.Build.0 = Release|Win32
+		{8328C08B-9712-4F69-AA2A-C549EAD85085}.Debug|x64.ActiveCfg = Debug|x64
+		{8328C08B-9712-4F69-AA2A-C549EAD85085}.Debug|x64.Build.0 = Debug|x64
+		{8328C08B-9712-4F69-AA2A-C549EAD85085}.Debug|x86.ActiveCfg = Debug|Win32
+		{8328C08B-9712-4F69-AA2A-C549EAD85085}.Debug|x86.Build.0 = Debug|Win32
+		{8328C08B-9712-4F69-AA2A-C549EAD85085}.Release|x64.ActiveCfg = Release|x64
+		{8328C08B-9712-4F69-AA2A-C549EAD85085}.Release|x64.Build.0 = Release|x64
+		{8328C08B-9712-4F69-AA2A-C549EAD85085}.Release|x86.ActiveCfg = Release|Win32
+		{8328C08B-9712-4F69-AA2A-C549EAD85085}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

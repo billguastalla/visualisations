@@ -5,8 +5,7 @@
 #include <portaudio/portaudio.h>
 
 #define SAMPLE_RATE  (44100)
-#define FRAMES_PER_BUFFER (2048)
-#define NUM_SECONDS     (5)
+#define FRAMES_PER_BUFFER (128)
 #define NUM_CHANNELS    (2)
 
 /* Select sample format. */
@@ -16,19 +15,10 @@ typedef float SAMPLE;
 
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData)
 {
-	/*
-	billg:
-		We're going to:
-				-> Write to our lockable data the buffer
-		Questions:
-				-> 
-		Investigate:
-				-> What are the other arguments?
-	*/
 	LockableBuffer * lockedBuffer = (LockableBuffer*)userData;
 
 	Buffer buf{ lockedBuffer->buffer() };
-	buf.loadFrames(framesPerBuffer,inputBuffer);
+	buf.insertFrames(framesPerBuffer,inputBuffer,timeInfo);
 	lockedBuffer->resetBuffer(buf);
 
 	(void)outputBuffer; /* Prevent unused variable warnings. */
@@ -42,8 +32,6 @@ static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned 
 Recorder::Recorder()
 	: m_lockedBuffer{ nullptr }
 {
-	/* Would prefer not to initialise port audio in a class instance. Need a singleton for this probably. */
-
 	m_err = Pa_Initialize();
 
 	m_inputParameters.device = Pa_GetDefaultInputDevice(); /* default input device */
@@ -52,7 +40,7 @@ Recorder::Recorder()
 	m_inputParameters.suggestedLatency = Pa_GetDeviceInfo(m_inputParameters.device)->defaultLowInputLatency;
 	m_inputParameters.hostApiSpecificStreamInfo = NULL;
 
-	Buffer buf{ FRAMES_PER_BUFFER,m_inputParameters };
+	Buffer buf{ FRAMES_PER_BUFFER * 128,m_inputParameters };
 	m_lockedBuffer = new LockableBuffer{ buf };
 
 }
@@ -75,7 +63,6 @@ void Recorder::startMonitoring()
 		recordCallback,
 		m_lockedBuffer);
 	m_err = Pa_StartStream(m_stream);
-
 }
 
 void Recorder::stopMonitoring()

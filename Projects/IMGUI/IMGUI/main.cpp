@@ -19,7 +19,7 @@
 #define USE_KISS_FFT
 #include "GIST\Gist.h"
 #include "Recorder.h"
-#include "Renderer.h"
+#include "Visualisation_Oscilloscope.h"
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -101,7 +101,7 @@ int main(int, char**)
 
 
 	Recorder test{};
-	Renderer render{ window };
+	Visualisation_Oscilloscope render{ window };
 
 	test.startMonitoring();
 

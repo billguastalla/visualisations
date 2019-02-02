@@ -2,7 +2,7 @@
 #include <glad\glad.h>
 #include <GLFW\glfw3.h>
 #include <iostream>
-#include "Renderer.h"
+#include "Visualisation_Oscilloscope.h"
 #include "Recorder.h"
 #include "Buffer.h"
 
@@ -19,32 +19,32 @@ void processInput(GLFWwindow * window)
 		glfwSetWindowShouldClose(window, true);
 }
 
-Renderer::Renderer(GLFWwindow * win) :
+Visualisation_Oscilloscope::Visualisation_Oscilloscope(GLFWwindow * win) :
 	m_shader{ nullptr }, m_window{ win }
 {
 	glfwGetCurrentContext();
 	glfwMakeContextCurrent(m_window); /* guawi - missed this. */
 
-	m_shader = new Shader{ "../Shaders/vertex.vs","../Shaders/fragment.fs" };
+	m_shader = new Shader{ "../Shaders/Oscilloscope_Vertex.vs","../Shaders/Oscilloscope_Fragment.fs" };
 	glGenBuffers(1, &m_VBO); /* Buffer has been created and id has been given to the m_VBO int. */
 	glGenVertexArrays(1, &m_VAO);
 }
 
-Renderer::~Renderer()
+Visualisation_Oscilloscope::~Visualisation_Oscilloscope()
 {
 	glfwTerminate();
 	delete m_shader;
 }
 
-void Renderer::drawVisualisations(const Buffer & buf)
+void Visualisation_Oscilloscope::drawVisualisations(const Buffer & buf)
 {
-	std::vector<float> leftData = buf.data(0);
-	std::vector<float> rightData = buf.data(1);
+	std::deque<float> leftData = buf.data(0);
+	std::deque<float> rightData = buf.data(1);
 	std::vector<vertex> verticesLeft;
 	std::vector<vertex> verticesRight;
 
 	/* x from -1 to 1*/
-	float increment = ((float)2 / (float)buf.channelFrameCount());
+	float increment = ((float)2 / (float)leftData.size());
 
 	for (int i = 0; i < leftData.size(); ++i)
 	{

@@ -34,6 +34,12 @@
     <Filter Include="Source Files\Audio Modules">
       <UniqueIdentifier>{2dbeffd9-2404-4644-8fc1-d594fad7c77b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Graphics\Visualisations">
+      <UniqueIdentifier>{8aff6159-ffe3-410d-b4b0-6870590f13be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Visualisations">
+      <UniqueIdentifier>{86764f44-ae0a-4bd8-bc68-97077704019d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Recorder.cpp">
@@ -41,12 +47,6 @@
     </ClCompile>
     <ClCompile Include="Buffer.cpp">
       <Filter>Source Files\Audio Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\Includes\glad\glad.c">
       <Filter>Source Files\Graphics</Filter>
@@ -69,6 +69,12 @@
     <ClCompile Include="..\Includes\imgui\imgui_demo.cpp">
       <Filter>Source Files\Graphics\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="Visualisation_Oscilloscope.cpp">
+      <Filter>Source Files\Graphics\Visualisations</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source Files\Graphics\Visualisations</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Buffer.h">
@@ -76,15 +82,6 @@
     </ClInclude>
     <ClInclude Include="Recorder.h">
       <Filter>Header Files\Audio Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Vertex.h">
-      <Filter>Header Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\Includes\imgui\imgui.h">
       <Filter>Header Files\Graphics\imgui</Filter>
@@ -103,6 +100,15 @@
     </ClInclude>
     <ClInclude Include="..\Includes\imgui\stb_truetype.h">
       <Filter>Header Files\Graphics\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_Oscilloscope.h">
+      <Filter>Header Files\Graphics\Visualisations</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files\Graphics\Visualisations</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Header Files\Graphics\Visualisations</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

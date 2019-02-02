@@ -5,11 +5,11 @@ class Shader;
 struct GLFWwindow;
 class Buffer;
 
-class Renderer
+class Visualisation_Oscilloscope
 {
 public:
-	Renderer(GLFWwindow * win);
-	~Renderer();
+	Visualisation_Oscilloscope(GLFWwindow * win);
+	~Visualisation_Oscilloscope();
 
 	void drawVisualisations(const Buffer & buf);
 
