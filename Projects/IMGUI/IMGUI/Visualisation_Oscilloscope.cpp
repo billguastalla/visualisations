@@ -22,31 +22,17 @@ void processInput(GLFWwindow * window)
 }
 
 Visualisation_Oscilloscope::Visualisation_Oscilloscope(GLFWwindow * win) :
-	m_shader{ nullptr }, m_window{ win }
+	m_shader{ nullptr }, m_window{ win },
+	m_leftScopeElemCount{0},
+	m_rightScopeElemCount{0},
+	m_maxLineElemCount{ 0 },
+	m_averageLineElemCount{0},
+	m_minLineElemCount{ 0 }
 {
-	glfwGetCurrentContext();
-	glfwMakeContextCurrent(m_window); /* guawi - missed this. */
-
-	m_shader = new Shader{ "../Shaders/Oscilloscope_Vertex.vs","../Shaders/Oscilloscope_Fragment.fs" };
-
-	glGenBuffers(1, &m_leftScopeVBO);
-	glGenBuffers(1, &m_rightScopeVBO);
-	glGenBuffers(1, &m_minLineVBO);
-	glGenBuffers(1, &m_averageLineVBO);
-	glGenBuffers(1, &m_maxLineVBO);
-
-	glGenVertexArrays(1, &m_leftScopeVAO);
-	glGenVertexArrays(1, &m_rightScopeVAO);
-	glGenVertexArrays(1, &m_minLineVAO);
-	glGenVertexArrays(1, &m_averageLineVAO);
-	glGenVertexArrays(1, &m_maxLineVAO);
-
 }
 
 Visualisation_Oscilloscope::~Visualisation_Oscilloscope()
 {
-	glfwTerminate();
-	delete m_shader;
 }
 
 void Visualisation_Oscilloscope::processSamples(const Buffer & buf, unsigned samples)
@@ -144,4 +130,43 @@ void Visualisation_Oscilloscope::renderFrame()
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void Visualisation_Oscilloscope::activate()
+{
+	m_shader = new Shader{ "../Shaders/Oscilloscope_Vertex.vs","../Shaders/Oscilloscope_Fragment.fs" };
+
+	glGenBuffers(1, &m_leftScopeVBO);
+	glGenBuffers(1, &m_rightScopeVBO);
+	glGenBuffers(1, &m_minLineVBO);
+	glGenBuffers(1, &m_averageLineVBO);
+	glGenBuffers(1, &m_maxLineVBO);
+
+	glGenVertexArrays(1, &m_leftScopeVAO);
+	glGenVertexArrays(1, &m_rightScopeVAO);
+	glGenVertexArrays(1, &m_minLineVAO);
+	glGenVertexArrays(1, &m_averageLineVAO);
+	glGenVertexArrays(1, &m_maxLineVAO);
+
+	m_active = true;
+}
+
+void Visualisation_Oscilloscope::deactivate()
+{
+	glDeleteBuffers(1, &m_leftScopeVBO);
+	glDeleteBuffers(1, &m_rightScopeVBO);
+	glDeleteBuffers(1, &m_minLineVBO);
+	glDeleteBuffers(1, &m_averageLineVBO);
+	glDeleteBuffers(1, &m_maxLineVBO);
+
+	glDeleteVertexArrays(1, &m_leftScopeVAO);
+	glDeleteVertexArrays(1, &m_rightScopeVAO);
+	glDeleteVertexArrays(1, &m_minLineVAO);
+	glDeleteVertexArrays(1, &m_averageLineVAO);
+	glDeleteVertexArrays(1, &m_maxLineVAO);
+
+	delete m_shader;
+	m_shader = nullptr;
+
+	m_active = false;
 }

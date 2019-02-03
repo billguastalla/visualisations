@@ -1,14 +1,17 @@
 #pragma once
+#include "Visualisation.h"
 
 class Shader;
 struct GLFWwindow;
-class Buffer;
 
-class Visualisation_Oscilloscope
+class Visualisation_Oscilloscope : Visualisation
 {
 public:
 	Visualisation_Oscilloscope(GLFWwindow * win);
 	~Visualisation_Oscilloscope();
+
+	void activate() override;
+	void deactivate() override;
 
 	/* Should have two functions:
 			-> Process samples (Buffer buf, unsigned samples), generating appropriate gl objects to be drawn later.
@@ -19,8 +22,9 @@ public:
 							-> Where this would be controlled is probably in an audio settings class.
 			-> Render frame : draw the gl objects to the framebuffer
 	*/
-	void processSamples(const Buffer & buf, unsigned samples);
-	void renderFrame();
+	void processSamples(const Buffer & buf, unsigned samples) override;
+	void renderFrame() override;
+
 private:
 	Shader * m_shader;
 	GLFWwindow * m_window;

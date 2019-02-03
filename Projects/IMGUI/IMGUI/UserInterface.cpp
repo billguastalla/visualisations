@@ -9,6 +9,9 @@
 #include "imgui/examples/imgui_impl_opengl3.h"
 
 UserInterface::UserInterface()
+	:
+	m_visItems{"Oscilloscope\0Cubes\0"},
+	m_visSelection{0}
 {
 }
 
@@ -55,9 +58,22 @@ void UserInterface::render(const Buffer & audioBuffer)
 	ImGui::Text("\tAmplitude Average: %.3f", audioBuffer.amplitude_average());
 	ImGui::Text("\tAmplitude Minimum: %.3f", audioBuffer.amplitude_minimum());
 	ImGui::Text("\tAmplitude Peak: %.3f", audioBuffer.amplitude_peak());
-	ImGui::Text("GFX Statistics:");
+	ImGui::End();
+
+	ImGui::Begin("GFX Statistics:");
 	ImGui::Text("\tFramerate: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	ImGui::End();
+
+
+	ImGui::Begin("Visualisation Properties");
+	ImGui::Text("Visualisation:\t");
+	ImGui::SameLine();
+	ImGui::Combo("",&m_visSelection, m_visItems);
+	ImGui::End();
+
+	ImGui::Begin("Renderer");
+	ImGui::End();
+
 	//ImGui::Text("Audio Settings:");
 	//ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
 	//ImGui::Checkbox("Another Window", &show_another_window);

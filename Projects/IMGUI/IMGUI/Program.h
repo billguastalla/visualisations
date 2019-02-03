@@ -2,6 +2,7 @@
 #include "UserInterface.h"
 #include "Recorder.h"
 #include "Visualisation_Oscilloscope.h"
+#include "Visualisation_Cubes.h"
 
 struct GLFWwindow;
 
@@ -21,6 +22,9 @@ private:
 
 	UserInterface m_interface;
 	Recorder m_recorder;
+
+
 	Visualisation_Oscilloscope m_vis_oscilloscope;
+	Visualisation_Cubes m_vis_cubes;
 };
 

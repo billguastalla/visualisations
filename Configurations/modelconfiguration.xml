@@ -1,0 +1,37 @@
+<Vis version="0.1"> <!-- DESCRIPTION: This is the main node of the configuration -->
+	<!-- CONSTRAINTS: Must contain AudioSettings, Visualisation, Events nodes. -->
+   <AudioSettings mode=”File”>  <!-- DESCRIPTION: Set audio settings here. -->
+	  <!-- CONSTRAINTS: Must contain mode attribute.  -->
+      <AudioInput>
+         <AudioFile index=”1” path=”C:/soundTrack1.wav"/>
+         <AudioFile index=”2” path=”C:/soundTrack2.wav”/>
+      <AudioInput/>
+	  <BufferSettings bufferSize="512" bufferOffset="256"/> <!-- DESCRIPTION:	bufferSize: The per-channel audio buffer size that is used when processing
+																				the logic to generate a video frame.
+																				bufferOffset: When processing a video frame
+															-->
+	  <AudioAttributes>
+	     <AudioAttribute type=""/>
+		 <AudioAttribute type=""/>
+	  <AudioAttributes/>
+   <AudioSettings/>
+   
+   <SceneSettings>
+		<Resolution width="1920" height="1080"/>
+		<OpenGL versionMajor="4" versionMinor="5"/>
+   <SceneSettings/>
+
+   <VideoSettings framerate="60" codec=".h264" format=".mp4">
+		<AudioChannel />
+   <VideoSettings/>
+   
+   <VisualisationSettings>
+		<Visualisation selection=”Oscilloscope”>
+		<Visualisation/>
+   <VisualisationSettings/>
+   
+   
+   <Events> <!-- You should be able to have events that happen based on a timestep, and events that happen based on input. -->
+      <Event class=”AttributeMapper” instance="1" function="rotateAttributes" samples=”0” duration="1"/>
+   <Events/>
+</Vis>

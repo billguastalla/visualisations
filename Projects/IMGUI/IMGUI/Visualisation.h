@@ -11,7 +11,9 @@ public:
 	/* Unload shaders etc. */
 	virtual void deactivate() = 0;
 
-	virtual void render(Buffer & buf) = 0;
+	virtual void processSamples(const Buffer & buf, unsigned samples) = 0;
+	virtual void renderFrame() = 0;
+
 protected:
 	bool m_active;
 };

@@ -5,8 +5,6 @@
 #include <queue>
 #include <map>
 
-
-
 class Buffer
 {
 public:

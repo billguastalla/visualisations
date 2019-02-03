@@ -189,6 +189,7 @@
     <ClInclude Include="..\Includes\imgui\stb_textedit.h" />
     <ClInclude Include="..\Includes\imgui\stb_truetype.h" />
     <ClInclude Include="Buffer.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Program.h" />
     <ClInclude Include="Recorder.h" />
     <ClInclude Include="UserInterface.h" />
