@@ -1,10 +1,6 @@
 #pragma once
 #include "FFMPEG_Encoder.h"
 
-#include <libavcodec/avcodec.h>
-#include <libavutil/imgutils.h>
-#include <libavutil/opt.h>
-#include <libswscale/swscale.h>
 /* Adapted from: https://github.com/cirosantilli/cpp-cheat/blob/19044698f91fefa9cb75328c44f7a487d336b541/ffmpeg/encode.c */
 
 void FFMPEG_Encoder::ffmpeg_encoder_set_frame_yuv_from_rgb(uint8_t *rgb) {
@@ -26,16 +22,19 @@ FFMPEG_Encoder::StartResult FFMPEG_Encoder::ffmpeg_encoder_start(const char *fil
 {
 	if (!m_started)
 	{
-		AVCodec *codec;
 		int ret;
-		avcodec_register_all();
-		codec = avcodec_find_encoder(codec_id);
-		if (!codec) {
+
+
+		/* Bill: Apparently removing this is fine, but need to check. */
+		//avcodec_register_all();
+
+		m_codec = avcodec_find_encoder(codec_id);
+		if (!m_codec) {
 			fprintf(stderr, "Codec not found\n");
 			exit(1);
 			return StartResult::CodecNotFound;
 		}
-		m_AVCodecContext = avcodec_alloc_context3(codec);
+		m_AVCodecContext = avcodec_alloc_context3(m_codec);
 		if (!m_AVCodecContext) {
 			fprintf(stderr, "Could not allocate video codec context\n");
 			exit(1);
@@ -48,16 +47,18 @@ FFMPEG_Encoder::StartResult FFMPEG_Encoder::ffmpeg_encoder_start(const char *fil
 		m_AVCodecContext->time_base.den = fps;
 		m_AVCodecContext->gop_size = 10;
 		m_AVCodecContext->max_b_frames = 1;
-		m_AVCodecContext->pix_fmt = AV_PIX_FMT_YUV420P;
+		m_AVCodecContext->pix_fmt = AVPixelFormat::AV_PIX_FMT_YUV420P;
 		if (codec_id == AV_CODEC_ID_H264)
 			av_opt_set(m_AVCodecContext->priv_data, "preset", "slow", 0);
-		if (avcodec_open2(m_AVCodecContext, codec, NULL) < 0) {
+		if (avcodec_open2(m_AVCodecContext, m_codec, NULL) < 0) {
 			fprintf(stderr, "Could not open codec\n");
 			exit(1);
 			return StartResult::CodecUnopenable;
 		}
-		m_file = fopen(filename, "wb");
-		if (!m_file) {
+		//m_file = fopen(filename, "wb");
+		m_fileStream.open(filename, std::ios::binary);
+
+		if (!m_fileStream.is_open()) {
 			fprintf(stderr, "Could not open %s\n", filename);
 			exit(1);
 			return StartResult::FileUnopenable;
@@ -78,10 +79,11 @@ FFMPEG_Encoder::StartResult FFMPEG_Encoder::ffmpeg_encoder_start(const char *fil
 			exit(1);
 			return StartResult::PictureBufferAllocationFailed;
 		}
+		m_started = true;
+		return StartResult::Success;
 	}
 	else
 		return StartResult::EncoderAlreadyStarted;
-	m_started = true;
 }
 
 void FFMPEG_Encoder::ffmpeg_encoder_render_frame()
@@ -97,16 +99,16 @@ void FFMPEG_Encoder::ffmpeg_encoder_render_frame()
 		//	snprintf(filename, SCREENSHOT_MAX_FILENAME, "tmp.%d.png", nframes);
 		//	screenshot_png(filename, width, height, &pixels, &png_bytes, &png_rows);
 		//}
-		m_AVFrame->pts = m_frameCount;
+		m_AVFrame->pts = m_currentFrame;
 		ffmpeg_encoder_glread_rgb(&m_rgb, &m_pixels, m_AVCodecContext->width, m_AVCodecContext->height);
 		ffmpeg_encoder_encode_frame(m_rgb);
 
 		/* We've rendered a frame. */
-		++m_frameCount;
+		++m_currentFrame;
 		if (m_maxFrames != -1)
 		{
 			/* If we're done, finish: */
-			if (m_maxFrames <= m_frameCount)
+			if (m_maxFrames <= m_currentFrame)
 				ffmpeg_encoder_finish();
 		}
 	}
@@ -117,23 +119,33 @@ FFMPEG_Encoder::FinishResult FFMPEG_Encoder::ffmpeg_encoder_finish()
 	if (m_started)
 	{
 		uint8_t endcode[] = { 0, 0, 1, 0xb7 };
-		int got_output, ret;
+		int got_output = 0, ret = 0;
 		do {
 			fflush(stdout);
-			ret = avcodec_encode_video2(m_AVCodecContext, &m_AVPacket, NULL, &got_output);
+
+			// BILL - avcodec_encode_video2 is depreacated: Trying this... : I don't think it has the same result in this case..
+			ret = avcodec_send_frame(m_AVCodecContext, nullptr);
+			ret = avcodec_receive_packet(m_AVCodecContext, &m_AVPacket);
+
+			//ret = avcodec_encode_video2(m_AVCodecContext, &m_AVPacket, NULL, &got_output);
 			if (ret < 0) {
 				fprintf(stderr, "Error encoding m_AVFrame\n");
 				exit(1);
 
 			}
 			if (got_output) {
-				fwrite(m_AVPacket.data, 1, m_AVPacket.size, m_file);
+
+				//fwrite(m_AVPacket.data, 1, m_AVPacket.size, m_file);
+				/* BILL: TRY this, if it fails, you must check platform impls of char (they should be 8bits).. */
+				m_fileStream.write((char*)m_AVPacket.data, m_AVPacket.size);
+
 				av_packet_unref(&m_AVPacket);
 			}
 		} while (got_output);
 
-		fwrite(endcode, 1, sizeof(endcode), m_file);
-		fclose(m_file);
+		//fwrite(endcode, 1, sizeof(endcode), m_file);
+		m_fileStream.write((char*)endcode, sizeof(endcode));
+		m_fileStream.close();
 
 		avcodec_close(m_AVCodecContext);
 		av_free(m_AVCodecContext);
@@ -141,29 +153,36 @@ FFMPEG_Encoder::FinishResult FFMPEG_Encoder::ffmpeg_encoder_finish()
 		av_frame_free(&m_AVFrame);
 
 		m_started = false;
+		return FinishResult::Success;
 	}
 }
 
 void  FFMPEG_Encoder::ffmpeg_encoder_encode_frame(uint8_t *rgb) {
-	int ret, got_output;
+	int ret = 0;
 	ffmpeg_encoder_set_frame_yuv_from_rgb(rgb);
 	av_init_packet(&m_AVPacket);
 	m_AVPacket.data = NULL;
 	m_AVPacket.size = 0;
 
-	/* BILL - avcodec_encode_video2 is depreacated, so you'll need to do some swaps.
-	//avcodec_send_frame(m_AVCodecContext, m_AVFrame);
-	//avcodec_receive_packet(m_AVCodecContext, &m_AVPacket);
-	*/
-	ret = avcodec_encode_video2(m_AVCodecContext, &m_AVPacket, m_AVFrame, &got_output);
+	// BILL - avcodec_encode_video2 is depreacated: Trying this...
+	ret = avcodec_send_frame(m_AVCodecContext, m_AVFrame);
+	ret = avcodec_receive_packet(m_AVCodecContext, &m_AVPacket);
+	
+	char * errorStr = new char[80];
+	av_make_error_string(errorStr,80,ret);
+	delete[] errorStr;
+
+	//ret = avcodec_encode_video2(m_AVCodecContext, &m_AVPacket, m_AVFrame, &got_output);
 	if (ret < 0) {
 		fprintf(stderr, "Error encoding m_AVFrame\n");
-		exit(1);
 	}
-	if (got_output) {
-		fwrite(m_AVPacket.data, 1, m_AVPacket.size, m_file);
-		av_packet_unref(&m_AVPacket);
+	else
+	{
+		m_fileStream.write((char*)m_AVPacket.data, m_AVPacket.size);
+		//fwrite(m_AVPacket.data, 1, m_AVPacket.size, m_file);
 	}
+	av_packet_unref(&m_AVPacket);
+	return;
 }
 
 void FFMPEG_Encoder::ffmpeg_encoder_glread_rgb(uint8_t **rgb, GLubyte **pixels, unsigned int width, unsigned int height) {

@@ -1,10 +1,16 @@
 #pragma once
+#include <glad/glad.h>
 #include <GLFW\glfw3.h>
 
+extern "C"
+{
 #include <libavcodec/avcodec.h>
 #include <libavutil/imgutils.h>
 #include <libavutil/opt.h>
 #include <libswscale/swscale.h>
+}
+
+#include <fstream>
 
 /* Adapted from: https://github.com/cirosantilli/cpp-cheat/blob/19044698f91fefa9cb75328c44f7a487d336b541/ffmpeg/encode.c */
 
@@ -59,10 +65,12 @@ private:
 	AVCodec * m_codec;
 
 	/* Originals */
+	//FILE * m_file;
+	std::ofstream m_fileStream;
+
 	AVCodecContext * m_AVCodecContext = NULL;
 	AVFrame * m_AVFrame;
 	AVPacket m_AVPacket;
-	FILE * m_file;
 	SwsContext * m_swsContext = NULL;
 	uint8_t * m_rgb = NULL;
 	GLubyte * m_pixels = NULL;
@@ -70,5 +78,5 @@ private:
 	/* Frame counting */
 	bool m_countFrames = true;
 	int m_maxFrames = -1;
-	int m_frameCount = 0;
+	int m_currentFrame = 1;
 };

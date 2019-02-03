@@ -95,6 +95,9 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\Includes;..\Includes\FFMPEG\FFMPEG V4.1%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -103,6 +106,9 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\Includes;..\Includes\FFMPEG\FFMPEG V4.1%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -116,6 +122,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -130,11 +137,13 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Includes\glad\glad.c" />
-    <ClCompile Include="2b-BasicLighting.cpp" />
+    <ClCompile Include="FFMPEG_EncoderCMD.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="FFMPEG_Encoder.cpp" />
     <ClCompile Include="ffmpeg_template-cmd.cpp" />
     <ClCompile Include="ffmpeg_template-dll.cpp" />
@@ -142,6 +151,7 @@
   <ItemGroup>
     <ClInclude Include="camera.h" />
     <ClInclude Include="FFMPEG_Encoder.h" />
+    <ClInclude Include="FFMPEG_EncoderCMD.h" />
     <ClInclude Include="LIBPNG_Capture.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>

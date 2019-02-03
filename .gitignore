@@ -3,6 +3,7 @@
 
 # Write Video things
 *.mp4
+*.mpg
 ffmpeg.exe
 
 

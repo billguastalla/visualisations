@@ -7,7 +7,6 @@
 #include <string.h>
 
 #include <LIBPNG\png.h>
- 
 
 /* Bill: Start Code*/
 //	ffmpeg_encoder_start("tmp.mpg", AV_CODEC_ID_MPEG1VIDEO, 25, width, height);
@@ -15,24 +14,26 @@
 //	ffmpeg_encoder_finish();
 //	free(rgb);
 
-enum Constants { SCREENSHOT_MAX_FILENAME = 256 };
-
-/* Framebuffer objects */
-static GLuint fbo;
-static GLuint rbo_color;
-static GLuint rbo_depth;
-static int offscreen = 1;
 static unsigned int time0;
 static unsigned int height = 128;
 static unsigned int width = 128;
-#define PPM_BIT (1 << 0)
-#define LIBPNG_BIT (1 << 1)
-#define FFMPEG_BIT (1 << 2)
-static unsigned int output_formats = PPM_BIT | LIBPNG_BIT | FFMPEG_BIT;
 
-/* Model. */
-static double angle;
-static double delta_angle;
+
+
+
+
+
+
+
+
+//
+//enum Constants { SCREENSHOT_MAX_FILENAME = 256 };
+//
+///* Framebuffer objects */
+//static GLuint fbo;
+//static GLuint rbo_color;
+//static GLuint rbo_depth;
+//static int offscreen = 1;
 //
 //static void model_init(void) {
 //    angle = 0;

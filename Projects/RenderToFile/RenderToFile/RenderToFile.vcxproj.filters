@@ -16,21 +16,33 @@
     <Filter Include="Header Files\DLL Implementation">
       <UniqueIdentifier>{c3a62308-6f71-4525-a2c6-713e4acf931c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\CMD Implementation">
+      <UniqueIdentifier>{04754682-d083-4a07-8949-47cb694751ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DLL Implementation">
+      <UniqueIdentifier>{708ca3a0-e797-4243-a035-8379f9190fee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CMD Implementation">
+      <UniqueIdentifier>{25160d6d-1978-4d4a-912d-b9812f2978e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Includes\glad\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="2b-BasicLighting.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ffmpeg_template-cmd.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ffmpeg_template-dll.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FFMPEG_Encoder.cpp">
+      <Filter>Source Files\DLL Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="ffmpeg_template-dll.cpp">
+      <Filter>Source Files\DLL Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="ffmpeg_template-cmd.cpp">
+      <Filter>Source Files\CMD Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="FFMPEG_EncoderCMD.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -46,6 +58,9 @@
     </ClInclude>
     <ClInclude Include="LIBPNG_Capture.h">
       <Filter>Header Files\DLL Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="FFMPEG_EncoderCMD.h">
+      <Filter>Header Files\CMD Implementation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

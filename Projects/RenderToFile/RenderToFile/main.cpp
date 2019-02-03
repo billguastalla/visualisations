@@ -12,9 +12,8 @@
 
 #include <iostream>
 
-/* Dates & Times for output file */
-#include <ctime>
-
+#include "FFMPEG_Encoder.h"
+#include "FFMPEG_EncoderCMD.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -22,8 +21,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 
 // settings
-const unsigned int SCR_WIDTH = 1600;
-const unsigned int SCR_HEIGHT = 900;
+const unsigned int SCR_WIDTH = 1920;
+const unsigned int SCR_HEIGHT = 1080;
 
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -172,22 +171,10 @@ int main()
 	glm::vec3 lightPos{ 0.0,0.0,-8.0 };
 
 
-	/* Get time to make unique mp4s, and we don't mind about the format of the string. */
-	auto t = std::time(nullptr);
-	std::ostringstream oss;
-	oss << t;
-
-	// start ffmpeg telling it to expect raw rgba 720p-60hz frames
-	// -i - tells it to read frames from stdin
-	std::string cmd{ "ffmpeg -r 60 -f rawvideo -pix_fmt rgba -s 1600x900 -i - "
-	"-threads 0 -preset fast -y -pix_fmt yuv420p -crf 21 -vf vflip " };
-	cmd.append("output");
-	cmd.append(oss.str());
-	cmd.append(".mp4");
-	// open pipe to ffmpeg's stdin in binary write mode
-	FILE* ffmpeg = _popen(cmd.c_str(), "wb");
-	/* Set up buffer */
-	int* buffer = new int[SCR_WIDTH*SCR_HEIGHT];
+	//FFMPEG_EncoderCMD cmdEncoder{ SCR_WIDTH,SCR_HEIGHT };
+	FFMPEG_Encoder dllEncoder{};
+	dllEncoder.ffmpeg_encoder_start("outputDll.mpg", AV_CODEC_ID_MPEG1VIDEO, 60, SCR_WIDTH, SCR_HEIGHT);
+	//cmdEncoder.start();
 
 	// render loop
 	// -----------
@@ -252,20 +239,14 @@ int main()
 
 		glfwSwapBuffers(window);
 
-
-		/* ********************* FFMPEG ***************** */
-		/* Read pixels from GPU into buffer */
-		glReadPixels(0, 0, SCR_WIDTH, SCR_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-		/* Write buffer into FFMPEG */
-		fwrite(buffer, sizeof(int)*SCR_WIDTH*SCR_HEIGHT, 1, ffmpeg);
-		/* ********************************************** */
+		//cmdEncoder.renderFrame();
+		dllEncoder.ffmpeg_encoder_render_frame();
 
 		glfwPollEvents();
 	}
 
-	/* ********************* FFMPEG ***************** */
-	_pclose(ffmpeg);
-	/* ********************************************** */
+	//cmdEncoder.stop();
+	dllEncoder.ffmpeg_encoder_finish();
 
 	// optional: de-allocate all resources once they've outlived their purpose:
 	// ------------------------------------------------------------------------
