@@ -21,8 +21,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 
 // settings
-const unsigned int SCR_WIDTH = 1920;
-const unsigned int SCR_HEIGHT = 1080;
+const unsigned int SCR_WIDTH = 600;
+const unsigned int SCR_HEIGHT = 500;
 
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -173,7 +173,7 @@ int main()
 
 	//FFMPEG_EncoderCMD cmdEncoder{ SCR_WIDTH,SCR_HEIGHT };
 	FFMPEG_Encoder dllEncoder{};
-	dllEncoder.ffmpeg_encoder_start("outputDll.mpg", AV_CODEC_ID_MPEG1VIDEO, 60, SCR_WIDTH, SCR_HEIGHT);
+	dllEncoder.ffmpeg_encoder_start("outputDll.mpg", AV_CODEC_ID_MPEG1VIDEO, 25, SCR_WIDTH, SCR_HEIGHT);
 	//cmdEncoder.start();
 
 	// render loop

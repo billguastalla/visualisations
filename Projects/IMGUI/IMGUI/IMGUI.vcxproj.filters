@@ -16,9 +16,6 @@
     <Filter Include="Header Files\Graphics">
       <UniqueIdentifier>{efa638b5-0549-452d-a352-4c8abc5e1476}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Graphics\imgui">
-      <UniqueIdentifier>{e7f893fd-02d3-4d62-840f-afa3e28a72b5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Audio Modules">
       <UniqueIdentifier>{cd4ecbc4-642d-47e7-90c9-82757c6008cc}</UniqueIdentifier>
     </Filter>
@@ -54,6 +51,15 @@
     </Filter>
     <Filter Include="Source Files\Program">
       <UniqueIdentifier>{7a6e4d02-6480-40cc-8dd1-b2c554ed2494}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Program">
+      <UniqueIdentifier>{b918123e-9b21-4cbc-ad10-9a2ae62e02e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI">
+      <UniqueIdentifier>{26c9bf4d-fa2f-4564-9ec4-8b372f2c2a55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI\imgui">
+      <UniqueIdentifier>{e7f893fd-02d3-4d62-840f-afa3e28a72b5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -93,6 +99,12 @@
     <ClCompile Include="Shader.cpp">
       <Filter>Source Files\Graphics\Visualisations\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Program.cpp">
+      <Filter>Source Files\Program</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Buffer.h">
@@ -102,22 +114,22 @@
       <Filter>Header Files\Audio Modules</Filter>
     </ClInclude>
     <ClInclude Include="..\Includes\imgui\imgui.h">
-      <Filter>Header Files\Graphics\imgui</Filter>
+      <Filter>Header Files\UI\imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\Includes\imgui\imgui_internal.h">
-      <Filter>Header Files\Graphics\imgui</Filter>
+      <Filter>Header Files\UI\imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\Includes\imgui\imconfig.h">
-      <Filter>Header Files\Graphics\imgui</Filter>
+      <Filter>Header Files\UI\imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\Includes\imgui\stb_rect_pack.h">
-      <Filter>Header Files\Graphics\imgui</Filter>
+      <Filter>Header Files\UI\imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\Includes\imgui\stb_textedit.h">
-      <Filter>Header Files\Graphics\imgui</Filter>
+      <Filter>Header Files\UI\imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\Includes\imgui\stb_truetype.h">
-      <Filter>Header Files\Graphics\imgui</Filter>
+      <Filter>Header Files\UI\imgui</Filter>
     </ClInclude>
     <ClInclude Include="Vertex.h">
       <Filter>Header Files\Graphics\Visualisations\Engine</Filter>
@@ -133,6 +145,12 @@
     </ClInclude>
     <ClInclude Include="Visualisation.h">
       <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="Program.h">
+      <Filter>Header Files\Program</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface.h">
+      <Filter>Header Files\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

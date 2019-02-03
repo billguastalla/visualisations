@@ -3,12 +3,16 @@
 
 /* Adapted from: https://github.com/cirosantilli/cpp-cheat/blob/19044698f91fefa9cb75328c44f7a487d336b541/ffmpeg/encode.c */
 
-void FFMPEG_Encoder::ffmpeg_encoder_set_frame_yuv_from_rgb(uint8_t *rgb) {
+void FFMPEG_Encoder::ffmpeg_encoder_set_frame_yuv_from_rgb(uint8_t *rgb)
+{
+	/* This is the number of bytes in a horizontal line of a frame. */
 	const int in_linesize[1] = { 4 * m_AVCodecContext->width };
+
 	m_swsContext = sws_getCachedContext(m_swsContext,
 		m_AVCodecContext->width, m_AVCodecContext->height, AV_PIX_FMT_RGB32,
 		m_AVCodecContext->width, m_AVCodecContext->height, AV_PIX_FMT_YUV420P,
 		0, NULL, NULL, NULL);
+
 	sws_scale(m_swsContext, (const uint8_t * const *)&rgb, in_linesize, 0,
 		m_AVCodecContext->height, m_AVFrame->data, m_AVFrame->linesize);
 }
@@ -23,7 +27,6 @@ FFMPEG_Encoder::StartResult FFMPEG_Encoder::ffmpeg_encoder_start(const char *fil
 	if (!m_started)
 	{
 		int ret;
-
 
 		/* Bill: Apparently removing this is fine, but need to check. */
 		//avcodec_register_all();
@@ -48,6 +51,7 @@ FFMPEG_Encoder::StartResult FFMPEG_Encoder::ffmpeg_encoder_start(const char *fil
 		m_AVCodecContext->gop_size = 10;
 		m_AVCodecContext->max_b_frames = 1;
 		m_AVCodecContext->pix_fmt = AVPixelFormat::AV_PIX_FMT_YUV420P;
+
 		if (codec_id == AV_CODEC_ID_H264)
 			av_opt_set(m_AVCodecContext->priv_data, "preset", "slow", 0);
 		if (avcodec_open2(m_AVCodecContext, m_codec, NULL) < 0) {
@@ -100,8 +104,10 @@ void FFMPEG_Encoder::ffmpeg_encoder_render_frame()
 		//	screenshot_png(filename, width, height, &pixels, &png_bytes, &png_rows);
 		//}
 		m_AVFrame->pts = m_currentFrame;
-		ffmpeg_encoder_glread_rgb(&m_rgb, &m_pixels, m_AVCodecContext->width, m_AVCodecContext->height);
-		ffmpeg_encoder_encode_frame(m_rgb);
+
+		ffmpeg_encoder_glread_rgb();
+
+		ffmpeg_encoder_encode_frame(&m_rgbData[0]);
 
 		/* We've rendered a frame. */
 		++m_currentFrame;
@@ -129,7 +135,7 @@ FFMPEG_Encoder::FinishResult FFMPEG_Encoder::ffmpeg_encoder_finish()
 
 			//ret = avcodec_encode_video2(m_AVCodecContext, &m_AVPacket, NULL, &got_output);
 			if (ret < 0) {
-				fprintf(stderr, "Error encoding m_AVFrame\n");
+				fprintf(stderr, "Error encoding frame\n");
 				exit(1);
 
 			}
@@ -155,6 +161,7 @@ FFMPEG_Encoder::FinishResult FFMPEG_Encoder::ffmpeg_encoder_finish()
 		m_started = false;
 		return FinishResult::Success;
 	}
+	return FinishResult::EncoderNotStarted;
 }
 
 void  FFMPEG_Encoder::ffmpeg_encoder_encode_frame(uint8_t *rgb) {
@@ -185,22 +192,28 @@ void  FFMPEG_Encoder::ffmpeg_encoder_encode_frame(uint8_t *rgb) {
 	return;
 }
 
-void FFMPEG_Encoder::ffmpeg_encoder_glread_rgb(uint8_t **rgb, GLubyte **pixels, unsigned int width, unsigned int height) {
+void FFMPEG_Encoder::ffmpeg_encoder_glread_rgb()
+{
 	size_t i, j, k, cur_gl, cur_rgb, nvals;
-	const size_t format_nchannels = 4;
-	nvals = format_nchannels * width * height;
-	*pixels = (GLubyte*)realloc(*pixels, nvals * sizeof(GLubyte));
-	*rgb = (uint8_t*)realloc(*rgb, nvals * sizeof(uint8_t));
+	const size_t format_nchannels = m_pixelChannelCount = 4;
+
+	nvals = format_nchannels * m_AVCodecContext->width * m_AVCodecContext->height;
+
+	m_pixelData.resize(nvals);
+	m_rgbData.resize(nvals);
+
+	//*pixels = (GLubyte*)realloc(*pixels, nvals * sizeof(GLubyte));
+	//*rgb = (uint8_t*)realloc(*rgb, nvals * sizeof(uint8_t));
 
 	/* Get RGBA to align to 32 bits instead of just 24 for RGB. May be faster for FFmpeg. */
-	glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, *pixels);
+	glReadPixels(0, 0, m_AVCodecContext->width, m_AVCodecContext->height, GL_RGBA, GL_UNSIGNED_BYTE, &m_pixelData[0]);
 
-	for (i = 0; i < height; i++) {
-		for (j = 0; j < width; j++) {
-			cur_gl = format_nchannels * (width * (height - i - 1) + j);
-			cur_rgb = format_nchannels * (width * i + j);
+	for (i = 0; i < m_AVCodecContext->height; i++) {
+		for (j = 0; j < m_AVCodecContext->width; j++) {
+			cur_gl = format_nchannels * (m_AVCodecContext->width * (m_AVCodecContext->height - i - 1) + j);
+			cur_rgb = format_nchannels * (m_AVCodecContext->width * i + j);
 			for (k = 0; k < format_nchannels; k++)
-				(*rgb)[cur_rgb + k] = (*pixels)[cur_gl + k];
+				m_rgbData[cur_rgb + k] = m_pixelData[cur_gl + k];
 		}
 	}
 }

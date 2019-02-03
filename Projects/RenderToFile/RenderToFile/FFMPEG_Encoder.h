@@ -11,6 +11,7 @@ extern "C"
 }
 
 #include <fstream>
+#include <vector>
 
 /* Adapted from: https://github.com/cirosantilli/cpp-cheat/blob/19044698f91fefa9cb75328c44f7a487d336b541/ffmpeg/encode.c */
 
@@ -41,7 +42,8 @@ public:
 	enum class FinishResult
 	{
 		Success,
-		AVFrameEncodingFailed
+		AVFrameEncodingFailed,
+		EncoderNotStarted
 	};
 
 	/* Start: run once before render loop, after building scene */
@@ -57,7 +59,7 @@ private:
 
 	bool m_started;
 
-	void ffmpeg_encoder_glread_rgb(uint8_t **rgb, GLubyte **pixels, unsigned int width, unsigned int height);
+	void ffmpeg_encoder_glread_rgb();
 	void ffmpeg_encoder_set_frame_yuv_from_rgb(uint8_t *rgb);
 	void ffmpeg_encoder_encode_frame(uint8_t *rgb);
 
@@ -72,8 +74,16 @@ private:
 	AVFrame * m_AVFrame;
 	AVPacket m_AVPacket;
 	SwsContext * m_swsContext = NULL;
+
+
+	std::vector<uint8_t> m_rgbData;
+	std::vector<GLubyte> m_pixelData;
+	int m_pixelChannelCount;
+
+
+/*
 	uint8_t * m_rgb = NULL;
-	GLubyte * m_pixels = NULL;
+	GLubyte * m_pixels = NULL;*/
 
 	/* Frame counting */
 	bool m_countFrames = true;
