@@ -61,6 +61,27 @@
     <Filter Include="Header Files\UI\imgui">
       <UniqueIdentifier>{e7f893fd-02d3-4d62-840f-afa3e28a72b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Video Rendering">
+      <UniqueIdentifier>{de97881e-4299-4a1f-ae10-c8c1758ce002}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Video Rendering">
+      <UniqueIdentifier>{917b9847-9dbd-4a8c-a7d1-b1403d59e67f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI\Windows">
+      <UniqueIdentifier>{8f2664ac-fd19-47ea-a3a2-79b70cc8853a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI\Windows">
+      <UniqueIdentifier>{3b192587-ea67-4614-8f88-673ea24ba72e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Program\Settings">
+      <UniqueIdentifier>{6b5c0090-fa5c-4412-b3f5-298576dd7735}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Program\Controllers">
+      <UniqueIdentifier>{48b7b00f-570c-42d9-8e2f-ac7acef11973}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Program\Controllers\Settings">
+      <UniqueIdentifier>{3d1598c0-ac36-4c20-a90d-03d204fe4758}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Recorder.cpp">
@@ -104,6 +125,12 @@
     </ClCompile>
     <ClCompile Include="UserInterface.cpp">
       <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="FFMPEG_Encoder.cpp">
+      <Filter>Source Files\Video Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Window_VideoRendering.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +181,12 @@
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files\Graphics\Visualisations\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="FFMPEG_Encoder.h">
+      <Filter>Header Files\Video Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Window_VideoRendering.h">
+      <Filter>Header Files\UI\Windows</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -71,8 +71,6 @@ void UserInterface::render(const Buffer & audioBuffer)
 	ImGui::Combo("",&m_visSelection, m_visItems);
 	ImGui::End();
 
-	ImGui::Begin("Renderer");
-	ImGui::End();
 
 	//ImGui::Text("Audio Settings:");
 	//ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state

@@ -1,5 +1,10 @@
 #pragma once
 #include <string>
+#include <memory>
+
+class Window_VideoRendering;
+class Window_Audio;
+class Window_VisualisationOptions;
 
 struct GLFWwindow;
 class Buffer;
