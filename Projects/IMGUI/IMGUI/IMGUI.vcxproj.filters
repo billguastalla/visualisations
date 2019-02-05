@@ -73,14 +73,17 @@
     <Filter Include="Header Files\UI\Windows">
       <UniqueIdentifier>{3b192587-ea67-4614-8f88-673ea24ba72e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Program\Settings">
-      <UniqueIdentifier>{6b5c0090-fa5c-4412-b3f5-298576dd7735}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Program\Controllers">
       <UniqueIdentifier>{48b7b00f-570c-42d9-8e2f-ac7acef11973}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Program\Controllers\Settings">
       <UniqueIdentifier>{3d1598c0-ac36-4c20-a90d-03d204fe4758}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Program\Controllers">
+      <UniqueIdentifier>{1427295d-3860-431d-a3ee-ccee575e8018}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Program\Controllers\Settings">
+      <UniqueIdentifier>{6b5c0090-fa5c-4412-b3f5-298576dd7735}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -131,6 +134,12 @@
     </ClCompile>
     <ClCompile Include="Window_VideoRendering.cpp">
       <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller_VideoRendering.cpp">
+      <Filter>Source Files\Program\Controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings_VideoRendering.cpp">
+      <Filter>Source Files\Program\Controllers\Settings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -187,6 +196,12 @@
     </ClInclude>
     <ClInclude Include="Window_VideoRendering.h">
       <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings_VideoRendering.h">
+      <Filter>Header Files\Program\Controllers\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller_VideoRendering.h">
+      <Filter>Header Files\Program\Controllers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

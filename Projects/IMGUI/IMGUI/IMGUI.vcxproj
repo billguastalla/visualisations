@@ -172,7 +172,9 @@
     <ClCompile Include="..\Includes\imgui\imgui.cpp" />
     <ClCompile Include="..\Includes\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\Includes\imgui\imgui_draw.cpp" />
+    <ClCompile Include="Controller_VideoRendering.cpp" />
     <ClCompile Include="FFMPEG_Encoder.cpp" />
+    <ClCompile Include="Settings_VideoRendering.cpp" />
     <ClCompile Include="Window_VideoRendering.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="UserInterface.cpp" />
@@ -192,7 +194,9 @@
     <ClInclude Include="..\Includes\imgui\stb_truetype.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Controller_VideoRendering.h" />
     <ClInclude Include="FFMPEG_Encoder.h" />
+    <ClInclude Include="Settings_VideoRendering.h" />
     <ClInclude Include="Window_VideoRendering.h" />
     <ClInclude Include="Program.h" />
     <ClInclude Include="Recorder.h" />

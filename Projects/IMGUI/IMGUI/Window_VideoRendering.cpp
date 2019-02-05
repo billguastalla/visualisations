@@ -4,8 +4,7 @@
 #include "imgui/examples/imgui_impl_glfw.h"
 #include "imgui/examples/imgui_impl_opengl3.h"
 
-Window_VideoRendering::Window_VideoRendering(std::shared_ptr<FFMPEG_Encoder> & encoder)
-	: m_encoder{encoder}
+Window_VideoRendering::Window_VideoRendering()
 {
 }
 
@@ -24,7 +23,7 @@ void Window_VideoRendering::draw()
 		-> Codec selection
 		-> File format selection
 		-> Checkbox: Record Audio
-		-> Buttons: Record/Pause & Stop.
+		-> Buttons: Record/Pause & Stop. (held by controller and not settings?)
 	*/
 	ImGui::End();
 }
