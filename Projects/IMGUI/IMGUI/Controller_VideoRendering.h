@@ -20,6 +20,7 @@ public:
 	Controller_VideoRendering(std::shared_ptr<Settings_VideoRendering> & settings);
 	~Controller_VideoRendering();
 
+
 private:
 	std::shared_ptr<Settings_VideoRendering> m_settings;
 	std::shared_ptr<FFMPEG_Encoder> m_encoder;

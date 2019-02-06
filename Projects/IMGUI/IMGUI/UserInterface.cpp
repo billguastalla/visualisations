@@ -8,10 +8,14 @@
 #include "imgui/examples/imgui_impl_glfw.h"
 #include "imgui/examples/imgui_impl_opengl3.h"
 
+#include "Window_Abstract.h"
+
 UserInterface::UserInterface()
 	:
-	m_visItems{"Oscilloscope\0Cubes\0"},
-	m_visSelection{0}
+	//m_visItems{"Oscilloscope\0Cubes\0"},
+	//m_visSelection{0},
+
+	m_windows{}
 {
 }
 
@@ -43,34 +47,20 @@ void UserInterface::deinitialise()
 	ImGui::DestroyContext();
 }
 
-void UserInterface::render(const Buffer & audioBuffer)
+void UserInterface::addWindow(Window_Abstract * win)
+{
+	m_windows.push_back(std::unique_ptr<Window_Abstract>{win});
+}
+
+void UserInterface::render()
 {
 	// IMGUI Render Start Calls
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
-
-	static float f = 0.0f;
-	ImGui::Begin("Audio Properties");
-	ImGui::Text("Audio Statistics:");
-	ImGui::Text("\tChannels: %i", audioBuffer.channelCount());
-	ImGui::Text("\tAmplitude Average: %.3f", audioBuffer.amplitude_average());
-	ImGui::Text("\tAmplitude Minimum: %.3f", audioBuffer.amplitude_minimum());
-	ImGui::Text("\tAmplitude Peak: %.3f", audioBuffer.amplitude_peak());
-	ImGui::End();
-
-	ImGui::Begin("GFX Statistics:");
-	ImGui::Text("\tFramerate: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	ImGui::End();
-
-
-	ImGui::Begin("Visualisation Properties");
-	ImGui::Text("Visualisation:\t");
-	ImGui::SameLine();
-	ImGui::Combo("",&m_visSelection, m_visItems);
-	ImGui::End();
-
+	for (std::vector<std::unique_ptr<Window_Abstract>>::iterator i = m_windows.begin(); i != m_windows.end(); ++i)
+		(*i)->draw();
 
 	//ImGui::Text("Audio Settings:");
 	//ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state

@@ -1,10 +1,16 @@
 #include "Window_VideoRendering.h"
 
+#include "Controller_VideoRendering.h"
+
 #include "imgui/imgui.h"
 #include "imgui/examples/imgui_impl_glfw.h"
 #include "imgui/examples/imgui_impl_opengl3.h"
 
-Window_VideoRendering::Window_VideoRendering()
+#include <string>
+
+Window_VideoRendering::Window_VideoRendering(std::shared_ptr<Controller_VideoRendering> & controller)
+	:
+	m_videoController{controller}
 {
 }
 
@@ -25,5 +31,9 @@ void Window_VideoRendering::draw()
 		-> Checkbox: Record Audio
 		-> Buttons: Record/Pause & Stop. (held by controller and not settings?)
 	*/
+	char fileName[255];
+	ImGui::InputText("", fileName, 255);
+
+
 	ImGui::End();
 }

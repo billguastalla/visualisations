@@ -19,9 +19,6 @@
     <Filter Include="Header Files\Audio Modules">
       <UniqueIdentifier>{cd4ecbc4-642d-47e7-90c9-82757c6008cc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Audio Modules">
-      <UniqueIdentifier>{2dbeffd9-2404-4644-8fc1-d594fad7c77b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Graphics\Visualisations">
       <UniqueIdentifier>{86764f44-ae0a-4bd8-bc68-97077704019d}</UniqueIdentifier>
     </Filter>
@@ -85,13 +82,16 @@
     <Filter Include="Header Files\Program\Controllers\Settings">
       <UniqueIdentifier>{6b5c0090-fa5c-4412-b3f5-298576dd7735}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Audio Interface">
+      <UniqueIdentifier>{2dbeffd9-2404-4644-8fc1-d594fad7c77b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Recorder.cpp">
-      <Filter>Source Files\Audio Modules</Filter>
+      <Filter>Source Files\Audio Interface</Filter>
     </ClCompile>
     <ClCompile Include="Buffer.cpp">
-      <Filter>Source Files\Audio Modules</Filter>
+      <Filter>Source Files\Audio Interface</Filter>
     </ClCompile>
     <ClCompile Include="..\Includes\glad\glad.c">
       <Filter>Source Files\Graphics</Filter>
@@ -140,6 +140,27 @@
     </ClCompile>
     <ClCompile Include="Settings_VideoRendering.cpp">
       <Filter>Source Files\Program\Controllers\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller_AudioInterface.cpp">
+      <Filter>Source Files\Program\Controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings_AudioInterface.cpp">
+      <Filter>Source Files\Program\Controllers\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller_Visualisation.cpp">
+      <Filter>Source Files\Program\Controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings_Visualisation.cpp">
+      <Filter>Source Files\Program\Controllers\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="Window_Visualisation.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Window_AudioInterface.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Window_Abstract.cpp">
+      <Filter>Source Files\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -202,6 +223,27 @@
     </ClInclude>
     <ClInclude Include="Controller_VideoRendering.h">
       <Filter>Header Files\Program\Controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller_AudioInterface.h">
+      <Filter>Header Files\Program\Controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings_AudioInterface.h">
+      <Filter>Header Files\Program\Controllers\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Window_Visualisation.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Window_AudioInterface.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings_Visualisation.h">
+      <Filter>Header Files\Program\Controllers\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller_Visualisation.h">
+      <Filter>Header Files\Program\Controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="Window_Abstract.h">
+      <Filter>Header Files\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
