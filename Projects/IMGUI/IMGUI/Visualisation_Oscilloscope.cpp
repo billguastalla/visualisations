@@ -21,8 +21,8 @@ void processInput(GLFWwindow * window)
 		glfwSetWindowShouldClose(window, true);
 }
 
-Visualisation_Oscilloscope::Visualisation_Oscilloscope(GLFWwindow * win) :
-	m_shader{ nullptr }, m_window{ win },
+Visualisation_Oscilloscope::Visualisation_Oscilloscope() : Visualisation{},
+	m_shader{ nullptr },
 	m_leftScopeElemCount{0},
 	m_rightScopeElemCount{0},
 	m_maxLineElemCount{ 0 },

@@ -8,7 +8,7 @@ class Shader;
 class Visualisation_Cubes : public Visualisation
 {
 public:
-	Visualisation_Cubes(GLFWwindow * window);
+	Visualisation_Cubes();
 
 	/* Set up callbacks, shaders, vertex objects */
 	void activate() override;
@@ -17,6 +17,8 @@ public:
 
 	void processSamples(const Buffer & buf, unsigned samples) override;
 	void renderFrame() override;
+
+	std::string titleString() override { return "Cubes"; };
 private:
 	// camera
 	Camera m_camera;
@@ -37,6 +39,4 @@ private:
 	std::vector<glm::vec3> m_cubePositions;
 
 	glm::vec3 m_lightPos;
-
-	GLFWwindow * p_window;
 };

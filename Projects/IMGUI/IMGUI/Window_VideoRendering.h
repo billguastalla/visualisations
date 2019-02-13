@@ -2,16 +2,18 @@
 #include "Window_Abstract.h"
 #include <memory>
 
-class Controller_VideoRendering;
+class Model_VideoRendering;
 
 class Window_VideoRendering : public Window_Abstract
 {
 public:
-	Window_VideoRendering(std::shared_ptr<Controller_VideoRendering> & controller);
+	Window_VideoRendering(std::shared_ptr<Model_VideoRendering> & Model);
 	~Window_VideoRendering();
 
 	void draw();
+	const std::string windowTitle() const override { return "Video Rendering"; }
+
 private:
-	std::shared_ptr<Controller_VideoRendering> m_videoController;
+	std::shared_ptr<Model_VideoRendering> m_videoModel;
 };
 

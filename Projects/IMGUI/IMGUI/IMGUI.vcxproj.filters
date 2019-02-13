@@ -135,20 +135,11 @@
     <ClCompile Include="Window_VideoRendering.cpp">
       <Filter>Source Files\UI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Controller_VideoRendering.cpp">
-      <Filter>Source Files\Program\Controllers</Filter>
-    </ClCompile>
     <ClCompile Include="Settings_VideoRendering.cpp">
       <Filter>Source Files\Program\Controllers\Settings</Filter>
     </ClCompile>
-    <ClCompile Include="Controller_AudioInterface.cpp">
-      <Filter>Source Files\Program\Controllers</Filter>
-    </ClCompile>
     <ClCompile Include="Settings_AudioInterface.cpp">
       <Filter>Source Files\Program\Controllers\Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller_Visualisation.cpp">
-      <Filter>Source Files\Program\Controllers</Filter>
     </ClCompile>
     <ClCompile Include="Settings_Visualisation.cpp">
       <Filter>Source Files\Program\Controllers\Settings</Filter>
@@ -161,6 +152,15 @@
     </ClCompile>
     <ClCompile Include="Window_Abstract.cpp">
       <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_AudioInterface.cpp">
+      <Filter>Source Files\Program\Controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_VideoRendering.cpp">
+      <Filter>Source Files\Program\Controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_Visualisation.cpp">
+      <Filter>Source Files\Program\Controllers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -221,12 +221,6 @@
     <ClInclude Include="Settings_VideoRendering.h">
       <Filter>Header Files\Program\Controllers\Settings</Filter>
     </ClInclude>
-    <ClInclude Include="Controller_VideoRendering.h">
-      <Filter>Header Files\Program\Controllers</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller_AudioInterface.h">
-      <Filter>Header Files\Program\Controllers</Filter>
-    </ClInclude>
     <ClInclude Include="Settings_AudioInterface.h">
       <Filter>Header Files\Program\Controllers\Settings</Filter>
     </ClInclude>
@@ -239,11 +233,17 @@
     <ClInclude Include="Settings_Visualisation.h">
       <Filter>Header Files\Program\Controllers\Settings</Filter>
     </ClInclude>
-    <ClInclude Include="Controller_Visualisation.h">
-      <Filter>Header Files\Program\Controllers</Filter>
-    </ClInclude>
     <ClInclude Include="Window_Abstract.h">
       <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_AudioInterface.h">
+      <Filter>Header Files\Program\Controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_VideoRendering.h">
+      <Filter>Header Files\Program\Controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_Visualisation.h">
+      <Filter>Header Files\Program\Controllers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

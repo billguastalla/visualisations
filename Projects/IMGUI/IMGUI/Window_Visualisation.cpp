@@ -1,10 +1,12 @@
 #include "Window_Visualisation.h"
 
+#include "Model_Visualisation.h"
+
 #include "imgui/imgui.h"
 #include "imgui/examples/imgui_impl_glfw.h"
 #include "imgui/examples/imgui_impl_opengl3.h"
 
-Window_Visualisation::Window_Visualisation(std::shared_ptr<Controller_Visualisation> & visualisation)
+Window_Visualisation::Window_Visualisation(std::shared_ptr<Model_Visualisation> & visualisation)
 	: m_visualisation{visualisation}
 {
 }
@@ -23,7 +25,13 @@ void Window_Visualisation::draw()
 	ImGui::Begin("Visualisation Properties");
 	ImGui::Text("Visualisation:\t");
 	ImGui::SameLine();
-	//ImGui::Combo("",&m_visSelection, m_visItems);
+
+	int sel = m_visualisation->currentVisualisation();
+	std::string visOpts = m_visualisation->visualisationOptionsString();
+	ImGui::Combo("",&sel, &visOpts[0]);
+
+
 	ImGui::End();
 
+	m_visualisation->setVisualisation(sel);
 }

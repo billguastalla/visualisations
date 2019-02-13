@@ -4,7 +4,10 @@
 #include "imgui/examples/imgui_impl_glfw.h"
 #include "imgui/examples/imgui_impl_opengl3.h"
 
-Window_AudioInterface::Window_AudioInterface(std::shared_ptr<Controller_AudioInterface> & audioInterface)
+#include "Model_AudioInterface.h"
+#include "Settings_AudioInterface.h"
+
+Window_AudioInterface::Window_AudioInterface(std::shared_ptr<Model_AudioInterface> & audioInterface)
 	: m_audioInterface{ audioInterface }
 {
 }
@@ -25,6 +28,5 @@ void Window_AudioInterface::draw()
 	//ImGui::Text("\tAmplitude Peak: %.3f", audioBuffer.amplitude_peak());
 	ImGui::End();
 
-
-
+	std::shared_ptr<Settings_AudioInterface> settings =  m_audioInterface->settings();
 }

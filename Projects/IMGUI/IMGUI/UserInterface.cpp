@@ -12,9 +12,7 @@
 
 UserInterface::UserInterface()
 	:
-	//m_visItems{"Oscilloscope\0Cubes\0"},
-	//m_visSelection{0},
-
+	m_showMainWindow{ true },
 	m_windows{}
 {
 }
@@ -25,7 +23,7 @@ UserInterface::~UserInterface()
 
 void UserInterface::initialise(GLFWwindow * window, std::string glslVersion)
 {
-	// Setup Dear ImGui binding
+	// Setup ImGui binding
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -35,8 +33,8 @@ void UserInterface::initialise(GLFWwindow * window, std::string glslVersion)
 	ImGui_ImplOpenGL3_Init(glslVersion.c_str());
 
 	// Setup style
-	ImGui::StyleColorsDark();
-	//ImGui::StyleColorsClassic();
+	//ImGui::StyleColorsDark();
+	ImGui::StyleColorsClassic();
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 }
 
@@ -59,18 +57,26 @@ void UserInterface::render()
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
+	// Draw visible windows
 	for (std::vector<std::unique_ptr<Window_Abstract>>::iterator i = m_windows.begin(); i != m_windows.end(); ++i)
-		(*i)->draw();
+		if ((*i)->visible())
+			(*i)->draw();
 
-	//ImGui::Text("Audio Settings:");
-	//ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-	//ImGui::Checkbox("Another Window", &show_another_window);
-	//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f    
-	//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-	//if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-	//	counter++;
-	//ImGui::SameLine();
-	//ImGui::Text("counter = %d", counter);
+	// Draw the main window
+	if (m_showMainWindow)
+	{
+		ImGui::Begin("Windows");
+		ImGui::Checkbox("Main Window (toggle with \"i\")", &m_showMainWindow);
+		for (std::vector<std::unique_ptr<Window_Abstract>>::iterator i = m_windows.begin(); i != m_windows.end(); ++i)
+		{
+			ImGui::Checkbox((*i)->windowTitle().c_str(), &(*i)->visible());
+		}
+		ImGui::End();
+
+	}
+	// Press I to toggle main window 
+	if (ImGui::IsKeyPressed('I'))
+		m_showMainWindow = !m_showMainWindow;
 
 
 	// IMGUI Render Finish Calls

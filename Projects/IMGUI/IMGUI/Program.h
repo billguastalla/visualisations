@@ -1,16 +1,14 @@
 #pragma once
 #include "UserInterface.h"
 #include "Recorder.h"
-#include "Visualisation_Oscilloscope.h"
-#include "Visualisation_Cubes.h"
 
 class Settings_VideoRendering;
 class Settings_AudioInterface;
 class Settings_Visualisation;
 
-class Controller_VideoRendering;
-class Controller_AudioInterface;
-class Controller_Visualisation;
+class Model_VideoRendering;
+class Model_AudioInterface;
+class Model_Visualisation;
 
 struct GLFWwindow;
 
@@ -24,26 +22,25 @@ public:
 	void deinitialise();
 
 	void run();
+
+
+	/* This one way to do it, not very thought through yet. */
+	void updateGlobalAudioBuffer(std::shared_ptr<LockableBuffer> & buf);
 private:
 	GLFWwindow * m_window;
 	std::string m_glslVersion;
 
 	UserInterface m_interface;
-	Recorder m_recorder;
-
-	Visualisation_Oscilloscope m_vis_oscilloscope;
-	Visualisation_Cubes m_vis_cubes;
-
 
 	/* Settings Instances */
 	std::shared_ptr<Settings_VideoRendering> m_settingsVideoRendering;
 	std::shared_ptr<Settings_AudioInterface> m_settingsAudioInterface;
 	std::shared_ptr<Settings_Visualisation> m_settingsVisualisation;
 
-	/* Controller Instances */
-	std::shared_ptr<Controller_VideoRendering> m_controllerVideoRendering;
-	std::shared_ptr<Controller_AudioInterface> m_contollerAudioInterface;
-	std::shared_ptr<Controller_Visualisation> m_controllerVisualisation;
+	/* Model Instances */
+	std::shared_ptr<Model_VideoRendering> m_modelVideoRendering;
+	std::shared_ptr<Model_AudioInterface> m_modelAudioInterface;
+	std::shared_ptr<Model_Visualisation> m_modelVisualisation;
 
 };
 

@@ -4,10 +4,10 @@
 class Shader;
 struct GLFWwindow;
 
-class Visualisation_Oscilloscope : Visualisation
+class Visualisation_Oscilloscope : public Visualisation
 {
 public:
-	Visualisation_Oscilloscope(GLFWwindow * win);
+	Visualisation_Oscilloscope();
 	~Visualisation_Oscilloscope();
 
 	void activate() override;
@@ -25,9 +25,9 @@ public:
 	void processSamples(const Buffer & buf, unsigned samples) override;
 	void renderFrame() override;
 
+	std::string titleString() override { return "Oscilloscope"; };
 private:
 	Shader * m_shader;
-	GLFWwindow * m_window;
 
 	unsigned int m_leftScopeVAO, m_leftScopeVBO, m_leftScopeElemCount;
 	unsigned int m_rightScopeVAO, m_rightScopeVBO, m_rightScopeElemCount;

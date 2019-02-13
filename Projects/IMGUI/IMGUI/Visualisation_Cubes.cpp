@@ -16,7 +16,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 
-Visualisation_Cubes::Visualisation_Cubes(GLFWwindow * window)
+Visualisation_Cubes::Visualisation_Cubes()
 	:
 	m_camera{ glm::vec3(0.0f, 0.0f, 3.0f) },
 	m_deltaTime{},
@@ -27,7 +27,6 @@ Visualisation_Cubes::Visualisation_Cubes(GLFWwindow * window)
 	//float m_lastX = SCR_WIDTH / 2.0f;
 	//float m_lastY = SCR_HEIGHT / 2.0f;
 
-	p_window{ window },
 	m_lightPos{0.0f,0.0f,0.0f},
 
 	m_objectShader{ nullptr },

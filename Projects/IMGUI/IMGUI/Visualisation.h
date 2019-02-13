@@ -1,6 +1,7 @@
 #pragma once
-class Buffer;
+#include <string>
 
+class Buffer;
 class Visualisation
 {
 public:
@@ -14,6 +15,7 @@ public:
 	virtual void processSamples(const Buffer & buf, unsigned samples) = 0;
 	virtual void renderFrame() = 0;
 
+	virtual std::string titleString() = 0;
 protected:
 	bool m_active;
 };

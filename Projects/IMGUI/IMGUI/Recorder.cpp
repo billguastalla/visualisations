@@ -10,8 +10,6 @@
 
 /* Select sample format. */
 #define PA_SAMPLE_TYPE  paFloat32
-typedef float SAMPLE;
-#define SAMPLE_SILENCE  (0.0f)
 
 static int recordCallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData)
 {
@@ -47,6 +45,7 @@ Recorder::Recorder()
 
 Recorder::~Recorder()
 {
+	//stopMonitoring();
 	Pa_Terminate();
 	delete m_lockedBuffer;
 }
@@ -77,6 +76,6 @@ Buffer Recorder::getBuffer() const
 
 int Recorder::sampleRate() const
 {
-	/* If it's flexible later, which it should become */
+	/* If it's flexible later, and it should be, then sample rate can be a variable..  */
 	return SAMPLE_RATE;
 }

@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+
 class Window_Abstract
 {
 public:
@@ -6,6 +8,7 @@ public:
 	~Window_Abstract();
 
 	virtual void draw() = 0;
+	virtual const std::string windowTitle() const = 0;
 
 	/* We're fine with this kind of access: no one other than the UI thread will need to use this. */
 	bool & visible() { return m_visible; };
