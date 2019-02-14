@@ -4,13 +4,21 @@
 #include "FFMPEG_Encoder.h"
 
 Model_VideoRendering::Model_VideoRendering(std::shared_ptr<Settings_VideoRendering> & settings)
-	: m_settings{ settings }, m_encoder{ new FFMPEG_Encoder{} }, m_recordState{ RecordState::Stopped }, m_frameRate{30}, m_fileName{"VideoRenderModule.mpg"}
+	: m_settings{ settings }, m_encoder{ new FFMPEG_Encoder{} }, m_recordState{ RecordState::Stopped }, m_frameRate{ 30 }, m_fileName{ "VideoRenderModule.mpg" }
 {
 
 }
 
 Model_VideoRendering::~Model_VideoRendering()
 {
+}
+
+void Model_VideoRendering::renderFrame()
+{
+	if (m_recordState == RecordState::Started)
+	{
+		m_encoder->ffmpeg_encoder_render_frame();
+	}
 }
 
 bool Model_VideoRendering::start()

@@ -30,6 +30,8 @@ public:
 	Model_VideoRendering(std::shared_ptr<Settings_VideoRendering> & settings);
 	~Model_VideoRendering();
 
+	void renderFrame();
+
 	RecordState state() { return m_recordState; }
 	bool start();
 	bool pause();

@@ -80,6 +80,7 @@ void Program::run()
 
 
 		m_modelVisualisation->runVisualisation();
+		m_modelVideoRendering->renderFrame();
 		//int visualisation = m_interface.visualisationSelection();
 		//if (visualisation == 0)
 		//{
