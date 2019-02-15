@@ -13,7 +13,9 @@
 UserInterface::UserInterface()
 	:
 	m_showMainWindow{ true },
-	m_windows{}
+	m_windows{},
+
+	m_clearColour{ {0.4f,0.1f,0.1f,1.0f} }
 {
 }
 
@@ -65,12 +67,16 @@ void UserInterface::render()
 	// Draw the main window
 	if (m_showMainWindow)
 	{
-		ImGui::Begin("Windows");
+		ImGui::Begin("Interface");
+		
+		ImGui::Text("Windows:\t");
 		ImGui::Checkbox("Main Window (toggle with \"i\")", &m_showMainWindow);
 		for (std::vector<std::unique_ptr<Window_Abstract>>::iterator i = m_windows.begin(); i != m_windows.end(); ++i)
 		{
 			ImGui::Checkbox((*i)->windowTitle().c_str(), &(*i)->visible());
 		}
+		ImGui::Text("Properties:\t");
+		ImGui::SliderFloat4("Background Colour", &m_clearColour[0], 0.0f, 1.0f);
 		ImGui::End();
 
 	}

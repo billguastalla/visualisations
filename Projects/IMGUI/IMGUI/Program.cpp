@@ -78,9 +78,18 @@ void Program::run()
 		// Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
 		glfwPollEvents();
 
+		/* Later we can pass the interval in samples/ms per frame here*/
+		if (m_modelAudioInterface->state() == Model_AudioInterface::RecordState::Started)
+		{
+			Buffer currentAudio = m_modelAudioInterface->buffer();
+			m_modelVisualisation->processAudio(currentAudio);
+			//m_modelVideoRendering->processAudio();
+		}
 
 		m_modelVisualisation->runVisualisation();
 		m_modelVideoRendering->renderFrame();
+
+
 		//int visualisation = m_interface.visualisationSelection();
 		//if (visualisation == 0)
 		//{
@@ -101,16 +110,20 @@ void Program::run()
 
 		glfwMakeContextCurrent(m_window);
 		glfwSwapBuffers(m_window);
-		glClearColor(0.3f, 0.3f, 0.5f, 1.0f);
+
+		std::vector<float> backgroundColour = m_interface.backgroundColour();
+		if (backgroundColour.size() >= 4)
+			glClearColor(backgroundColour[0], backgroundColour[1], backgroundColour[2], backgroundColour[3]);
+		else
+			glClearColor(0.3f, 0.4f, 0.1f, 1.0f);
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 
 }
 
-void Program::updateGlobalAudioBuffer(std::shared_ptr<LockableBuffer>& buf)
-{
-	m_modelVisualisation->setBuffer(buf);
-
-
-}
+//void Program::updateGlobalAudioBuffer(std::shared_ptr<LockableBuffer>& buf)
+//{
+//	m_modelVisualisation->setBuffer(buf);
+//}

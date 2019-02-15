@@ -76,22 +76,19 @@ void Model_Visualisation::runVisualisation()
 	if (m_currentVisualisaton != -1)
 	{
 		Visualisation * currentVis = m_visualisations[m_currentVisualisaton];
-
-		if (p_buffer)
-		{
-			/* You need:
-				(a) A better way of passing the buffer through
-				(b) An accurate method for monitoring samples passed. (e.g. maybe use some index in the audio interface..)
-			*/
-			currentVis->processSamples(p_buffer->buffer(),20);
-		}
-
 		currentVis->renderFrame();
-		//currentVis->processSamples()
 	}
 }
 
-void Model_Visualisation::setBuffer(std::shared_ptr<LockableBuffer>& buffer)
+void Model_Visualisation::processAudio(const Buffer & buffer)
 {
-	p_buffer = buffer;
+	if (m_currentVisualisaton != -1)
+	{
+		Visualisation * currentVis = m_visualisations[m_currentVisualisaton];
+		/* You need:
+			(a) A better way of passing the buffer through
+			(b) An accurate method for monitoring samples passed. (e.g. maybe use some index in the audio interface..)
+		*/
+		currentVis->processSamples(buffer, 20);
+	}
 }

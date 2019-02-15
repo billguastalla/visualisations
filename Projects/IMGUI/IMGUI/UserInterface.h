@@ -26,8 +26,11 @@ public:
 	//void hideAll();
 	//void showAll();
 
+	std::vector<float> backgroundColour() { return m_clearColour; }
 private:
 	std::vector<std::unique_ptr<Window_Abstract>> m_windows;
+
 	bool m_showMainWindow;
+	std::vector<float> m_clearColour;
 };
 

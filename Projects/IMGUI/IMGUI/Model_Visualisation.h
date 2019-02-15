@@ -19,12 +19,10 @@ public:
 	void setVisualisation(int option);
 	void runVisualisation();
 
-	void setBuffer(std::shared_ptr<LockableBuffer> & buffer);
+	void processAudio(const Buffer & buffer);
 private:
 	std::shared_ptr<Settings_Visualisation> m_settings;
 	std::vector<Visualisation*> m_visualisations;
 	int m_currentVisualisaton;
-
-	std::shared_ptr<LockableBuffer> p_buffer;
 };
 

@@ -25,7 +25,7 @@ public:
 
 
 	/* This one way to do it, not very thought through yet. */
-	void updateGlobalAudioBuffer(std::shared_ptr<LockableBuffer> & buf);
+//	void updateGlobalAudioBuffer(std::shared_ptr<LockableBuffer> & buf);
 private:
 	GLFWwindow * m_window;
 	std::string m_glslVersion;
