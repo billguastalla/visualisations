@@ -96,7 +96,7 @@ From 11.13.2 in GACS:
 	The intersection if found:
 		mv = (P1 << inverse(I)) << P2;
 
-		
+
 		( Remember Meet = (B ¬ I_n^-1) ¬ a )
 */
 

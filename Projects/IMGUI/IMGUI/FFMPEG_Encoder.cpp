@@ -9,7 +9,7 @@ void FFMPEG_Encoder::ffmpeg_encoder_set_frame_yuv_from_rgb(uint8_t *rgb)
 	const int in_linesize[1] = { 4 * m_AVCodecContext->width };
 
 	m_swsContext = sws_getCachedContext(m_swsContext,
-		m_AVCodecContext->width, m_AVCodecContext->height, AV_PIX_FMT_RGB32,
+		m_AVCodecContext->width, m_AVCodecContext->height, AV_PIX_FMT_RGBA,
 		m_AVCodecContext->width, m_AVCodecContext->height, AV_PIX_FMT_YUV420P,
 		0, NULL, NULL, NULL);
 
@@ -24,6 +24,103 @@ FFMPEG_Encoder::FFMPEG_Encoder()
 
 FFMPEG_Encoder::StartResult FFMPEG_Encoder::ffmpeg_encoder_start(const char *filename, AVCodecID codec_id, int fps, int width, int height)
 {
+
+
+	///* Here's where's best to try out all your audio tricks. */
+	///* Audio Test Code */
+	//int audioError = 0;
+	//AVCodec* audioCodec = avcodec_find_encoder(AVCodecID::AV_CODEC_ID_MP3);
+	//AVCodecContext* audioCodecContext = avcodec_alloc_context3(audioCodec);
+	//audioCodecContext->bit_rate = 1280000;
+	//audioCodecContext->sample_rate = 44100; // AudioIOMapper unified sample rate
+	//audioCodecContext->channels = 2; // AudioIOMapper output channel count
+	//audioCodecContext->channel_layout = AV_CH_LAYOUT_STEREO;
+	//audioCodecContext->frame_size = 1024;
+
+	//AVSampleFormat sf1 = audioCodec->sample_fmts[0];
+	//AVSampleFormat sf2 = audioCodec->sample_fmts[1];
+	//AVSampleFormat sf3 = audioCodec->sample_fmts[2];
+	//AVSampleFormat sf4 = audioCodec->sample_fmts[3];
+
+	//audioCodecContext->sample_fmt = AVSampleFormat::AV_SAMPLE_FMT_S32P; //audioCodec->sample_fmts[0]; // First allowed sample format (I think this is output side)
+	//audioCodecContext->profile = FF_PROFILE_UNKNOWN;
+	//audioCodecContext->codec_id = audioCodec->id;
+	//audioCodecContext->codec_type = audioCodec->type;
+
+	//audioError = avcodec_open2(audioCodecContext, audioCodec, NULL);
+
+	//std::ofstream testAudioStream{};
+	//testAudioStream.open("testOutputAudio.mp3", std::ios::binary);
+
+	//AVFrame * audioFrame = av_frame_alloc();
+	//AVPacket * audioPacket = new AVPacket{};
+	//for (int audioIter = 0; audioIter < 1000; ++audioIter)
+	//{
+
+	//	/* Set up sine wave */
+	//	float * samples = new float[4096];
+	//	for (int s = 0; s < (audioCodecContext->frame_size * audioCodecContext->channels); s += 2)
+	//	{
+	//		samples[s] = sinf((float)s / (10.0f + audioIter));
+	//		samples[s + 1] = sinf((float)s / (15.0f));
+	//	}
+	//	//audioFrame->data[0] = samples;
+	//	audioFrame->nb_samples = 1024;
+	//	audioFrame->pts = audioIter * 1024;
+	//	audioFrame->sample_rate = 96000;
+	//	audioFrame->channels = 2;
+	//	audioFrame->channel_layout = AV_CH_LAYOUT_STEREO;
+	//	audioError = avcodec_fill_audio_frame(audioFrame, 2, AVSampleFormat::AV_SAMPLE_FMT_S32P, (uint8_t*)samples, 4096 * sizeof(float) / sizeof(uint8_t), 0);
+
+
+	//	av_init_packet(audioPacket);
+	//	audioPacket->data = NULL;
+	//	audioPacket->size = 0;
+
+	//	audioError = avcodec_send_frame(audioCodecContext, audioFrame);
+	//	audioError = avcodec_receive_packet(audioCodecContext, audioPacket);
+
+	//	char * errorStr = new char[80];
+	//	av_make_error_string(errorStr, 80, audioError);
+	//	delete[] errorStr;
+
+	//	if(audioError == 0)
+	//		testAudioStream.write((char*)audioPacket->data, audioPacket->size);
+
+	//	av_packet_unref(audioPacket);
+	//}
+	//// finish up
+	//av_init_packet(audioPacket);
+	//audioPacket->data = NULL;
+	//audioPacket->size = 0;
+	//audioError = avcodec_send_frame(audioCodecContext, nullptr);
+	//audioError = avcodec_receive_packet(audioCodecContext, audioPacket);
+	//if (audioError == 0)
+	//	testAudioStream.write((char*)audioPacket->data, audioPacket->size);
+	//av_packet_unref(audioPacket);
+
+	//testAudioStream.close();
+
+	//delete audioPacket;
+	//av_frame_free(&audioFrame);
+	//avcodec_close(audioCodecContext);
+	//av_free(audioCodecContext);
+	///* /Audio Test Code */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	if (!m_started)
 	{
 		int ret;
@@ -43,7 +140,7 @@ FFMPEG_Encoder::StartResult FFMPEG_Encoder::ffmpeg_encoder_start(const char *fil
 			exit(1);
 			return StartResult::ContextAllocationFailed;
 		}
-		m_AVCodecContext->bit_rate = 400000;
+		m_AVCodecContext->bit_rate = 4000000;
 		m_AVCodecContext->width = width;
 		m_AVCodecContext->height = height;
 		m_AVCodecContext->time_base.num = 1;
@@ -149,11 +246,13 @@ FFMPEG_Encoder::FinishResult FFMPEG_Encoder::ffmpeg_encoder_finish()
 			}
 		} while (got_output);
 
+
 		//fwrite(endcode, 1, sizeof(endcode), m_file);
 		m_fileStream.write((char*)endcode, sizeof(endcode));
 		m_fileStream.close();
 
 		avcodec_close(m_AVCodecContext);
+
 		av_free(m_AVCodecContext);
 		av_freep(&m_AVFrame->data[0]);
 		av_frame_free(&m_AVFrame);
@@ -167,6 +266,7 @@ FFMPEG_Encoder::FinishResult FFMPEG_Encoder::ffmpeg_encoder_finish()
 void  FFMPEG_Encoder::ffmpeg_encoder_encode_frame(uint8_t *rgb) {
 	int ret = 0;
 	ffmpeg_encoder_set_frame_yuv_from_rgb(rgb);
+
 	av_init_packet(&m_AVPacket);
 	m_AVPacket.data = NULL;
 	m_AVPacket.size = 0;
@@ -174,9 +274,9 @@ void  FFMPEG_Encoder::ffmpeg_encoder_encode_frame(uint8_t *rgb) {
 	// BILL - avcodec_encode_video2 is depreacated: Trying this...
 	ret = avcodec_send_frame(m_AVCodecContext, m_AVFrame);
 	ret = avcodec_receive_packet(m_AVCodecContext, &m_AVPacket);
-	
+
 	char * errorStr = new char[80];
-	av_make_error_string(errorStr,80,ret);
+	av_make_error_string(errorStr, 80, ret);
 	delete[] errorStr;
 
 	//ret = avcodec_encode_video2(m_AVCodecContext, &m_AVPacket, m_AVFrame, &got_output);
