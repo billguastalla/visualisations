@@ -1,6 +1,6 @@
 #pragma once
 #include "Visualisation.h"
-
+#include <vector>
 class Shader;
 struct GLFWwindow;
 
@@ -27,11 +27,15 @@ public:
 
 	std::string titleString() override { return "Oscilloscope"; };
 private:
-	Shader * m_shader;
+	Shader * m_timeShader, * m_freqShader;
 
-	unsigned int m_leftScopeVAO, m_leftScopeVBO, m_leftScopeElemCount;
-	unsigned int m_rightScopeVAO, m_rightScopeVBO, m_rightScopeElemCount;
-	unsigned int m_maxLineVAO, m_maxLineVBO, m_maxLineElemCount;
-	unsigned int m_averageLineVAO, m_averageLineVBO, m_averageLineElemCount;
-	unsigned int m_minLineVAO, m_minLineVBO, m_minLineElemCount;
+	/* idx is channel*/
+	std::vector<unsigned int> m_frequencyVAO;
+	std::vector<unsigned int> m_frequencyVBO;
+	std::vector<size_t> m_frequencyElemCounts;
+	std::vector<unsigned int> m_timeVAO;
+	std::vector<unsigned int> m_timeVBO;
+	std::vector<size_t> m_timeElemCounts;
+
+	size_t m_audioChannelCount;
 };

@@ -18,7 +18,7 @@ int main(int, char**)
 			-> For now we'll just use FreeConsole()
 	*/
 #ifdef WIN32
-	FreeConsole();
+	//FreeConsole();
 #endif
 
 	glfwSetErrorCallback(glfw_error_callback);

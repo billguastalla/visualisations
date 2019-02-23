@@ -162,6 +162,9 @@
     <ClCompile Include="Model_Visualisation.cpp">
       <Filter>Source Files\Program\Controllers</Filter>
     </ClCompile>
+    <ClCompile Include="..\Includes\kissfft\kiss_fft.c">
+      <Filter>Source Files\Audio Interface</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Buffer.h">

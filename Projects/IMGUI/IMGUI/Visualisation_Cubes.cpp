@@ -8,8 +8,11 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Shader.h"
+#include "Buffer.h"
 
 #include <iostream>
+#include <complex>
+#include <vector>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -142,7 +145,34 @@ void Visualisation_Cubes::deactivate()
 
 void Visualisation_Cubes::processSamples(const Buffer & buf, unsigned samples)
 {
+	float bufPeak = buf.amplitude_peak();
+	float bufAverage = buf.amplitude_average();
+	float bufMinimum = buf.amplitude_minimum();
 	
+	//m_camera.Yaw = (bufMinimum * 180.0f) - 90.0f;
+	std::vector<std::vector<kiss_fft_cpx>> fftResults{ buf.fft() };
+
+	/* LHS is fractional position in fft, RHS is magnitude*/
+	std::vector<std::pair<float, float>> peaks{ std::make_pair<float,float>(0.0f, 0.0f),std::make_pair<float,float>(0.0f, 0.0f) };
+	for (int c = 0; c < fftResults.size(); ++c)
+	{
+		for (int i = 0; i < fftResults[c].size(); ++i)
+			if (fftResults[c][i].r >= peaks[c].second)
+			{
+				peaks[c].first = ((float)i / fftResults[c].size());
+				peaks[c].second = fftResults[c][i].r;
+			}
+	}
+	m_objectShader->use();
+	m_objectShader->setVec3("objectColour", glm::vec3{ peaks[0].first,peaks[1].first,1.0f });
+
+	//m_camera.Pitch = bufAverage;
+	//m_camera.Zoom = -45.0f * bufMinimum;
+	//m_camera.Zoom = bufMinimum;
+
+	buf.maxChannelFrameCount();
+	//kiss_fft_cfg config;
+	//m_camera.updateCameraVectors();
 }
 
 void Visualisation_Cubes::renderFrame()
@@ -165,7 +195,6 @@ void Visualisation_Cubes::renderFrame()
 	// activate shader
 	m_objectShader->use();
 	m_objectShader->setVec3("lightColour", glm::vec3{ 1.0f,0.5f,0.31f });
-	m_objectShader->setVec3("objectColour", glm::vec3{ 1.0f,1.0f,1.0f });
 
 	// pass projection matrix to shader (note that in this case it could change every frame)
 	glm::mat4 projection = glm::perspective(glm::radians(m_camera.Zoom), (float)1920 / (float)1080, 0.1f, 100.0f);

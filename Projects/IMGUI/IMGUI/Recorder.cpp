@@ -38,7 +38,7 @@ Recorder::Recorder()
 	m_inputParameters.suggestedLatency = Pa_GetDeviceInfo(m_inputParameters.device)->defaultLowInputLatency;
 	m_inputParameters.hostApiSpecificStreamInfo = NULL;
 
-	Buffer buf{ FRAMES_PER_BUFFER * 1024,m_inputParameters };
+	Buffer buf{ FRAMES_PER_BUFFER * 128,m_inputParameters };
 	m_lockedBuffer = new LockableBuffer{ buf };
 
 }

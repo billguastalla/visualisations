@@ -43,13 +43,13 @@ void Window_VideoRendering::draw()
 	ImGui::SameLine();
 	ImGui::InputText("", fnChar, 255);
 
-	bool recAudio{ m_videoModel->recordAudio() };
-	ImGui::Checkbox("Record Audio", &recAudio);
-	m_videoModel->setRecordAudio(recAudio);
+	//bool recAudio{ m_videoModel->recordAudio() };
+	//ImGui::Checkbox("Record Audio", &recAudio);
+	//m_videoModel->setRecordAudio(recAudio);
 
-	bool renderUI{ m_videoModel->renderUI() };
-	ImGui::Checkbox("Render UI", &renderUI);
-	m_videoModel->setRenderUI(renderUI);
+	//bool renderUI{ m_videoModel->renderUI() };
+	//ImGui::Checkbox("Render UI", &renderUI);
+	//m_videoModel->setRenderUI(renderUI);
 
 
 	ImGui::Text("Transport: ");

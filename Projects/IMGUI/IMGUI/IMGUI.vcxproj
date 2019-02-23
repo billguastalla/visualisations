@@ -172,6 +172,7 @@
     <ClCompile Include="..\Includes\imgui\imgui.cpp" />
     <ClCompile Include="..\Includes\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\Includes\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\Includes\kissfft\kiss_fft.c" />
     <ClCompile Include="Model_AudioInterface.cpp" />
     <ClCompile Include="Model_VideoRendering.cpp" />
     <ClCompile Include="Model_Visualisation.cpp" />

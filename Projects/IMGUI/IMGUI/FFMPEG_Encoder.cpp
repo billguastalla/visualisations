@@ -3,18 +3,19 @@
 
 /* Adapted from: https://github.com/cirosantilli/cpp-cheat/blob/19044698f91fefa9cb75328c44f7a487d336b541/ffmpeg/encode.c */
 
-void FFMPEG_Encoder::ffmpeg_encoder_set_frame_yuv_from_rgb(uint8_t *rgb)
+void FFMPEG_Encoder::rgbIntoFrame(AVFrame * frame, const AVCodecContext * ctx, const std::vector<uint8_t> & rgbData)
 {
+	const uint8_t * rgbPtr = &rgbData[0];
+
 	/* This is the number of bytes in a horizontal line of a frame. */
-	const int in_linesize[1] = { 4 * m_AVCodecContext->width };
-
+	const int in_linesize[1] = { 4 * ctx->width };
 	m_swsContext = sws_getCachedContext(m_swsContext,
-		m_AVCodecContext->width, m_AVCodecContext->height, AV_PIX_FMT_RGBA,
-		m_AVCodecContext->width, m_AVCodecContext->height, AV_PIX_FMT_YUV420P,
-		0, NULL, NULL, NULL);
-
-	sws_scale(m_swsContext, (const uint8_t * const *)&rgb, in_linesize, 0,
-		m_AVCodecContext->height, m_AVFrame->data, m_AVFrame->linesize);
+		ctx->width, ctx->height, AV_PIX_FMT_RGBA,
+		ctx->width, ctx->height, AV_PIX_FMT_YUV420P,
+		0, nullptr, nullptr, nullptr);
+	/* sws_scale needs a constant pointer to a pointer of the first element of the rgb data. */
+	sws_scale(m_swsContext, (const uint8_t * const *)&rgbPtr, in_linesize, 0,
+		ctx->height, frame->data, frame->linesize);
 }
 
 FFMPEG_Encoder::FFMPEG_Encoder()
@@ -24,10 +25,27 @@ FFMPEG_Encoder::FFMPEG_Encoder()
 
 FFMPEG_Encoder::StartResult FFMPEG_Encoder::ffmpeg_encoder_start(const char *filename, AVCodecID codec_id, int fps, int width, int height)
 {
+	/* Commented code is attempts to create mp4 containers & add framewriting for audio & video together. */
 
 
-	///* Here's where's best to try out all your audio tricks. */
-	///* Audio Test Code */
+	/* Not working yet: MP4 Container Creation
+		-> Extracted from: https://stackoverflow.com/questions/40800489/ffmpeg-read-frame-process-it-put-it-to-output-video-copy-sound-stream-unchan
+	*/
+	//int formatError = 0;
+	//AVFormatContext * fmtContext = nullptr;
+	//avformat_alloc_output_context2(&fmtContext, nullptr, nullptr, "testOut.mp4");
+	//AVOutputFormat * outputFmt = fmtContext->oformat;
+	//formatError = avio_open(&fmtContext->pb, "testOut.mp4", AVIO_FLAG_WRITE);
+	//formatError = avformat_init_output(fmtContext, nullptr); /* reading docs, try this*/
+	//formatError = avformat_write_header(fmtContext, nullptr);
+	///* Guess you write packets here.. */
+	//formatError = av_interleaved_write_frame(fmtContext, (AVPacket*)0);
+	//formatError = av_write_trailer(fmtContext);
+	//formatError = avio_closep(&fmtContext->pb);
+	//avformat_free_context(fmtContext);
+
+	/* Working: MP3 Encoding
+	*/
 	//int audioError = 0;
 	//AVCodec* audioCodec = avcodec_find_encoder(AVCodecID::AV_CODEC_ID_MP3);
 	//AVCodecContext* audioCodecContext = avcodec_alloc_context3(audioCodec);
@@ -47,7 +65,7 @@ FFMPEG_Encoder::StartResult FFMPEG_Encoder::ffmpeg_encoder_start(const char *fil
 	//audioCodecContext->codec_id = audioCodec->id;
 	//audioCodecContext->codec_type = audioCodec->type;
 
-	//audioError = avcodec_open2(audioCodecContext, audioCodec, NULL);
+	//audioError = avcodec_open2(audioCodecContext, audioCodec, nullptr);
 
 	//std::ofstream testAudioStream{};
 	//testAudioStream.open("testOutputAudio.mp3", std::ios::binary);
@@ -74,7 +92,7 @@ FFMPEG_Encoder::StartResult FFMPEG_Encoder::ffmpeg_encoder_start(const char *fil
 
 
 	//	av_init_packet(audioPacket);
-	//	audioPacket->data = NULL;
+	//	audioPacket->data = nullptr;
 	//	audioPacket->size = 0;
 
 	//	audioError = avcodec_send_frame(audioCodecContext, audioFrame);
@@ -91,7 +109,7 @@ FFMPEG_Encoder::StartResult FFMPEG_Encoder::ffmpeg_encoder_start(const char *fil
 	//}
 	//// finish up
 	//av_init_packet(audioPacket);
-	//audioPacket->data = NULL;
+	//audioPacket->data = nullptr;
 	//audioPacket->size = 0;
 	//audioError = avcodec_send_frame(audioCodecContext, nullptr);
 	//audioError = avcodec_receive_packet(audioCodecContext, audioPacket);
@@ -108,37 +126,41 @@ FFMPEG_Encoder::StartResult FFMPEG_Encoder::ffmpeg_encoder_start(const char *fil
 	///* /Audio Test Code */
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+	/* Handling failures */
+	auto freeContext = [this]() {
+		av_free(m_AVCodecContext);
+		m_AVCodecContext = nullptr;
+	};
+	auto resetContext = [this, freeContext]() {
+		avcodec_close(m_AVCodecContext);
+		freeContext();
+	};
+	auto resetCtxFrameAndFileStream = [this, resetContext]() {
+		resetContext();
+		av_frame_free(&m_AVFrame);
+		m_AVFrame = nullptr;
+		m_fileStream.close();
+	};
+	auto resetAll = [this, resetCtxFrameAndFileStream] {
+		av_freep(&m_AVFrame->data[0]); /* must free frame data before frame.. */
+		m_AVFrame->data[0] = nullptr;
+		resetCtxFrameAndFileStream();
+	};
 
 	if (!m_started)
 	{
-		int ret;
-
+		int ret = 0;
 		/* Bill: Apparently removing this is fine, but need to check. */
 		//avcodec_register_all();
-
 		m_codec = avcodec_find_encoder(codec_id);
 		if (!m_codec) {
-			fprintf(stderr, "Codec not found\n");
-			exit(1);
+			fprintf(stderr, "Codec not found\n"); // No cleanup
 			return StartResult::CodecNotFound;
 		}
 		m_AVCodecContext = avcodec_alloc_context3(m_codec);
 		if (!m_AVCodecContext) {
 			fprintf(stderr, "Could not allocate video codec context\n");
-			exit(1);
-			return StartResult::ContextAllocationFailed;
+			return StartResult::ContextAllocationFailed; // No cleanup
 		}
 		m_AVCodecContext->bit_rate = 4000000;
 		m_AVCodecContext->width = width;
@@ -153,21 +175,20 @@ FFMPEG_Encoder::StartResult FFMPEG_Encoder::ffmpeg_encoder_start(const char *fil
 			av_opt_set(m_AVCodecContext->priv_data, "preset", "slow", 0);
 		if (avcodec_open2(m_AVCodecContext, m_codec, NULL) < 0) {
 			fprintf(stderr, "Could not open codec\n");
-			exit(1);
+			freeContext(); /* Free the unallocated codec context. */
 			return StartResult::CodecUnopenable;
 		}
-		//m_file = fopen(filename, "wb");
 		m_fileStream.open(filename, std::ios::binary);
 
 		if (!m_fileStream.is_open()) {
 			fprintf(stderr, "Could not open %s\n", filename);
-			exit(1);
+			resetContext(); /* Reset the codec context. */
 			return StartResult::FileUnopenable;
 		}
 		m_AVFrame = av_frame_alloc();
 		if (!m_AVFrame) {
 			fprintf(stderr, "Could not allocate video frame\n");
-			exit(1);
+			resetCtxFrameAndFileStream(); /* Clear codec context, frame and close filestream. */
 			return StartResult::AVFrameAllocationFailed;
 		}
 		m_AVFrame->format = m_AVCodecContext->pix_fmt;
@@ -177,7 +198,7 @@ FFMPEG_Encoder::StartResult FFMPEG_Encoder::ffmpeg_encoder_start(const char *fil
 		ret = av_image_alloc(m_AVFrame->data, m_AVFrame->linesize, m_AVCodecContext->width, m_AVCodecContext->height, m_AVCodecContext->pix_fmt, 32);
 		if (ret < 0) {
 			fprintf(stderr, "Could not allocate raw picture buffer\n");
-			exit(1);
+			resetAll();
 			return StartResult::PictureBufferAllocationFailed;
 		}
 		m_started = true;
@@ -191,20 +212,16 @@ void FFMPEG_Encoder::ffmpeg_encoder_render_frame()
 {
 	if (m_started)
 	{
-		/* BILL: Use PPM if PNG is not available: We can remove this if we just want video, good to know.. */
-		//if (output_formats & PPM_BIT) {
-		//	snprintf(filename, SCREENSHOT_MAX_FILENAME, "tmp.%d.ppm", nframes);
-		//	screenshot_ppm(filename, width, height, &pixels);
-		//}
-		//if (output_formats & LIBPNG_BIT) {
-		//	snprintf(filename, SCREENSHOT_MAX_FILENAME, "tmp.%d.png", nframes);
-		//	screenshot_png(filename, width, height, &pixels, &png_bytes, &png_rows);
-		//}
 		m_AVFrame->pts = m_currentFrame;
 
-		ffmpeg_encoder_glread_rgb();
+		std::vector<uint8_t> rgb = readRGB();
+		rgbIntoFrame(m_AVFrame, m_AVCodecContext, rgb);
 
-		ffmpeg_encoder_encode_frame(&m_rgbData[0]);
+		AVPacket packet;
+		av_init_packet(&packet);
+		frameToPacket(&packet, m_AVFrame, m_AVCodecContext);
+		packetToFile(packet);
+		av_packet_unref(&packet);
 
 		/* We've rendered a frame. */
 		++m_currentFrame;
@@ -224,38 +241,37 @@ FFMPEG_Encoder::FinishResult FFMPEG_Encoder::ffmpeg_encoder_finish()
 		uint8_t endcode[] = { 0, 0, 1, 0xb7 };
 		int got_output = 0, ret = 0;
 		do {
-			fflush(stdout);
+			//fflush(stdout);
 
-			// BILL - avcodec_encode_video2 is depreacated: Trying this... : I don't think it has the same result in this case..
+			AVPacket packet;
+			av_init_packet(&packet);
+
 			ret = avcodec_send_frame(m_AVCodecContext, nullptr);
-			ret = avcodec_receive_packet(m_AVCodecContext, &m_AVPacket);
-
-			//ret = avcodec_encode_video2(m_AVCodecContext, &m_AVPacket, NULL, &got_output);
+			ret = avcodec_receive_packet(m_AVCodecContext, &packet);
 			if (ret < 0) {
 				fprintf(stderr, "Error encoding frame\n");
 				exit(1);
-
 			}
-			if (got_output) {
+			if (ret >= 0) {
 
 				//fwrite(m_AVPacket.data, 1, m_AVPacket.size, m_file);
-				/* BILL: TRY this, if it fails, you must check platform impls of char (they should be 8bits).. */
-				m_fileStream.write((char*)m_AVPacket.data, m_AVPacket.size);
-
-				av_packet_unref(&m_AVPacket);
+				/* BILL: TRY this, if it fails, you must check platform impls of char (they should be 8bits)..
+							i.e. warning: you might need to test on both x86/x64 */
+				m_fileStream.write((char*)packet.data, packet.size);
+				av_packet_unref(&packet);
 			}
 		} while (got_output);
-
-
-		//fwrite(endcode, 1, sizeof(endcode), m_file);
 		m_fileStream.write((char*)endcode, sizeof(endcode));
+
 		m_fileStream.close();
 
 		avcodec_close(m_AVCodecContext);
 
 		av_free(m_AVCodecContext);
+		m_AVCodecContext = nullptr;
 		av_freep(&m_AVFrame->data[0]);
 		av_frame_free(&m_AVFrame);
+		m_AVFrame = nullptr;
 
 		m_started = false;
 		return FinishResult::Success;
@@ -263,57 +279,58 @@ FFMPEG_Encoder::FinishResult FFMPEG_Encoder::ffmpeg_encoder_finish()
 	return FinishResult::EncoderNotStarted;
 }
 
-void  FFMPEG_Encoder::ffmpeg_encoder_encode_frame(uint8_t *rgb) {
+void FFMPEG_Encoder::frameToPacket(AVPacket * packet, AVFrame * frame, AVCodecContext * ctx)
+{
 	int ret = 0;
-	ffmpeg_encoder_set_frame_yuv_from_rgb(rgb);
-
-	av_init_packet(&m_AVPacket);
-	m_AVPacket.data = NULL;
-	m_AVPacket.size = 0;
-
-	// BILL - avcodec_encode_video2 is depreacated: Trying this...
-	ret = avcodec_send_frame(m_AVCodecContext, m_AVFrame);
-	ret = avcodec_receive_packet(m_AVCodecContext, &m_AVPacket);
-
-	char * errorStr = new char[80];
-	av_make_error_string(errorStr, 80, ret);
-	delete[] errorStr;
-
-	//ret = avcodec_encode_video2(m_AVCodecContext, &m_AVPacket, m_AVFrame, &got_output);
-	if (ret < 0) {
-		fprintf(stderr, "Error encoding m_AVFrame\n");
-	}
-	else
-	{
-		m_fileStream.write((char*)m_AVPacket.data, m_AVPacket.size);
-		//fwrite(m_AVPacket.data, 1, m_AVPacket.size, m_file);
-	}
-	av_packet_unref(&m_AVPacket);
-	return;
+	packet->data = nullptr;
+	packet->size = 0;
+	ret = avcodec_send_frame(ctx, frame);
+	ret = avcodec_receive_packet(ctx, packet);
+	//return (ret >= 0);
+	//char * errorStr = new char[80];
+	//av_make_error_string(errorStr, 80, ret);
+	//delete[] errorStr;
+	//if (ret < 0) {
+	//	fprintf(stderr, "Error encoding m_AVFrame\n");
+	//}
+	//else
+	//{
+	//m_fileStream.write((char*)m_AVPacket.data, m_AVPacket.size);
 }
 
-void FFMPEG_Encoder::ffmpeg_encoder_glread_rgb()
+void FFMPEG_Encoder::packetToFile(const AVPacket & packet)
+{
+	m_fileStream.write((char*)packet.data, packet.size);
+}
+//return;
+
+
+std::vector<uint8_t> FFMPEG_Encoder::readRGB()
 {
 	size_t i, j, k, cur_gl, cur_rgb, nvals;
 	const size_t format_nchannels = m_pixelChannelCount = 4;
 
 	nvals = format_nchannels * m_AVCodecContext->width * m_AVCodecContext->height;
 
-	m_pixelData.resize(nvals);
-	m_rgbData.resize(nvals);
+	std::vector<GLubyte> pixelData;
+	std::vector<uint8_t> rgb;
+	pixelData.resize(nvals);
+	rgb.resize(nvals);
 
 	//*pixels = (GLubyte*)realloc(*pixels, nvals * sizeof(GLubyte));
 	//*rgb = (uint8_t*)realloc(*rgb, nvals * sizeof(uint8_t));
 
 	/* Get RGBA to align to 32 bits instead of just 24 for RGB. May be faster for FFmpeg. */
-	glReadPixels(0, 0, m_AVCodecContext->width, m_AVCodecContext->height, GL_RGBA, GL_UNSIGNED_BYTE, &m_pixelData[0]);
+	glReadPixels(0, 0, m_AVCodecContext->width, m_AVCodecContext->height, GL_RGBA, GL_UNSIGNED_BYTE, &pixelData[0]);
 
 	for (i = 0; i < m_AVCodecContext->height; i++) {
 		for (j = 0; j < m_AVCodecContext->width; j++) {
 			cur_gl = format_nchannels * (m_AVCodecContext->width * (m_AVCodecContext->height - i - 1) + j);
 			cur_rgb = format_nchannels * (m_AVCodecContext->width * i + j);
 			for (k = 0; k < format_nchannels; k++)
-				m_rgbData[cur_rgb + k] = m_pixelData[cur_gl + k];
+				rgb[cur_rgb + k] = pixelData[cur_gl + k];
 		}
 	}
+
+	return rgb;
 }
