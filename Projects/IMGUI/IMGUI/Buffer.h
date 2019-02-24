@@ -22,6 +22,7 @@ public:
 	float amplitude_minimum() const;
 
 	std::vector<std::vector<kiss_fft_cpx>> fft() const;
+	std::vector<float> signalPower() const;
 	static void normaliseFFT(std::vector<std::vector<kiss_fft_cpx>> & fftData);
 
 	size_t maxChannelFrameCount() const { return m_maxTotalFrames / m_channelCount; }

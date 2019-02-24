@@ -81,8 +81,9 @@ void Visualisation_Oscilloscope::processSamples(const Buffer & buf, unsigned sam
 		{
 			/* */
 			sOffset = ((float)s / (float)timeInputData.at(c).size());
+			sOffset *= 0.6f;
 
-			verticesTimeDomain[c].push_back(vertex{ (sOffset + xChannelOffset) * 0.9f,((*i * 0.5f) + 0.5f) ,0.0f });
+			verticesTimeDomain[c].push_back(vertex{((sOffset + xChannelOffset)),((*i * 0.5f) + 0.5f) ,0.0f });
 			++s;
 		}
 		s = 0;
@@ -90,12 +91,13 @@ void Visualisation_Oscilloscope::processSamples(const Buffer & buf, unsigned sam
 		for (std::vector<kiss_fft_cpx>::iterator i = freqInputData[c].begin(); i != freqInputData[c].end(); ++i)
 		{
 			sOffset = ((float)s / (float)freqInputData[c].size());
+			sOffset *= 0.6f;
 
 			/* Position Vertex (Magnitude) */
-			verticesFrequencyDomain[c].push_back(vertex{ (sOffset + xChannelOffset) * 0.9f,((i->r * 0.5f) - 0.5f),0.0f });
+			verticesFrequencyDomain[c].push_back(vertex{(sOffset + xChannelOffset),((i->r * 0.5f) - 0.5f),0.0f });
 
 			/* Colour Vertex (Phase) */
-			verticesFrequencyDomain[c].push_back(vertex{ ((i->i * 0.5f) + 0.5f),0.2f,0.3f });
+			verticesFrequencyDomain[c].push_back(vertex{ (abs(i->i * 0.5f) + 0.5f),0.1f,0.8f });
 			++s;
 		}
 		s = 0;

@@ -107,7 +107,10 @@ Buffer LockableBuffer::buffer()
 	return m_buffer;
 }
 
-
+float hanningWindow(size_t i, size_t s)
+{
+	return 0.5f*(1.0f - cos(2.0f*3.14159265f*(float)(i) / (float)(s - 1.0f)));
+}
 std::vector<std::vector<kiss_fft_cpx>> Buffer::fft() const
 {
 	int nearestPower = 1;
@@ -131,7 +134,7 @@ std::vector<std::vector<kiss_fft_cpx>> Buffer::fft() const
 
 		for (int sample = 0; sample < chData.size(); sample++)
 		{
-			inputTimeDomain[sample].r = chData[sample];
+			inputTimeDomain[sample].r = hanningWindow(sample,chData.size()) * chData[sample];
 			inputTimeDomain[sample].i = 0.0f;
 		}
 
@@ -148,6 +151,21 @@ std::vector<std::vector<kiss_fft_cpx>> Buffer::fft() const
 	return result;
 }
 
+std::vector<float> Buffer::signalPower() const
+{
+	std::vector<float> result{};
+	for (size_t c = 0; c < m_channelCount; ++c)
+	{
+		const std::deque<float> & ch = m_channelData.at(c);
+		double totalSquares{ 0.0 };
+		for (std::deque<float>::const_iterator i = ch.begin(); i != ch.end(); ++i)
+			totalSquares += (abs(*i * *i));
+		float power = (totalSquares / (double)m_channelData.at(c).size());
+		result.push_back(power);
+	}
+	return result;
+}
+
 void Buffer::normaliseFFT(std::vector<std::vector<kiss_fft_cpx>>& fftData)
 {
 	size_t chCount = fftData.size();
@@ -155,6 +173,11 @@ void Buffer::normaliseFFT(std::vector<std::vector<kiss_fft_cpx>>& fftData)
 	maxVals.resize(chCount, kiss_fft_cpx{ 0.0f,0.0f });
 	for (size_t c = 0; c < chCount; ++c)
 	{
+		//for (size_t s = 0; s < fftData[c].size(); ++s)
+		//{
+		//	fftData[c][s].r = 10.0f * (float)std::log10(fftData[c][s].r) * 2.0f;
+		//	fftData[c][s].i = 10.0f * (float)std::log10(fftData[c][s].i) * 2.0f;
+		//}
 		for (size_t s = 0; s < fftData[c].size(); ++s)
 		{
 			if (maxVals[c].i < abs(fftData[c][s].i))
