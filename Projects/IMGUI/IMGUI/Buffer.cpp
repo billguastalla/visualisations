@@ -111,6 +111,7 @@ float hanningWindow(size_t i, size_t s)
 {
 	return 0.5f*(1.0f - cos(2.0f*3.14159265f*(float)(i) / (float)(s - 1.0f)));
 }
+
 std::vector<std::vector<kiss_fft_cpx>> Buffer::fft() const
 {
 	int nearestPower = 1;

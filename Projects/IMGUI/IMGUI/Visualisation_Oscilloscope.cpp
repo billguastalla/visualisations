@@ -73,6 +73,7 @@ void Visualisation_Oscilloscope::processSamples(const Buffer & buf, unsigned sam
 	for (size_t c = 0; c < chCount; ++c)
 	{
 		xChannelOffset = (((float)c * xChannelMultiplier) * 2.0f) - 1.0f;
+		xChannelOffset += (0.6f / (2.0f));
 
 		size_t s{ 0u };
 		float sOffset{ 0.0f };

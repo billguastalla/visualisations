@@ -173,6 +173,7 @@
     <ClCompile Include="..\Includes\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\Includes\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\Includes\kissfft\kiss_fft.c" />
+    <ClCompile Include="AudioReader.cpp" />
     <ClCompile Include="Model_AudioInterface.cpp" />
     <ClCompile Include="Model_VideoRendering.cpp" />
     <ClCompile Include="Model_Visualisation.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="..\Includes\imgui\stb_rect_pack.h" />
     <ClInclude Include="..\Includes\imgui\stb_textedit.h" />
     <ClInclude Include="..\Includes\imgui\stb_truetype.h" />
+    <ClInclude Include="AudioReader.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Model_AudioInterface.h" />

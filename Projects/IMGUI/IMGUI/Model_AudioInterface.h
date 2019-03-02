@@ -1,7 +1,9 @@
 #pragma once
 
-#include "Recorder.h"
 #include "Buffer.h"
+
+#include "Recorder.h"
+#include "AudioReader.h"
 
 #include <memory>
 
@@ -35,7 +37,9 @@ public:
 	RecordState state() { return m_recordState; }
 private:
 	std::shared_ptr<Settings_AudioInterface> m_settings;
+
 	std::shared_ptr<Recorder> m_realTime;
+	std::shared_ptr<AudioReader> m_audioReader;
 
 	RecordState m_recordState;
 	RecordMode m_recordMode;
