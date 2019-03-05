@@ -5,7 +5,7 @@
 #include <portaudio/portaudio.h>
 
 #define SAMPLE_RATE  (44100)
-#define FRAMES_PER_BUFFER (128)
+#define FRAMES_PER_BUFFER (512)
 #define NUM_CHANNELS    (2)
 
 /* Select sample format. */
@@ -38,7 +38,7 @@ Recorder::Recorder()
 	m_inputParameters.suggestedLatency = Pa_GetDeviceInfo(m_inputParameters.device)->defaultLowInputLatency;
 	m_inputParameters.hostApiSpecificStreamInfo = NULL;
 
-	Buffer buf{ FRAMES_PER_BUFFER * 128,m_inputParameters };
+	Buffer buf{ FRAMES_PER_BUFFER * 64,m_inputParameters };
 	m_lockedBuffer = new LockableBuffer{ buf };
 
 }

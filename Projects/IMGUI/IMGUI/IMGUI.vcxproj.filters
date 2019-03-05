@@ -85,6 +85,9 @@
     <Filter Include="Source Files\Audio Interface">
       <UniqueIdentifier>{2dbeffd9-2404-4644-8fc1-d594fad7c77b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Audio Modules\Analysis">
+      <UniqueIdentifier>{94f689f7-b901-4947-b557-692c3ea9bb1b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Recorder.cpp">
@@ -167,6 +170,9 @@
     </ClCompile>
     <ClCompile Include="AudioReader.cpp">
       <Filter>Source Files\Audio Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation_PointClouds.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -253,6 +259,18 @@
     </ClInclude>
     <ClInclude Include="AudioReader.h">
       <Filter>Header Files\Audio Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioAnalysis.h">
+      <Filter>Header Files\Audio Modules\Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_PointClouds.h">
+      <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="MetaDistribution.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractRandomObject.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

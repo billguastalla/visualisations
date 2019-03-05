@@ -8,7 +8,6 @@
 struct wav_header_t
 {
 	wav_header_t();
-
 	char m_chunkID[4]; //"RIFF" = 0x46464952
 	unsigned long m_chunkSize; //28 [+ sizeof(wExtraFormatBytes) + wExtraFormatBytes] + sum(sizeof(chunk.id) + sizeof(chunk.size) + chunk.size)
 	char m_format[4]; //"WAVE" = 0x45564157
@@ -36,7 +35,7 @@ struct chunk_t
 	- Features you need:
 		1. Have multiple files read simultaneously
 		2. Be able to find samples at a timecode for files of different sample rates
-		3.
+		3. 
 */
 
 class AudioFile
@@ -59,6 +58,7 @@ public:
 	AudioReader();
 
 private:
+
 	std::vector<std::string> m_fileName;
 	//std::vector<std::unique_ptr<Buffer>> m_buffers;
 };

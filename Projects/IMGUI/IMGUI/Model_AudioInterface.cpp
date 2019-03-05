@@ -15,7 +15,10 @@ PaStreamParameters defaultParams()
 Model_AudioInterface::Model_AudioInterface(std::shared_ptr<Settings_AudioInterface> & settings, Program * prog)
 	:
 	m_settings{ settings },
+
 	m_realTime{ new Recorder{} },
+	m_audioReader{ new AudioReader{}},
+
 	p_program{ prog },
 
 	m_recordMode{RecordMode::AudioSteam},

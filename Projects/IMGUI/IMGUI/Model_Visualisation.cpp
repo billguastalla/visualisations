@@ -2,6 +2,8 @@
 
 #include "Visualisation_Cubes.h"
 #include "Visualisation_Oscilloscope.h"
+#include "Visualisation_PointClouds.h"
+
 #include "Buffer.h"
 
 Model_Visualisation::Model_Visualisation(std::shared_ptr<Settings_Visualisation> & settings)
@@ -16,12 +18,16 @@ Model_Visualisation::Model_Visualisation(std::shared_ptr<Settings_Visualisation>
 	//m_vis_oscilloscope.activate();
 	Visualisation_Cubes * visCubes = new Visualisation_Cubes{};
 	Visualisation_Oscilloscope * visOscilloscope = new Visualisation_Oscilloscope{};
+	Visualisation_PointClouds * visPointClouds = new Visualisation_PointClouds{};
+
 
 	visCubes->activate();
 	visOscilloscope->activate();
+	visPointClouds->activate();
 
 	m_visualisations.push_back(visCubes);
 	m_visualisations.push_back(visOscilloscope);
+	m_visualisations.push_back(visPointClouds);
 }
 
 Model_Visualisation::~Model_Visualisation()

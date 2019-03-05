@@ -181,6 +181,7 @@
     <ClCompile Include="Settings_AudioInterface.cpp" />
     <ClCompile Include="Settings_VideoRendering.cpp" />
     <ClCompile Include="Settings_Visualisation.cpp" />
+    <ClCompile Include="Visualisation_PointClouds.cpp" />
     <ClCompile Include="Window_Abstract.cpp" />
     <ClCompile Include="Window_AudioInterface.cpp" />
     <ClCompile Include="Window_VideoRendering.cpp" />
@@ -201,9 +202,12 @@
     <ClInclude Include="..\Includes\imgui\stb_rect_pack.h" />
     <ClInclude Include="..\Includes\imgui\stb_textedit.h" />
     <ClInclude Include="..\Includes\imgui\stb_truetype.h" />
+    <ClInclude Include="AbstractRandomObject.h" />
+    <ClInclude Include="AudioAnalysis.h" />
     <ClInclude Include="AudioReader.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="MetaDistribution.h" />
     <ClInclude Include="Model_AudioInterface.h" />
     <ClInclude Include="Model_VideoRendering.h" />
     <ClInclude Include="Model_Visualisation.h" />
@@ -211,6 +215,7 @@
     <ClInclude Include="Settings_AudioInterface.h" />
     <ClInclude Include="Settings_VideoRendering.h" />
     <ClInclude Include="Settings_Visualisation.h" />
+    <ClInclude Include="Visualisation_PointClouds.h" />
     <ClInclude Include="Window_Abstract.h" />
     <ClInclude Include="Window_AudioInterface.h" />
     <ClInclude Include="Window_VideoRendering.h" />
