@@ -26,5 +26,5 @@ void main()
 	vec3 ambient = ambientStrength * lightColour;
 	
 	vec3 result = (ambient + diffuse + specular) * objectColour;
-    FragColour = vec4(objectColour, 1.0);
+    FragColour = vec4(result, 1.0);
 }
