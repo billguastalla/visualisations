@@ -10,16 +10,16 @@
 #include <GLM\glm.hpp>
 #include <iostream>
 
-void framebufferSizeCallback(GLFWwindow * window, int width, int height)
-{
-	glViewport(0, 0, width, height);
-}
-
-void processInput(GLFWwindow * window)
-{
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
-}
+//void framebufferSizeCallback(GLFWwindow * window, int width, int height)
+//{
+//	glViewport(0, 0, width, height);
+//}
+//
+//void processInput(GLFWwindow * window)
+//{
+//	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+//		glfwSetWindowShouldClose(window, true);
+//}
 
 Visualisation_Oscilloscope::Visualisation_Oscilloscope() : Visualisation{},
 m_timeShader{ nullptr }, m_freqShader{ nullptr },
@@ -77,8 +77,8 @@ void Visualisation_Oscilloscope::processSamples(const Buffer & buf, unsigned sam
 
 		size_t s{ 0u };
 		float sOffset{ 0.0f };
-		/* Time-domain Vertices: */  /* (You might have trouble here; iterator impl is fucked in deques.) */
-		for (std::deque<float>::iterator i = timeInputData.at((int)c).begin(); i != timeInputData.at(c).end(); ++i)
+		/* Time-domain Vertices: */
+		for (std::deque<float>::iterator i = timeInputData[c].begin(); i != timeInputData[c].end(); ++i)
 		{
 			/* */
 			sOffset = ((float)s / (float)timeInputData.at(c).size());

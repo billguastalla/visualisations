@@ -15,7 +15,7 @@ UserInterface::UserInterface()
 	m_showMainWindow{ true },
 	m_windows{},
 
-	m_clearColour{ {0.4f,0.1f,0.1f,1.0f} }
+	m_clearColour{ {0.11f,0.24f,0.35f,1.0f} }
 {
 }
 

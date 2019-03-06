@@ -181,7 +181,9 @@
     <ClCompile Include="Settings_AudioInterface.cpp" />
     <ClCompile Include="Settings_VideoRendering.cpp" />
     <ClCompile Include="Settings_Visualisation.cpp" />
+    <ClCompile Include="Visualisation_Fractal.cpp" />
     <ClCompile Include="Visualisation_PointClouds.cpp" />
+    <ClCompile Include="Visualisation_Sandbox.cpp" />
     <ClCompile Include="Window_Abstract.cpp" />
     <ClCompile Include="Window_AudioInterface.cpp" />
     <ClCompile Include="Window_VideoRendering.cpp" />
@@ -215,7 +217,9 @@
     <ClInclude Include="Settings_AudioInterface.h" />
     <ClInclude Include="Settings_VideoRendering.h" />
     <ClInclude Include="Settings_Visualisation.h" />
+    <ClInclude Include="Visualisation_Fractal.h" />
     <ClInclude Include="Visualisation_PointClouds.h" />
+    <ClInclude Include="Visualisation_Sandbox.h" />
     <ClInclude Include="Window_Abstract.h" />
     <ClInclude Include="Window_AudioInterface.h" />
     <ClInclude Include="Window_VideoRendering.h" />
