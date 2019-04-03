@@ -17,7 +17,7 @@ public:
 	std::normal_distribution<T> createDistribution()
 	{
 		AbstractRandomObject obj{};
-		T left = std::abs(first(obj.randDevice()));
+		T left = first(obj.randDevice());
 		T right = std::abs(second(obj.randDevice()));
 		std::normal_distribution<T> result{left,right};
 		return result;

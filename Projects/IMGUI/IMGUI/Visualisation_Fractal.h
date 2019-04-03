@@ -22,7 +22,7 @@ public:
 	void processSamples(const Buffer & buf, unsigned samples) override;
 	void renderFrame() override;
 
-	std::string titleString() override { return "Fractal"; };
+	std::string titleString() override { return "Mandelbulb Set"; };
 private:
 	int inSet(std::complex<long double> z, std::complex<long double> c);
 	std::vector<glm::vec3> buildFractalData(std::complex<long double> k);

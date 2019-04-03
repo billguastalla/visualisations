@@ -1,3 +1,6 @@
+# 2019.03.06 Version 0.3
+	- 
+
 # 2019.01.31: Version 0.2
 	- GUI and Audio API have been merged into IMGUI
 	- Audio statistics are now visible in an IMGUI window.

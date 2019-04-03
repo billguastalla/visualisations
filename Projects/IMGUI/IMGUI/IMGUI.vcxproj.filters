@@ -88,6 +88,12 @@
     <Filter Include="Header Files\Audio Modules\Analysis">
       <UniqueIdentifier>{94f689f7-b901-4947-b557-692c3ea9bb1b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Graphics\Visualisations\Engine\GameOfLife">
+      <UniqueIdentifier>{1fffa070-d56b-4322-ba06-ec872c3bfa94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Visualisations\Engine\GameOfLife">
+      <UniqueIdentifier>{fd9d4cd3-6b23-454b-9f15-c9375280c12f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Recorder.cpp">
@@ -178,6 +184,21 @@
       <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
     </ClCompile>
     <ClCompile Include="Visualisation_Sandbox.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation_GOL\GameOfLife_Element.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation_GOL\GameOfLife_ElementList.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation_GOL\GameOfLife_Game.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation_GOL\GameOfLife_Grid.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation_GameOfLife.cpp">
       <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
     </ClCompile>
   </ItemGroup>
@@ -282,6 +303,21 @@
       <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
     </ClInclude>
     <ClInclude Include="Visualisation_Sandbox.h">
+      <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_GOL\GameOfLife_Element.h">
+      <Filter>Header Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_GOL\GameOfLife_ElementList.h">
+      <Filter>Header Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_GOL\GameOfLife_Game.h">
+      <Filter>Header Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_GOL\GameOfLife_Grid.h">
+      <Filter>Header Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_GameOfLife.h">
       <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
     </ClInclude>
   </ItemGroup>

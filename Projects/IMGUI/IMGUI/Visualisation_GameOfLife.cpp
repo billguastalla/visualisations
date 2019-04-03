@@ -1,4 +1,4 @@
-#include "Visualisation_PointClouds.h"
+#include "Visualisation_GameOfLife.h"
 
 #include <glad\glad.h>
 #include <GLFW\glfw3.h>
@@ -12,6 +12,8 @@
 
 #include "MetaDistribution.h"
 
+#include "Visualisation_GOL\GameOfLife_Game.h"
+
 #include <iostream>
 #include <complex>
 #include <vector>
@@ -21,7 +23,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 
-Visualisation_PointClouds::Visualisation_PointClouds()
+Visualisation_GameOfLife::Visualisation_GameOfLife()
 	:
 	m_camera{ glm::vec3(0.0f, 0.0f, 3.0f) },
 	m_deltaTime{},
@@ -29,18 +31,24 @@ Visualisation_PointClouds::Visualisation_PointClouds()
 	m_lastFrame{ 0.0f },
 	m_lastX{ 0.0f },
 	m_lastY{ 0.0f },
-
 	m_lightPos{ 0.0f,0.0f,0.0f },
 
 	m_objectShader{ nullptr },
 	m_lampShader{ nullptr },
-
-	m_cubeColours{},
-	m_cubePositions{}
+	m_game{ nullptr },
+	m_frameLoop{ 0 }
 {
+	std::vector<int> dims;
+	dims.push_back(10);
+	dims.push_back(10);
+	dims.push_back(10);
+	m_game.reset(new Game{ dims });
+	m_game->setRule(4, std::make_pair(true, false));
+	m_game->currentGrid()->addCell(1);
+
 }
 
-void Visualisation_PointClouds::activate()
+void Visualisation_GameOfLife::activate()
 {
 	// build and compile our shader program
 	// ------------------------------------
@@ -95,6 +103,30 @@ void Visualisation_PointClouds::activate()
 		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
 		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
 	};
+	// world space positions of our cubes
+	m_cubePositions = {
+		glm::vec3(2.0f,  5.0f, -15.0f),
+		glm::vec3(-1.5f, -2.2f, -2.5f),
+		glm::vec3(-3.8f, -2.0f, -12.3f),
+		glm::vec3(2.4f, -0.4f, -3.5f),
+		glm::vec3(-1.7f,  3.0f, -7.5f),
+		glm::vec3(1.3f, -2.0f, -2.5f),
+		glm::vec3(1.5f,  2.0f, -2.5f),
+		glm::vec3(1.5f,  0.2f, -1.5f),
+		glm::vec3(-1.3f,  1.0f, -1.5f)
+	};
+	m_cubeColours = {
+		glm::vec3(1.0f,0.0f,0.0f),
+		glm::vec3(0.0f,1.0f,0.0f),
+		glm::vec3(0.0f,0.0f,1.0f),
+		glm::vec3(1.0f,0.0f,0.0f),
+		glm::vec3(0.0f,1.0f,0.0f),
+		glm::vec3(0.0f,0.0f,1.0f),
+		glm::vec3(1.0f,0.0f,0.0f),
+		glm::vec3(0.0f,1.0f,0.0f),
+		glm::vec3(0.0f,0.0f,1.0f)
+	};
+
 	glGenVertexArrays(1, &m_cubeVAO);
 	glGenBuffers(1, &m_cubeVBO);
 	glBindVertexArray(m_cubeVAO);
@@ -113,7 +145,7 @@ void Visualisation_PointClouds::activate()
 	glEnableVertexAttribArray(0);
 }
 
-void Visualisation_PointClouds::deactivate()
+void Visualisation_GameOfLife::deactivate()
 {
 	// optional: de-allocate all resources once they've outlived their purpose:
 	// ------------------------------------------------------------------------
@@ -122,7 +154,6 @@ void Visualisation_PointClouds::deactivate()
 	glDeleteBuffers(1, &m_cubeVBO);
 
 	m_cubePositions.clear();
-	m_cubeColours.clear();
 	m_vertices.clear();
 
 	delete m_lampShader;
@@ -131,119 +162,76 @@ void Visualisation_PointClouds::deactivate()
 	m_objectShader = nullptr;
 }
 
-void Visualisation_PointClouds::processSamples(const Buffer & buf, unsigned samples)
+void Visualisation_GameOfLife::processSamples(const Buffer & buf, unsigned samples)
 {
-	/* SPAGHETTI IS GOOD WHEN EXPERIMENTING */
+	MetaDistribution<double> randColour{0.5f,0.1f,0.001f,0.3f };
+	std::normal_distribution<double> colImplX{ randColour.createDistribution() };
+	std::normal_distribution<double> colImplY{ randColour.createDistribution() };
+	std::normal_distribution<double> colImplZ{ randColour.createDistribution() };
+	//double maxMean = colImplX.mean() > colImplY.mean() ? colImplX.mean() : ((colImplY.mean() > colImplZ.mean()) ? colImplY.mean() : colImplZ.mean());
+	//maxMean *= 0.5;
 
-	MetaDistribution<double> dist{ 0.0f,0.01f,0.1f,0.01f };
-
-	std::vector<std::vector<kiss_fft_cpx>> res = buf.fft();
-	std::vector<std::vector<kiss_fft_cpx>> reduced;
-	reduced.resize(res.size());
-	for (int i = 0; i < res.size(); ++i)
-	{
-		// Take Middle
-		int size = res[i].size();
-		for (int j = (size / 4); j < (size * 3.0 / 4.0); ++j)
-			reduced[i].push_back(res[i][j]);
-	}
-	//Buffer::normaliseFFT(reduced);
-	double maxIVal = 0.0f;
-	//std::vector<kiss_fft_cpx>::iterator maxI = std::find_if(reduced[0].begin(), reduced[0].end(),
-	//	[maxIVal](bool a, bool b) 
-	//{ return false; });
 
 	AbstractRandomObject a;
 
-	std::normal_distribution<double> metaDistX{ dist.createDistribution() };
-	std::normal_distribution<double> metaDistY{ dist.createDistribution() };
-	std::normal_distribution<double> metaDistZ{ dist.createDistribution() };
-	double metaOffsetX{ metaDistX(a.mersenneTwister()) }, metaOffsetY{ metaDistY(a.mersenneTwister()) }, metaOffsetZ{ metaDistZ(a.mersenneTwister()) };
-
-
-	std::map<int, std::deque<float>> & data = buf.data();
-	std::deque<float> & ch = data.at(0);
-
-	for (int i = 0; i < 5; ++i)
+	if (m_frameLoop % 4 == 0)
 	{
-		int posX = i;
-		int posY = (reduced[0].size() / 2) + i;
-		int posZ = (reduced[0].size() - 1) - i;
-		double meanX = reduced[0][posX].r;
-		double meanY = reduced[0][posY].r;
-		double meanZ = reduced[0][posZ].r;
-		double rotateX = (i % 3 == 0) ? meanX : ((i % 3 == 1) ? meanY : meanZ);
-		double rotateY = (i % 3 == 0) ? meanY : ((i % 3 == 1) ? meanZ : meanX);
-		double rotateZ = (i % 3 == 0) ? meanZ : ((i % 3 == 1) ? meanX : meanY);
+		Grid * grid = m_game->currentGrid();
+		/* Get indexes or floats for position:
+		-> Probably should change grid to return list of coords of alive things.
+		Would have to be a vector of vectors unfortunately because of dynamically
+		typed dimension.
+		*/
 
-		double normalisation = std::max(std::max(std::abs(meanX), std::abs(meanY)), std::abs(meanZ));
+		m_cubePositions.clear();
+		m_cubeColours.clear();
 
-		double colX{ 0.0 }, colY{ 0.0 }, colZ{ 0.0 };
-		for (unsigned i = 0u; i < ch.size(); ++i)
+		std::vector<int> dims{ grid->dimensions() };
+		std::vector<std::vector<int>> coords{ grid->aliveCoords() };
+		for (auto i = coords.begin(); i != coords.end(); ++i)
 		{
-			if (i % 3 == 0)
-				if (colX < ch[i])
-					colX = ch[i];
-			if (i % 7 == 0)
-				if (std::abs(colY) < std::abs(ch[i]))
-					colY = abs(ch[i]);
-			if (i % 2 == 0)
-				if (colZ < ch[i])
-					colZ = ch[i];
+			glm::vec3 t_position{ (2.0 * (float)(*i)[0] / (float)dims[0]) - 1.0,
+				(2.0 * (float)(*i)[1] / (float)dims[1]) - 1.0,
+				(2.0 * (float)(*i)[2] / (float)dims[2]) - 1.0 };
+			m_cubePositions.push_back(t_position);
+			m_cubeColours.push_back(glm::vec3{ std::abs(colImplX(a.randDevice())),std::abs(colImplY(a.randDevice())),std::abs(colImplZ(a.randDevice()))});
 		}
-		/* Put a sin curve to increase intensity of lower values */
-		//colX = sin((3.141 / 2.0) * colX * colY);
-		//colY = sin((3.141 / 2.0) * colY * colZ);
-		//colZ = sin((3.141 / 2.0) * colZ * colX);
-		std::normal_distribution<double> xCol{ colX,0.1 };
-		std::normal_distribution<double> yCol{ colY,0.2 };
-		std::normal_distribution<double> zCol{ colZ,0.4 };
 
-		glm::vec3 cubeColour{ std::abs(xCol(a.mersenneTwister())), std::abs(yCol(a.mersenneTwister())),  std::abs(zCol(a.mersenneTwister())) };
+		m_game;
 
-		std::normal_distribution<double> xPos{ rotateX, 0.02f + std::abs(metaOffsetX) };
-		std::normal_distribution<double> yPos{ rotateY, 0.02f + std::abs(metaOffsetY) };
-		std::normal_distribution<double> zPos{ rotateZ, 0.02f + std::abs(metaOffsetZ) };
-		glm::vec3 cubePos{ xPos(a.mersenneTwister()),yPos(a.mersenneTwister()), zPos(a.mersenneTwister()) };
+		if (m_coordsHistory.size() != 0)
+			for (auto i = m_coordsHistory.begin(); i != m_coordsHistory.end(); ++i)
+				if (*i == coords)
+				{
+					m_coordsHistory.clear();
+					m_game->randomRuleset();
 
-		m_cubePositions.insert(m_cubePositions.begin(), cubePos);
-		m_cubeColours.insert(m_cubeColours.begin(), cubeColour);
+					m_game->currentGrid()->clear();
+					m_game->currentGrid()->insertPrimitive();
+
+					//m_game->currentGrid()->setRandAlive(30);
+					break;
+				}
+		m_coordsHistory.push_back(coords);
+
+		if (coords.size() == 0 || m_coordsHistory.size() > 100)
+		{
+			m_coordsHistory.clear();
+			m_game->randomRuleset();
+
+			m_game->currentGrid()->clear();
+			m_game->currentGrid()->insertPrimitive();
+
+//			m_game->currentGrid()->setRandAlive(30);
+		}
+		m_game->nextTurn();
+		m_frameLoop = 0;
 	}
-
-	double signalPowerVal{ 0.0 };
-	for (int i = 0; i < ch.size(); ++i)
-		signalPowerVal += (ch[i] * ch[i]);
-	signalPowerVal /= (double)ch.size();
-
-	m_signalPowerHistory.push_back(signalPowerVal);
-	if (m_signalPowerHistory.size() > 10)
-		m_signalPowerHistory.pop_front();
-
-	double signalPowerAverage{ 0.0 };
-	for (size_t i = 0; i < m_signalPowerHistory.size(); ++i)
-		signalPowerAverage += m_signalPowerHistory[i];
-
-	signalPowerAverage /= (double)m_signalPowerHistory.size();
+	m_frameLoop++;
 
 
-	/* TODO: Figure out a good relationship for the decay rate.. */
-	while (m_cubePositions.size() > 500)
-	{
-		m_cubePositions.pop_back();
-		m_cubeColours.pop_back();
-	}
-
-	if (m_cubeColours.size() != m_cubePositions.size())
-		m_cubeColours.resize(m_cubePositions.size(), glm::vec3{ 1.0f,0.0f,0.0f });
-
-	/*
-
-	//double radians = glm::radians(glfwGetTime());
-	//double xPos = sin(radians);
-	//double zPos = cos(radians);
-	*/
-	m_camera.Position.x = 3 * sin(glfwGetTime());
-	m_camera.Position.z = 3 * cos(glfwGetTime());
+	m_camera.Position.x = 4.5 * sin(glfwGetTime());
+	m_camera.Position.z = 4.5 * cos(glfwGetTime());
 	double yawRadians = atan2(m_camera.Position.x, m_camera.Position.z);
 	double yawDegrees = glm::degrees(yawRadians);
 
@@ -252,43 +240,9 @@ void Visualisation_PointClouds::processSamples(const Buffer & buf, unsigned samp
 	front.y = -m_camera.Position.y;
 	front.z = -m_camera.Position.z;
 	m_camera.Front = glm::normalize(front);
-	//double yaw = glfwGetTime();
-	//m_camera.Yaw = 180.0 - yawDegrees;
-
-	//m_camera.updateCameraVectors();
-
-
-	//float bufPeak = buf.amplitude_peak();
-	//float bufAverage = buf.amplitude_average();
-	//float bufMinimum = buf.amplitude_minimum();
-	//
-	////m_camera.Yaw = (bufMinimum * 180.0f) - 90.0f;
-	//std::vector<std::vector<kiss_fft_cpx>> fftResults{ buf.fft() };
-
-	/* LHS is fractional position in fft, RHS is magnitude*/
-	//std::vector<std::pair<float, float>> peaks{ std::make_pair<float,float>(0.0f, 0.0f),std::make_pair<float,float>(0.0f, 0.0f) };
-	//for (int c = 0; c < fftResults.size(); ++c)
-	//{
-	//	for (int i = 0; i < fftResults[c].size(); ++i)
-	//		if (fftResults[c][i].r >= peaks[c].second)
-	//		{
-	//			peaks[c].first = ((float)i / fftResults[c].size());
-	//			peaks[c].second = fftResults[c][i].r;
-	//		}
-	//}
-	//m_objectShader->use();
-	//m_objectShader->setVec3("objectColour", glm::vec3{ peaks[0].first,peaks[1].first,1.0f });
-
-	//m_camera.Pitch = bufAverage;
-	//m_camera.Zoom = -45.0f * bufMinimum;
-	//m_camera.Zoom = bufMinimum;
-
-	//buf.maxChannelFrameCount();
-	//kiss_fft_cfg config;
-	//m_camera.updateCameraVectors();
 }
 
-void Visualisation_PointClouds::renderFrame()
+void Visualisation_GameOfLife::renderFrame()
 {
 	// per-frame time logic
 	// --------------------
@@ -317,11 +271,10 @@ void Visualisation_PointClouds::renderFrame()
 	// camera/view transformation
 	glm::mat4 view = m_camera.GetViewMatrix();
 
-
 	m_objectShader->setMat4("view", view);
 
 	glm::mat4 lightModel{ 1.0f };
-	m_lightPos = glm::vec3(10 * sin(glfwGetTime()), 10 * cos(glfwGetTime()), 10 * sin(glfwGetTime()));
+	m_lightPos = glm::vec3(10 * sin(glfwGetTime()), 10.0, 10.0);
 	lightModel = glm::translate(lightModel, m_lightPos);
 	lightModel = glm::scale(lightModel, glm::vec3{ 0.2f });
 	m_objectShader->setVec3("lightPos", m_lightPos);
@@ -334,11 +287,11 @@ void Visualisation_PointClouds::renderFrame()
 		// calculate the model matrix for each object and pass it to shader before drawing
 		glm::mat4 model{ 1.0f };
 		model = glm::translate(model, m_cubePositions[i]);
-		model = glm::scale(model, glm::vec3{ 0.05f,0.05f,0.05f });
+		model = glm::scale(model, glm::vec3{ 0.1f,0.1f,0.1f });
 
 		//*m_cubeColours[i].r * m_cubeColours[i].g * m_cubeColours[i].g
 		float angle = 0.4f * (float)i;
-		model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+		//model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 		m_objectShader->setMat4("model", model);
 
 		m_objectShader->setVec3("objectColour", m_cubeColours[i]);
@@ -351,3 +304,55 @@ void Visualisation_PointClouds::renderFrame()
 	glBindVertexArray(m_lightVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 }
+
+//
+//// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
+//// ---------------------------------------------------------------------------------------------------------
+//void processInput(GLFWwindow *window)
+//{
+//	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+//		glfwSetWindowShouldClose(window, true);
+//
+//	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+//		camera.ProcessKeyboard(FORWARD, deltaTime);
+//	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+//		camera.ProcessKeyboard(BACKWARD, deltaTime);
+//	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+//		camera.ProcessKeyboard(LEFT, deltaTime);
+//	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+//		camera.ProcessKeyboard(RIGHT, deltaTime);
+//}
+//
+//// glfw: whenever the window size changed (by OS or user resize) this callback function executes
+//// ---------------------------------------------------------------------------------------------
+//void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+//{
+//	// make sure the viewport matches the new window dimensions; note that width and 
+//	// height will be significantly larger than specified on retina displays.
+//	glViewport(0, 0, width, height);
+//}
+//
+//// glfw: whenever the mouse moves, this callback is called
+//// -------------------------------------------------------
+//void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+//{
+//	if (firstMouse)
+//	{
+//		lastX = xpos;
+//		lastY = ypos;
+//		firstMouse = false;
+//	}
+//
+//	float xoffset = xpos - lastX;
+//	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+//
+//	lastX = xpos;
+//	lastY = ypos;
+//
+//	camera.ProcessMouseMovement(xoffset, yoffset);
+//}
+//
+//void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+//{
+//	camera.ProcessMouseScroll(yoffset);
+//}

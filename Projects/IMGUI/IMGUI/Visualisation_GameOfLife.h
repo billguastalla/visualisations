@@ -3,14 +3,17 @@
 #include "Camera.h"
 
 #include <deque>
+#include <memory>
+#include <vector>
 class Buffer;
 struct GLFWwindow;
 class Shader;
+class Game;
 
-class Visualisation_Sandbox : public Visualisation
+class Visualisation_GameOfLife : public Visualisation
 {
 public:
-	Visualisation_Sandbox();
+	Visualisation_GameOfLife();
 
 	/* Set up callbacks, shaders, vertex objects */
 	void activate() override;
@@ -20,7 +23,7 @@ public:
 	void processSamples(const Buffer & buf, unsigned samples) override;
 	void renderFrame() override;
 
-	std::string titleString() override { return "Sandbox"; };
+	std::string titleString() override { return "N-D Game of Life"; };
 private:
 	// camera
 	Camera m_camera;
@@ -46,4 +49,9 @@ private:
 	glm::vec3 m_lightPos;
 
 	glm::vec3 m_scaleVec;
+
+	std::unique_ptr<Game> m_game;
+
+	int m_frameLoop;
+	std::vector<std::vector<std::vector<int>>> m_coordsHistory;
 };

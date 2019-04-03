@@ -182,6 +182,11 @@
     <ClCompile Include="Settings_VideoRendering.cpp" />
     <ClCompile Include="Settings_Visualisation.cpp" />
     <ClCompile Include="Visualisation_Fractal.cpp" />
+    <ClCompile Include="Visualisation_GameOfLife.cpp" />
+    <ClCompile Include="Visualisation_GOL\GameOfLife_Element.cpp" />
+    <ClCompile Include="Visualisation_GOL\GameOfLife_ElementList.cpp" />
+    <ClCompile Include="Visualisation_GOL\GameOfLife_Game.cpp" />
+    <ClCompile Include="Visualisation_GOL\GameOfLife_Grid.cpp" />
     <ClCompile Include="Visualisation_PointClouds.cpp" />
     <ClCompile Include="Visualisation_Sandbox.cpp" />
     <ClCompile Include="Window_Abstract.cpp" />
@@ -218,6 +223,11 @@
     <ClInclude Include="Settings_VideoRendering.h" />
     <ClInclude Include="Settings_Visualisation.h" />
     <ClInclude Include="Visualisation_Fractal.h" />
+    <ClInclude Include="Visualisation_GameOfLife.h" />
+    <ClInclude Include="Visualisation_GOL\GameOfLife_Element.h" />
+    <ClInclude Include="Visualisation_GOL\GameOfLife_ElementList.h" />
+    <ClInclude Include="Visualisation_GOL\GameOfLife_Game.h" />
+    <ClInclude Include="Visualisation_GOL\GameOfLife_Grid.h" />
     <ClInclude Include="Visualisation_PointClouds.h" />
     <ClInclude Include="Visualisation_Sandbox.h" />
     <ClInclude Include="Window_Abstract.h" />

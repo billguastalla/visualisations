@@ -1,9 +1,10 @@
 #include "Model_Visualisation.h"
 
 #include "Visualisation_Cubes.h"
+#include "Visualisation_Fractal.h"
+#include "Visualisation_GameOfLife.h"
 #include "Visualisation_Oscilloscope.h"
 #include "Visualisation_PointClouds.h"
-#include "Visualisation_Fractal.h"
 #include "Visualisation_Sandbox.h"
 
 #include "Buffer.h"
@@ -23,17 +24,20 @@ Model_Visualisation::Model_Visualisation(std::shared_ptr<Settings_Visualisation>
 	Visualisation_PointClouds * visPointClouds = new Visualisation_PointClouds{};
 	Visualisation_Fractal * visFractal = new Visualisation_Fractal{};
 	Visualisation_Sandbox * visSandbox = new Visualisation_Sandbox{};
+	Visualisation_GameOfLife * visGameOfLife = new Visualisation_GameOfLife{};
 
 	visCubes->activate();
+	visFractal->activate();
+	visGameOfLife->activate();
 	visOscilloscope->activate();
 	visPointClouds->activate();
-	visFractal->activate();
 	visSandbox->activate();
 
 	m_visualisations.push_back(visCubes);
+	m_visualisations.push_back(visFractal);
+	m_visualisations.push_back(visGameOfLife);
 	m_visualisations.push_back(visOscilloscope);
 	m_visualisations.push_back(visPointClouds);
-	m_visualisations.push_back(visFractal);
 	m_visualisations.push_back(visSandbox);
 }
 
