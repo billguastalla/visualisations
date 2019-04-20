@@ -5,7 +5,10 @@
 *.mp4
 *.wav
 *.mpg
+*.mp3
 ffmpeg.exe
+# Screenshots
+*.png
 
 
 # Dependencies folder
