@@ -10,6 +10,7 @@ namespace AudioIO
 		AudioChannel(const std::vector<float> & samples, unsigned sampleRate)
 			: m_samples{samples}, m_sampleRate{sampleRate} {}
 		const std::vector<float> & samples() const { return m_samples; }
+		size_t sampleCount() const { return m_samples.size(); }
 	private:
 		std::vector<float> m_samples;
 		unsigned m_sampleRate;

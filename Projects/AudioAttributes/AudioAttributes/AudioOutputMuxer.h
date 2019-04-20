@@ -1,26 +1,29 @@
 #pragma once
 #include "AudioTrack.h"
-
 #include <vector>
 #include <map>
 #include <memory>
 
 namespace AudioIO
 {
-
 	class AudioInterface;
-	// TODO: Work out how the OutputMuxer should be related to the encoder. 
+	/* TODO: Work out how the OutputMuxer should be related to the encoder
+			-> Answer: The Output Muxer should not know about the encoder, but the encoder should require the muxer.
+					-> This is because there are multiple expected methods to encoding, one method to muxing.
+	*/
 	class AudioOutputMuxer
 	{
 	public:
 		AudioOutputMuxer(AudioInterface * _interface);
 
-		/* This should be used by the encoder and not the visualisations.
-			We always get all channels this way, so we're getting a vector of vectors. */
-		std::map<size_t, std::vector<float>> samples(unsigned frameNumber, unsigned fps = 30);
-
+		/* This interleaves samples for all channels, without bounds checking. */
 		std::vector<float> samples(int startingSample, int sampleCount);
-		int maxSamples();
+
+		/* The length in samples of the shortest track in the output muxer. */
+		unsigned minimumSampleCount();
+		/* The length in samples of the longest track in the output muxer. 
+			All samples retrieved beyond here are 0.0. */
+		unsigned maximumSampleCount();
 
 		struct OutputChannel
 		{
@@ -28,8 +31,7 @@ namespace AudioIO
 			struct SourceChannelContribution
 			{
 				SourceChannelContribution(std::shared_ptr<AudioChannel> & ch, const float & weight)
-					: m_channel{ch}, m_weight{ weight }
-				{}
+					: m_channel{ch}, m_weight{ weight } {}
 				std::shared_ptr<AudioChannel> m_channel;
 				float m_weight;
 			};
@@ -37,15 +39,9 @@ namespace AudioIO
 			std::vector<SourceChannelContribution> m_contributions;
 		};
 	private:
-		// TODO: Set this sample rate by assigning a channel. Then prevent any future assigns
-		//		 from including channels of a different sample rate. This should also inform the encoder
-		//		 upon setup. (OR remove this, and just use the interface-set sample rate. You're never going to modify the sample rate so why store two values.)
-		//unsigned m_sampleRate;
+		std::vector<unsigned> sampleCounts() const;
+
 		AudioInterface * p_interface;
-		/* Properties needed:
-				-> Output Channel Count
-				-> OutputChannel:: source channel id list, and for each source channel, a % contribution.
-		*/
 		std::map<unsigned,OutputChannel> m_outputChannels;
 	};
 }

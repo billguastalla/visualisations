@@ -30,9 +30,9 @@ int main()
 	AudioIO::AudioOutputMuxer muxer{ &inter };
 
 	FFMPEG_AudioEncoder encoder{};
-	encoder.ffmpeg_encoder_start("Output.mp3", 48000);
+	encoder.ffmpeg_encoder_start("Output Take 3.mp3", 48000);
 	
-	int endSample = 960000, startSample = 0;
+	int endSample = muxer.maximumSampleCount(), startSample = 0;
 	while(startSample < endSample)
 		startSample = encoder.ffmpeg_encoder_render_frame(muxer,startSample);
 

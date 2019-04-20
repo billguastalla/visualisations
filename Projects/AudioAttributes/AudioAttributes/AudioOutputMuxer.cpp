@@ -43,48 +43,6 @@ AudioOutputMuxer::AudioOutputMuxer(AudioInterface * _interface)
 
 }
 
-std::map<size_t, std::vector<float>> AudioOutputMuxer::samples(unsigned frameNumber, unsigned fps)
-{
-	/* TODO: Use the audio interface, along with the channel mappings held in this muxer, to combine the interface channels into this vect of arrays of floats.*/
-
-	std::map<size_t, std::vector<float>> result{};
-
-	unsigned sampleRate = p_interface->sampleRate();
-	double dStartingSample = (double)(frameNumber * sampleRate) / fps;
-	double dEndingSample = (double)(frameNumber * sampleRate) / fps;
-
-	unsigned uintStartingSample{ (unsigned)std::floor(dStartingSample) };
-	unsigned uintEndingSample{ (unsigned)std::floor(dEndingSample) };
-
-
-	/* Iterate over output channels;*/
-	for (auto outputChannel = m_outputChannels.begin();
-		outputChannel != m_outputChannels.end();
-		++outputChannel)
-	{
-		std::vector<float> channelData;
-
-		for (auto sourceChannel = outputChannel->second.m_contributions.begin();
-			sourceChannel != outputChannel->second.m_contributions.end();
-			++sourceChannel)
-		{
-			/* To build the channel data:
-				-> You need to get the sample count from the frame number
-				-> You need to get the sample offset from the frame number excluding any offset and starting from the beginning of the samples
-				-> You need to check for each input channel first, whether they actually *have*
-					the channel data for that time interval.
-			*/
-
-
-		}
-
-		/* Insert the output channel, with the weighted channel data. */
-		result.insert(std::pair<size_t, std::vector<float>>{outputChannel->first, channelData});
-	}
-
-	return result;
-}
-
 std::vector<float> AudioIO::AudioOutputMuxer::samples(int startingSample, int sampleCount)
 {
 	std::vector<float> result{};
@@ -97,10 +55,45 @@ std::vector<float> AudioIO::AudioOutputMuxer::samples(int startingSample, int sa
 	return result;
 }
 
-int AudioIO::AudioOutputMuxer::maxSamples()
+
+unsigned AudioIO::AudioOutputMuxer::minimumSampleCount()
 {
-	/* TODO: Decide on what maximum means before implementing (after one audio file finishes or after all files finish.. )*/
+	std::vector<unsigned> scounts{ sampleCounts() };
+	if (scounts.size() != 0)
+	{
+		unsigned min = *scounts.begin();
+		for (auto sc = scounts.begin(); sc != scounts.end(); ++sc)
+			if (min > *sc)
+				min = *sc;
+		return min;
+	}
 	return 0;
+}
+
+unsigned AudioIO::AudioOutputMuxer::maximumSampleCount()
+{
+	std::vector<unsigned> scounts{ sampleCounts() };
+	for (auto outputIter = m_outputChannels.begin(); outputIter != m_outputChannels.end(); ++outputIter)
+		for (auto contribIter = outputIter->second.m_contributions.begin(); contribIter != outputIter->second.m_contributions.end(); ++contribIter)
+			scounts.push_back(contribIter->m_channel->sampleCount());
+	if (scounts.size() != 0)
+	{
+		unsigned max = *scounts.begin();
+		for (auto sc = scounts.begin(); sc != scounts.end(); ++sc)
+			if (max < *sc)
+				max = *sc;
+		return max;
+	}
+	return 0;
+}
+
+std::vector<unsigned> AudioIO::AudioOutputMuxer::sampleCounts() const
+{
+	std::vector<unsigned> result{};
+	for (auto outputIter = m_outputChannels.begin(); outputIter != m_outputChannels.end(); ++outputIter)
+		for (auto contribIter = outputIter->second.m_contributions.begin(); contribIter != outputIter->second.m_contributions.end(); ++contribIter)
+			result.push_back(contribIter->m_channel->sampleCount());
+	return result;
 }
 
 std::vector<float> AudioIO::AudioOutputMuxer::OutputChannel::samples(int startingSample, int sampleCount)
