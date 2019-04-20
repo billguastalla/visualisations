@@ -1,6 +1,7 @@
 #pragma once
 #include "FFMPEG_AudioEncoder.h"
 #include "AudioOutputMuxer.h"
+
 FFMPEG_AudioEncoder::FFMPEG_AudioEncoder()
 	: m_started{ false }
 {

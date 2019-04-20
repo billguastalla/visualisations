@@ -20,8 +20,14 @@ namespace AudioIO
 	public:
 		AudioTrack(unsigned sampleRate, unsigned channelCount, std::vector<float> samples);
 		~AudioTrack();
+		std::shared_ptr<AudioChannel> channel(unsigned channelID);
 		std::vector<std::shared_ptr<AudioChannel>> channels() & { return m_channels; }
+		size_t channelCount() { return m_channels.size(); }
 	private:
+		/* If we're making some sort of persistent system, then either:	
+			-> this should also be a map<unsigned,AudioChan..> or/
+			-> you should not be able to read channels non-const
+				(-> you should never be able to remove a channel)*/
 		std::vector<std::shared_ptr<AudioChannel>> m_channels;
 	};
 }

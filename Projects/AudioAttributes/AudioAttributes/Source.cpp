@@ -1,5 +1,4 @@
 #include <iostream>
-
 #include "AudioInterface.h"
 #include "AudioOutputMuxer.h"
 #include "FFMPEG_AudioEncoder.h"
@@ -21,8 +20,6 @@ int main()
 			3a. Construct an audio encoder. (Create function that takes an output muxer)
 				3b.
 	*/
-
-
 	/* 1a */
 	AudioIO::AudioInterface inter{};
 	/* 1b */
@@ -40,11 +37,5 @@ int main()
 		startSample = encoder.ffmpeg_encoder_render_frame(muxer,startSample);
 
 	encoder.ffmpeg_encoder_finish();
-	
-
-	//std::vector<size_t> interfaceChannels{ inter.channelIDs() };
-	//muxer.createChannel(std::vector<size_t>{interfaceChannels[0]});
-	//muxer.createChannel(std::vector<size_t>{interfaceChannels[1]});
-
 	return 0;
 }

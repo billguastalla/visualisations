@@ -22,3 +22,10 @@ AudioTrack::AudioTrack(unsigned sampleRate, unsigned channelCount, std::vector<f
 AudioTrack::~AudioTrack()
 {
 }
+
+std::shared_ptr<AudioChannel> AudioIO::AudioTrack::channel(unsigned channelID)
+{
+	if (channelID < m_channels.size() && channelID >= 0)
+		return m_channels[channelID];
+	return std::shared_ptr<AudioChannel>();
+}
