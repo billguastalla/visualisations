@@ -1,10 +1,6 @@
 #pragma once
-
 #include "Buffer.h"
-
 #include "Recorder.h"
-#include "AudioReader.h"
-
 #include <memory>
 
 class Settings_AudioInterface;
@@ -21,7 +17,7 @@ public:
 	};
 	enum class RecordMode
 	{
-		AudioSteam,
+		AudioStream,
 		File
 	};
 
@@ -39,7 +35,7 @@ private:
 	std::shared_ptr<Settings_AudioInterface> m_settings;
 
 	std::shared_ptr<Recorder> m_realTime;
-	std::shared_ptr<AudioReader> m_audioReader;
+	//std::shared_ptr<AudioReader> m_audioReader;
 
 	RecordState m_recordState;
 	RecordMode m_recordMode;

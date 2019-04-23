@@ -174,9 +174,6 @@
     <ClCompile Include="..\Includes\kissfft\kiss_fft.c">
       <Filter>Source Files\Audio Interface</Filter>
     </ClCompile>
-    <ClCompile Include="AudioReader.cpp">
-      <Filter>Source Files\Audio Interface</Filter>
-    </ClCompile>
     <ClCompile Include="Visualisation_PointClouds.cpp">
       <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
     </ClCompile>
@@ -199,6 +196,9 @@
       <Filter>Source Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
     </ClCompile>
     <ClCompile Include="Visualisation_GameOfLife.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation_Splinters.cpp">
       <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
     </ClCompile>
   </ItemGroup>
@@ -284,12 +284,6 @@
     <ClInclude Include="Model_Visualisation.h">
       <Filter>Header Files\Program\Controllers</Filter>
     </ClInclude>
-    <ClInclude Include="AudioReader.h">
-      <Filter>Header Files\Audio Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioAnalysis.h">
-      <Filter>Header Files\Audio Modules\Analysis</Filter>
-    </ClInclude>
     <ClInclude Include="Visualisation_PointClouds.h">
       <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
     </ClInclude>
@@ -318,6 +312,9 @@
       <Filter>Header Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
     </ClInclude>
     <ClInclude Include="Visualisation_GameOfLife.h">
+      <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_Splinters.h">
       <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
     </ClInclude>
   </ItemGroup>

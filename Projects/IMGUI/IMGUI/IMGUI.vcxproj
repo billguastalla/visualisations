@@ -173,7 +173,6 @@
     <ClCompile Include="..\Includes\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\Includes\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\Includes\kissfft\kiss_fft.c" />
-    <ClCompile Include="AudioReader.cpp" />
     <ClCompile Include="Model_AudioInterface.cpp" />
     <ClCompile Include="Model_VideoRendering.cpp" />
     <ClCompile Include="Model_Visualisation.cpp" />
@@ -189,6 +188,7 @@
     <ClCompile Include="Visualisation_GOL\GameOfLife_Grid.cpp" />
     <ClCompile Include="Visualisation_PointClouds.cpp" />
     <ClCompile Include="Visualisation_Sandbox.cpp" />
+    <ClCompile Include="Visualisation_Splinters.cpp" />
     <ClCompile Include="Window_Abstract.cpp" />
     <ClCompile Include="Window_AudioInterface.cpp" />
     <ClCompile Include="Window_VideoRendering.cpp" />
@@ -210,8 +210,6 @@
     <ClInclude Include="..\Includes\imgui\stb_textedit.h" />
     <ClInclude Include="..\Includes\imgui\stb_truetype.h" />
     <ClInclude Include="AbstractRandomObject.h" />
-    <ClInclude Include="AudioAnalysis.h" />
-    <ClInclude Include="AudioReader.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="MetaDistribution.h" />
@@ -230,6 +228,7 @@
     <ClInclude Include="Visualisation_GOL\GameOfLife_Grid.h" />
     <ClInclude Include="Visualisation_PointClouds.h" />
     <ClInclude Include="Visualisation_Sandbox.h" />
+    <ClInclude Include="Visualisation_Splinters.h" />
     <ClInclude Include="Window_Abstract.h" />
     <ClInclude Include="Window_AudioInterface.h" />
     <ClInclude Include="Window_VideoRendering.h" />
