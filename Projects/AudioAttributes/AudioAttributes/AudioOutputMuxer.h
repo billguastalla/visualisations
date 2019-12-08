@@ -39,7 +39,7 @@ namespace AudioIO
 			std::vector<SourceChannelContribution> m_contributions;
 		};
 	private:
-		std::vector<unsigned> sampleCounts() const;
+		std::vector<size_t> sampleCounts() const;
 
 		AudioInterface * p_interface;
 		std::map<unsigned,OutputChannel> m_outputChannels;

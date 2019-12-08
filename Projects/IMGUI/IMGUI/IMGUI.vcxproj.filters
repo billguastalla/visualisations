@@ -94,6 +94,9 @@
     <Filter Include="Source Files\Graphics\Visualisations\Engine\GameOfLife">
       <UniqueIdentifier>{fd9d4cd3-6b23-454b-9f15-c9375280c12f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Graphics\Visualisations\Engine\Models">
+      <UniqueIdentifier>{5cc7a0bf-2372-42b5-bff0-e83deae2a97d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Recorder.cpp">
@@ -316,6 +319,9 @@
     </ClInclude>
     <ClInclude Include="Visualisation_Splinters.h">
       <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files\Graphics\Visualisations\Engine\Models</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

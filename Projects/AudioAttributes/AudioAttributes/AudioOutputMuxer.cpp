@@ -58,7 +58,7 @@ std::vector<float> AudioIO::AudioOutputMuxer::samples(int startingSample, int sa
 
 unsigned AudioIO::AudioOutputMuxer::minimumSampleCount()
 {
-	std::vector<unsigned> scounts{ sampleCounts() };
+	std::vector<size_t> scounts{ sampleCounts() };
 	if (scounts.size() != 0)
 	{
 		unsigned min = *scounts.begin();
@@ -72,7 +72,7 @@ unsigned AudioIO::AudioOutputMuxer::minimumSampleCount()
 
 unsigned AudioIO::AudioOutputMuxer::maximumSampleCount()
 {
-	std::vector<unsigned> scounts{ sampleCounts() };
+	std::vector<size_t> scounts{ sampleCounts() };
 	for (auto outputIter = m_outputChannels.begin(); outputIter != m_outputChannels.end(); ++outputIter)
 		for (auto contribIter = outputIter->second.m_contributions.begin(); contribIter != outputIter->second.m_contributions.end(); ++contribIter)
 			scounts.push_back(contribIter->m_channel->sampleCount());
@@ -87,9 +87,9 @@ unsigned AudioIO::AudioOutputMuxer::maximumSampleCount()
 	return 0;
 }
 
-std::vector<unsigned> AudioIO::AudioOutputMuxer::sampleCounts() const
+std::vector<size_t> AudioIO::AudioOutputMuxer::sampleCounts() const
 {
-	std::vector<unsigned> result{};
+	std::vector<size_t> result{};
 	for (auto outputIter = m_outputChannels.begin(); outputIter != m_outputChannels.end(); ++outputIter)
 		for (auto contribIter = outputIter->second.m_contributions.begin(); contribIter != outputIter->second.m_contributions.end(); ++contribIter)
 			result.push_back(contribIter->m_channel->sampleCount());

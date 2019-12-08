@@ -83,7 +83,7 @@ If I have a Primitive<3,3> triangle, whose points are in 3D space, and I have a 
 
 In General:
 	-> I want to start with a mesh of Primitives<N,N>,
-			-> And be able to produce a mesh of Primitives<3,3>, given an Intersection<N,3>.
+			-> And be able to produce a mesh of Primitives<3,3>, given an HPlane<N,3>.
 			-> I need functions to find Primitives<N-1,N-1> given an Intersection<N,N-1>
 
 From 11.13.2 in GACS:

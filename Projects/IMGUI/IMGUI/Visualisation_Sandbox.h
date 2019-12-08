@@ -1,7 +1,7 @@
 #pragma once
 #include "Visualisation.h"
 #include "Camera.h"
-
+#include "Mesh.h"
 #include <deque>
 class Buffer;
 struct GLFWwindow;
@@ -46,4 +46,6 @@ private:
 	glm::vec3 m_lightPos;
 
 	glm::vec3 m_scaleVec;
+
+	Mesh m_mesh;
 };

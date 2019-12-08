@@ -71,8 +71,7 @@ int FFMPEG_AudioEncoder::ffmpeg_encoder_render_frame(AudioIO::AudioOutputMuxer &
 		m_audioFrame->channels = 2;
 		m_audioFrame->channel_layout = AV_CH_LAYOUT_STEREO;
 
-		int audioError = avcodec_fill_audio_frame(m_audioFrame, 2, AVSampleFormat::AV_SAMPLE_FMT_FLTP, (uint8_t*)&samples[0], samples.size() * sizeof(float) / sizeof(uint8_t), 0);
-
+		int audioError = avcodec_fill_audio_frame(m_audioFrame, 2, AVSampleFormat::AV_SAMPLE_FMT_FLTP, (uint8_t*)&samples[0], (int)samples.size() * sizeof(float) / sizeof(uint8_t), 0);
 
 		av_init_packet(&m_audioPacket);
 		m_audioPacket.data = nullptr;
@@ -101,6 +100,7 @@ int FFMPEG_AudioEncoder::ffmpeg_encoder_render_frame(AudioIO::AudioOutputMuxer &
 
 		return m_audioCodecContext->frame_size + startingSample;
 	}
+	return startingSample;
 }
 
 FFMPEG_AudioEncoder::FinishResult FFMPEG_AudioEncoder::ffmpeg_encoder_finish()

@@ -25,7 +25,7 @@ int main()
 	/* 1b */
 	/* 1c */
 	inter.addFile("181021_0038.wav");
-	inter.addFile("181030_0055.wav");
+	//inter.addFile("181030_0055.wav");
 	/* 2a */
 	AudioIO::AudioOutputMuxer muxer{ &inter };
 
