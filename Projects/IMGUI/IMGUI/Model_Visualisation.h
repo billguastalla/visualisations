@@ -14,7 +14,8 @@ public:
 	~Model_Visualisation();
 
 	int visualisationOptionsCount();
-	int currentVisualisation() { return m_currentVisualisaton; }
+	int currentVisualisationIndex() { return m_currentVisualisaton; }
+	Visualisation* currentVisualisation() { return (m_currentVisualisaton != -1) ? m_visualisations[m_currentVisualisaton] : nullptr; }
 	std::string visualisationOptionsString();
 	void setVisualisation(int option);
 	void runVisualisation();

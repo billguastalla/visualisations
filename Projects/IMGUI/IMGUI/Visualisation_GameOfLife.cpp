@@ -18,19 +18,8 @@
 #include <complex>
 #include <vector>
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow *window);
-
 Visualisation_GameOfLife::Visualisation_GameOfLife()
 	:
-	m_camera{ glm::vec3(0.0f, 0.0f, 3.0f) },
-	m_deltaTime{},
-	m_firstMouse{ 0.0f },
-	m_lastFrame{ 0.0f },
-	m_lastX{ 0.0f },
-	m_lastY{ 0.0f },
 	m_lightPos{ 0.0f,0.0f,0.0f },
 
 	m_objectShader{ nullptr },
@@ -104,28 +93,8 @@ void Visualisation_GameOfLife::activate()
 		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
 	};
 	// world space positions of our cubes
-	m_cubePositions = {
-		glm::vec3(2.0f,  5.0f, -15.0f),
-		glm::vec3(-1.5f, -2.2f, -2.5f),
-		glm::vec3(-3.8f, -2.0f, -12.3f),
-		glm::vec3(2.4f, -0.4f, -3.5f),
-		glm::vec3(-1.7f,  3.0f, -7.5f),
-		glm::vec3(1.3f, -2.0f, -2.5f),
-		glm::vec3(1.5f,  2.0f, -2.5f),
-		glm::vec3(1.5f,  0.2f, -1.5f),
-		glm::vec3(-1.3f,  1.0f, -1.5f)
-	};
-	m_cubeColours = {
-		glm::vec3(1.0f,0.0f,0.0f),
-		glm::vec3(0.0f,1.0f,0.0f),
-		glm::vec3(0.0f,0.0f,1.0f),
-		glm::vec3(1.0f,0.0f,0.0f),
-		glm::vec3(0.0f,1.0f,0.0f),
-		glm::vec3(0.0f,0.0f,1.0f),
-		glm::vec3(1.0f,0.0f,0.0f),
-		glm::vec3(0.0f,1.0f,0.0f),
-		glm::vec3(0.0f,0.0f,1.0f)
-	};
+	m_cubePositions = {glm::vec3(0.0f,0.0f,0.0f)};
+	m_cubeColours = {glm::vec3(0.0f,0.0f,0.0f)};
 
 	glGenVertexArrays(1, &m_cubeVAO);
 	glGenBuffers(1, &m_cubeVBO);
@@ -196,8 +165,6 @@ void Visualisation_GameOfLife::processSamples(const Buffer & buf, unsigned sampl
 			m_cubePositions.push_back(t_position);
 			m_cubeColours.push_back(glm::vec3{ std::abs(colImplX(a.randDevice())),std::abs(colImplY(a.randDevice())),std::abs(colImplZ(a.randDevice()))});
 		}
-
-		m_game;
 
 		if (m_coordsHistory.size() != 0)
 			for (auto i = m_coordsHistory.begin(); i != m_coordsHistory.end(); ++i)

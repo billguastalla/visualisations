@@ -323,5 +323,8 @@
     <ClInclude Include="Mesh.h">
       <Filter>Header Files\Graphics\Visualisations\Engine\Models</Filter>
     </ClInclude>
+    <ClInclude Include="MeshGenerator.h">
+      <Filter>Header Files\Graphics\Visualisations\Engine\Models</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

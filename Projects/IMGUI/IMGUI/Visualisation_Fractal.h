@@ -27,14 +27,7 @@ private:
 	int inSet(std::complex<long double> z, std::complex<long double> c);
 	std::vector<glm::vec3> buildFractalData(std::complex<long double> k);
 
-	// camera
-	Camera m_camera;
-	float m_lastX, m_lastY;
-	bool m_firstMouse = true;
 
-	// timing
-	float m_deltaTime;	// time between current frame and last frame
-	float m_lastFrame;
 
 
 	unsigned int m_cubeVAO, m_lightVAO, m_cubeVBO;

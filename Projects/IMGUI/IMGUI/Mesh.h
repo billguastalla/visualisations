@@ -5,7 +5,6 @@
 Possible features:
 1. Stretching
 */
-
 #include <glad/glad.h>
 
 #include <glm/glm.hpp>
@@ -21,7 +20,13 @@ Possible features:
 using namespace std;
 
 struct MeshVertex {
-    // position
+	MeshVertex(glm::vec3 pos, glm::vec3 norm, glm::vec2 tex = glm::vec2{ 0.0 }, glm::vec3 tan = glm::vec3{ 0.0 }, glm::vec3 bitan = glm::vec3{ 0.0 })
+		: Position{ pos }, Normal{ norm }, TexCoords{ tex }, Tangent{ tan }, Bitangent{ bitan }
+	{}
+	MeshVertex(float p1, float p2, float p3, float norm1, float norm2, float norm3)
+		: Position{ p1,p2,p3 }, Normal{ norm1,norm2,norm3 }, TexCoords{ 0.0f }, Tangent{0.0f}, Bitangent{0.0f}
+	{}
+	    // position
     glm::vec3 Position;
     // normal
     glm::vec3 Normal;
@@ -70,7 +75,7 @@ public:
 
 
     // render the mesh
-    void Draw(Shader shader) 
+    void Draw(Shader * shader) 
     {
         // bind appropriate textures
         unsigned int diffuseNr  = 1;
@@ -93,7 +98,7 @@ public:
 			    number = std::to_string(heightNr++); // transfer unsigned int to stream
 
 													 // now set the sampler to the correct texture unit
-            glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
+            glUniform1i(glGetUniformLocation(shader->ID, (name + number).c_str()), i);
             // and finally bind the texture
             glBindTexture(GL_TEXTURE_2D, textures[i].id);
         }

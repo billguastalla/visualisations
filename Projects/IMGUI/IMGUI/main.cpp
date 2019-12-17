@@ -26,12 +26,11 @@ int main(int, char**)
 	if (!glfwInit())
 		return 1;
 
-	// GL 3.0 + GLSL 130
 	std::string glsl_version{ "#version 330" };
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); /* 4.5 is our latest version, reduce this for public release. */
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_SAMPLES, 4); /* MSAA */
 
 	// Create window with graphics context
@@ -39,7 +38,7 @@ int main(int, char**)
 	if (window == NULL)
 		return 1;
 	glfwMakeContextCurrent(window);
-	glfwSwapInterval(1); // Enable vsync (Note: Disable if you want to test performance)
+	glfwSwapInterval(1); // vsync
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		glfwTerminate();

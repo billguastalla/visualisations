@@ -213,6 +213,7 @@
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshGenerator.h" />
     <ClInclude Include="MetaDistribution.h" />
     <ClInclude Include="Model_AudioInterface.h" />
     <ClInclude Include="Model_VideoRendering.h" />

@@ -14,22 +14,8 @@
 #include <complex>
 #include <vector>
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow *window);
-
 Visualisation_Cubes::Visualisation_Cubes()
 	:
-	m_camera{ glm::vec3(0.0f, 0.0f, 3.0f) },
-	m_deltaTime{},
-	m_firstMouse{ 0.0f },
-	m_lastFrame{ 0.0f },
-	m_lastX{ 0.0f },
-	m_lastY{ 0.0f },
-	//float m_lastX = SCR_WIDTH / 2.0f;
-	//float m_lastY = SCR_HEIGHT / 2.0f;
-
 	m_lightPos{0.0f,0.0f,0.0f},
 
 	m_objectShader{ nullptr },
@@ -46,9 +32,6 @@ void Visualisation_Cubes::activate()
 	// ------------------------------------
 	m_objectShader = new Shader{ "../Shaders/Cubes_Vertex.vs", "../Shaders/Cubes_ObjectFragment.fs" };
 	m_lampShader = new Shader{ "../Shaders/Cubes_Vertex.vs", "../Shaders/Cubes_LampFragment.fs" };
-
-	// set up vertex data(and buffer(s)) and configure vertex attributes
-	// ------------------------------------------------------------------
 
 	m_lightPos = { 0.0,0.0,-8.0 };
 

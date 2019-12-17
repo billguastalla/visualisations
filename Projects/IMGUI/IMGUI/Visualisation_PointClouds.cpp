@@ -23,13 +23,6 @@ void processInput(GLFWwindow *window);
 
 Visualisation_PointClouds::Visualisation_PointClouds()
 	:
-	m_camera{ glm::vec3(0.0f, 0.0f, 3.0f) },
-	m_deltaTime{},
-	m_firstMouse{ 0.0f },
-	m_lastFrame{ 0.0f },
-	m_lastX{ 0.0f },
-	m_lastY{ 0.0f },
-
 	m_lightPos{ 0.0f,0.0f,0.0f },
 
 	m_objectShader{ nullptr },

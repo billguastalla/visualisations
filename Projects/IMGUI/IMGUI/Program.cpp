@@ -15,6 +15,8 @@
 #include <glad\glad.h>
 #include <GLFW\glfw3.h>
 
+#include <imgui/imgui.h>
+
 Program::Program(GLFWwindow * window, std::string glslVersion)
 	: m_window{ window },
 	m_interface{},
@@ -86,6 +88,19 @@ void Program::run()
 			//m_modelVideoRendering->processAudio();
 		}
 
+
+		if (! ImGui::GetIO().WantCaptureMouse)
+		{
+			int leftMouse = glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_1);
+			double xPos{ 0.0 }, yPos{ 0.0 };
+			glfwGetCursorPos(m_window, &xPos, &yPos);
+
+			m_modelVisualisation->currentVisualisation()->mouseMovement(xPos,yPos,leftMouse == 1);
+
+			//m_modelVisualisation->currentVisualisation()->camera().ProcessMouseMovement();
+		}
+
+		
 		m_modelVisualisation->runVisualisation();
 		m_modelVideoRendering->renderFrame();
 

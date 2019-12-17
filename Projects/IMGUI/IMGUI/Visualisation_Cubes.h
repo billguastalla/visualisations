@@ -20,15 +20,6 @@ public:
 
 	std::string titleString() override { return "Cubes"; };
 private:
-	// camera
-	Camera m_camera;
-	float m_lastX, m_lastY;
-	bool m_firstMouse = true;
-
-	// timing
-	float m_deltaTime;	// time between current frame and last frame
-	float m_lastFrame;
-
 
 	unsigned int m_cubeVAO, m_lightVAO, m_cubeVBO;
 

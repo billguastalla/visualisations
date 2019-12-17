@@ -26,7 +26,7 @@ void Window_Visualisation::draw()
 	ImGui::Text("Visualisation:\t");
 	ImGui::SameLine();
 
-	int sel = m_visualisation->currentVisualisation();
+	int sel = m_visualisation->currentVisualisationIndex();
 	std::string visOpts = m_visualisation->visualisationOptionsString();
 	ImGui::Combo("",&sel, &visOpts[0]);
 
