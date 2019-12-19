@@ -3,6 +3,12 @@
 #include "Camera.h"
 
 class Buffer;
+enum class CameraMode
+{
+	RotateViewer,
+	RotateScene
+};
+
 class Visualisation
 {
 public:
@@ -13,7 +19,8 @@ public:
 		m_mouseDown{ false },
 		m_lastFrame{ 0.0f },
 		m_lastX{ 0.0f },
-		m_lastY{ 0.0f }
+		m_lastY{ 0.0f },
+		m_cameraMode{CameraMode::RotateViewer}
 	{};
 
 	/* Set up shaders, initial VAOs, VBOs */
@@ -27,32 +34,14 @@ public:
 	virtual std::string titleString() = 0;
 
 
-	void mouseMovement(float xPos, float yPos, bool mouseDown)
-	{
-		if (mouseDown)
-		{
-			if (m_firstMouse)
-			{
-				m_lastX = xPos;
-				m_lastY = yPos;
-				m_firstMouse = false;
-			}
-			else
-			{
-				float xoffset = xPos - m_lastX;
-				float yoffset = m_lastY - yPos;
-				m_lastX = xPos;
-				m_lastY = yPos;
-				m_camera.ProcessMouseMovement(xoffset, yoffset);
-			}
-		}
-		else
-			m_firstMouse = true;
-	}
-
+	void mouseMovement(float xPos, float yPos, bool mouseDown);
+	void setCameraMode(const CameraMode & m) { m_cameraMode = m; };
+	
 protected:
 	// camera
 	Camera m_camera;
+	CameraMode m_cameraMode;
+
 	float m_lastX, m_lastY;
 	bool m_mouseDown = true;
 	bool m_firstMouse = true;

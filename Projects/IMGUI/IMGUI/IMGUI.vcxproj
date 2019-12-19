@@ -173,6 +173,7 @@
     <ClCompile Include="..\Includes\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\Includes\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\Includes\kissfft\kiss_fft.c" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model_AudioInterface.cpp" />
     <ClCompile Include="Model_VideoRendering.cpp" />
     <ClCompile Include="Model_Visualisation.cpp" />
@@ -180,6 +181,7 @@
     <ClCompile Include="Settings_AudioInterface.cpp" />
     <ClCompile Include="Settings_VideoRendering.cpp" />
     <ClCompile Include="Settings_Visualisation.cpp" />
+    <ClCompile Include="Visualisation.cpp" />
     <ClCompile Include="Visualisation_Fractal.cpp" />
     <ClCompile Include="Visualisation_GameOfLife.cpp" />
     <ClCompile Include="Visualisation_GOL\GameOfLife_Element.cpp" />

@@ -36,7 +36,6 @@ private:
 	std::deque<double> m_signalPowerHistory;
 
 	glm::vec3 m_lightPos;
-	glm::vec3 m_scaleVec;
 
 	std::unique_ptr<Game> m_game;
 

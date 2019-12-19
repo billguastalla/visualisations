@@ -197,16 +197,16 @@ void Visualisation_GameOfLife::processSamples(const Buffer & buf, unsigned sampl
 	m_frameLoop++;
 
 
-	m_camera.Position.x = 4.5 * sin(glfwGetTime());
-	m_camera.Position.z = 4.5 * cos(glfwGetTime());
-	double yawRadians = atan2(m_camera.Position.x, m_camera.Position.z);
+	m_camera.m_position.x = 4.5 * sin(glfwGetTime());
+	m_camera.m_position.z = 4.5 * cos(glfwGetTime());
+	double yawRadians = atan2(m_camera.m_position.x, m_camera.m_position.z);
 	double yawDegrees = glm::degrees(yawRadians);
 
 	glm::vec3 front;
-	front.x = -m_camera.Position.x;
-	front.y = -m_camera.Position.y;
-	front.z = -m_camera.Position.z;
-	m_camera.Front = glm::normalize(front);
+	front.x = -m_camera.m_position.x;
+	front.y = -m_camera.m_position.y;
+	front.z = -m_camera.m_position.z;
+	m_camera.m_front = glm::normalize(front);
 }
 
 void Visualisation_GameOfLife::renderFrame()
@@ -232,7 +232,7 @@ void Visualisation_GameOfLife::renderFrame()
 	m_objectShader->setVec3("objectColour", glm::vec3{ 1.0f,0.5f,0.31f });
 
 	// pass projection matrix to shader (note that in this case it could change every frame)
-	glm::mat4 projection = glm::perspective(glm::radians(m_camera.Zoom), (float)1920 / (float)1080, 0.1f, 100.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(m_camera.m_zoom), (float)1920 / (float)1080, 0.1f, 100.0f);
 	m_objectShader->setMat4("projection", projection);
 
 	// camera/view transformation
@@ -245,7 +245,7 @@ void Visualisation_GameOfLife::renderFrame()
 	lightModel = glm::translate(lightModel, m_lightPos);
 	lightModel = glm::scale(lightModel, glm::vec3{ 0.2f });
 	m_objectShader->setVec3("lightPos", m_lightPos);
-	m_objectShader->setVec3("viewPos", m_camera.Position);
+	m_objectShader->setVec3("viewPos", m_camera.m_position);
 
 	// render boxes
 	glBindVertexArray(m_cubeVAO);

@@ -28,6 +28,6 @@ private:
 	std::deque<double> m_signalPowerHistory;
 
 	glm::vec3 m_lightPos;
-	glm::vec3 m_scaleVec;
+	
 	Mesh m_mesh;
 };

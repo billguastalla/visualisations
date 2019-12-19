@@ -38,5 +38,5 @@ private:
 
 	glm::vec3 m_lightPos;
 
-	glm::vec3 m_scaleVec;
+	
 };

@@ -39,7 +39,7 @@ private:
 
 	std::vector<float> m_vertices;
 	glm::vec3 m_lightPos;
-	glm::vec3 m_scaleVec;
+	
 
 	std::vector<glm::vec3> m_cubePositions;
 	std::vector<glm::vec3> m_cubeColours;
