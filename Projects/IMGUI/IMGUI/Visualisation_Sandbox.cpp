@@ -24,7 +24,7 @@ Visualisation_Sandbox::Visualisation_Sandbox()
 	m_objectShader{ nullptr },
 	m_mesh{}
 {
-	MeshGenerator::generateCube(m_mesh);
+	MeshGenerator::generateGraph(6,8,m_mesh);
 }
 
 void Visualisation_Sandbox::activate()
@@ -82,5 +82,8 @@ void Visualisation_Sandbox::renderFrame()
 	m_objectShader->setVec3("lightPos", m_lightPos);
 	m_objectShader->setVec3("viewPos", m_camera.m_position);
 
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	m_mesh.draw(m_objectShader);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

@@ -70,4 +70,35 @@ MeshVertex{-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f},
 		m.regenerateMesh(vxs, idxs);
 	}
 
+	// z = 0 for now.
+	void generateGraph(unsigned int width, unsigned int height, Mesh& m)
+	{
+		// always -1 to 1
+		assert(width > 1 && height > 1);
+		double wInterval{ 1 / (double)width };
+		double hInterval{1 / (double)height};
+		unsigned int counter{ 0 };
+		std::vector<MeshVertex> vxs{};
+		for (unsigned int w = 0; w <= width; ++w)
+		{
+			double wPos = (double)w * wInterval;
+			for (unsigned int h = 0; h <= height; ++h)
+			{
+				double hPos = (double)h * hInterval;
+				vxs.push_back(glm::vec3{wPos,hPos,0.0});
+				++counter;
+			}
+		}
+		std::vector<unsigned int> idxs{};
+		for (unsigned int w = 0; w < width; ++w)
+		{
+			for (unsigned int h = 0; h < height; ++h)
+			{
+				std::vector<unsigned int> j{((height+1)*w)+h, ((height+1)*w) +h + 1, ((height+1)*w) +h+height+1,  ((height+1) * w) +h+1, ((height + 1) * w) +h+height+2, ((height + 1) * w) +h+height+1};
+				idxs.insert(idxs.end(),j.begin(),j.end());
+			}
+		}
+		m.regenerateMesh(vxs, idxs);
+	}
+
 }
