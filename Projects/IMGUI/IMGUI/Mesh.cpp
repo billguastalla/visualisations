@@ -2,8 +2,6 @@
 
 void Mesh::draw(Shader* shader)
 {
-
-	gfxDelete();
 	gfxInit();
 
 	// bind appropriate m_textures

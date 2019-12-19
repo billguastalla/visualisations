@@ -20,10 +20,14 @@ public:
 	void setVisualisation(int option);
 	void runVisualisation();
 
+	bool wireframe() const { return m_wireframe; }
+	void setWireframe(bool wireFrame);
+
 	void processAudio(const Buffer & buffer);
 private:
 	std::shared_ptr<Settings_Visualisation> m_settings;
 	std::vector<Visualisation*> m_visualisations;
 	int m_currentVisualisaton;
+	bool m_wireframe;
 };
 

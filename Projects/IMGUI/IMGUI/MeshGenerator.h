@@ -1,5 +1,6 @@
 #pragma once
 #include "Mesh.h"
+#include "MetaDistribution.h"
 
 namespace MeshGenerator
 {
@@ -75,6 +76,12 @@ MeshVertex{-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f},
 	{
 		// always -1 to 1
 		assert(width > 1 && height > 1);
+
+		// temp for z
+		std::normal_distribution<double> xCol{ 0.0,0.01 };
+		AbstractRandomObject a;
+
+		
 		double wInterval{ 1 / (double)width };
 		double hInterval{1 / (double)height};
 		unsigned int counter{ 0 };
@@ -85,7 +92,7 @@ MeshVertex{-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f},
 			for (unsigned int h = 0; h <= height; ++h)
 			{
 				double hPos = (double)h * hInterval;
-				vxs.push_back(glm::vec3{wPos,hPos,0.0});
+				vxs.push_back(glm::vec3{wPos,hPos, xCol(a.mersenneTwister())});
 				++counter;
 			}
 		}

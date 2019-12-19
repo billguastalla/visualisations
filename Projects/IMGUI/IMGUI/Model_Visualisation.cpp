@@ -13,7 +13,8 @@ Model_Visualisation::Model_Visualisation(std::shared_ptr<Settings_Visualisation>
 	:
 	m_settings{settings},
 	m_visualisations{},
-	m_currentVisualisaton{0}
+	m_currentVisualisaton{0},
+	m_wireframe{false}
 	//m_vis_oscilloscope{},
 	//m_vis_cubes{}
 {
@@ -94,6 +95,18 @@ void Model_Visualisation::runVisualisation()
 	{
 		Visualisation * currentVis = m_visualisations[m_currentVisualisaton];
 		currentVis->renderFrame();
+	}
+}
+
+void Model_Visualisation::setWireframe(bool wireFrame)
+{
+	if (m_wireframe != wireFrame)
+	{
+		if(wireFrame)
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		else
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		m_wireframe = wireFrame;
 	}
 }
 

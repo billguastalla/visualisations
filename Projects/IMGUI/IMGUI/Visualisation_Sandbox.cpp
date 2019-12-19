@@ -68,7 +68,7 @@ void Visualisation_Sandbox::renderFrame()
 
 	glm::mat4 model{ 1.0f };
 	float angle = 0.4f * sin(glfwGetTime());
-	model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+	model = glm::rotate(model, glm::radians(angle), glm::vec3(0.4f, 0.3f, 0.5f));
 
 	m_objectShader->setMat4("projection", projection);
 	m_objectShader->setMat4("view", view);
@@ -83,7 +83,7 @@ void Visualisation_Sandbox::renderFrame()
 	m_objectShader->setVec3("viewPos", m_camera.m_position);
 
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	MeshGenerator::generateGraph(20, 30, m_mesh);
+
 	m_mesh.draw(m_objectShader);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

@@ -30,8 +30,12 @@ void Window_Visualisation::draw()
 	std::string visOpts = m_visualisation->visualisationOptionsString();
 	ImGui::Combo("",&sel, &visOpts[0]);
 
+	bool wireframe = m_visualisation->wireframe();
+	ImGui::Checkbox("Wireframe", &wireframe);
+	m_visualisation->setWireframe(wireframe);
 
 	ImGui::End();
 
+	
 	m_visualisation->setVisualisation(sel);
 }

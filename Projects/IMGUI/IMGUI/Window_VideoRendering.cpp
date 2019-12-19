@@ -94,6 +94,5 @@ void Window_VideoRendering::draw()
 		else
 			break;
 	m_videoModel->setFileName(fn);
-
 	ImGui::End();
 }
