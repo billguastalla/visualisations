@@ -78,14 +78,16 @@ MeshVertex{-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f},
 		assert(width > 1 && height > 1);
 
 		// temp for z
-		std::normal_distribution<double> xCol{ 0.0,0.01 };
+		std::normal_distribution<double> xCol{ 0.0,0.02 };
 		AbstractRandomObject a;
 
 		
 		double wInterval{ 1 / (double)width };
 		double hInterval{1 / (double)height};
 		unsigned int counter{ 0 };
+
 		std::vector<MeshVertex> vxs{};
+		/* Vertex Positions */
 		for (unsigned int w = 0; w <= width; ++w)
 		{
 			double wPos = (double)w * wInterval;
@@ -96,6 +98,7 @@ MeshVertex{-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f},
 				++counter;
 			}
 		}
+		/* Triangle indexes */
 		std::vector<unsigned int> idxs{};
 		for (unsigned int w = 0; w < width; ++w)
 		{
@@ -105,6 +108,17 @@ MeshVertex{-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f},
 				idxs.insert(idxs.end(),j.begin(),j.end());
 			}
 		}
+		/* Smooth normals */
+		for (int i = 0; i < idxs.size(); i += 3)
+		{
+			glm::vec3 p = glm::cross(vxs[idxs[i+1]].Position - vxs[idxs[i]].Position, vxs[idxs[i+2]].Position - vxs[idxs[i]].Position);
+			vxs[idxs[i]].Normal += p;
+			vxs[idxs[i+1]].Normal += p;
+			vxs[idxs[i+2]].Normal += p;
+		}
+		for (int i = 0; i < vxs.size(); ++i)
+			vxs[i].Normal = glm::normalize(vxs[i].Normal);
+
 		m.regenerateMesh(vxs, idxs);
 	}
 
