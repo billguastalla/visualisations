@@ -35,6 +35,8 @@ public:
 
 
 	void mouseMovement(float xPos, float yPos, bool mouseDown);
+	void keyMovement(Camera_Movement cm);
+
 	void setCameraMode(const CameraMode & m) { m_cameraMode = m; };
 	
 protected:

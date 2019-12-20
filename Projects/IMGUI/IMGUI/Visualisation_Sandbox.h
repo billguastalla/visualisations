@@ -23,11 +23,13 @@ public:
 	std::string titleString() override { return "Sandbox"; };
 private:
 
-	Shader * m_objectShader;
+	Shader* m_objectShader;
+	Shader* m_lampShader;
 
 	std::deque<double> m_signalPowerHistory;
 
 	glm::vec3 m_lightPos;
 	
 	Mesh m_mesh;
+	Mesh m_lightMesh;
 };

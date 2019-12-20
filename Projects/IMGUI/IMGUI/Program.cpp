@@ -99,6 +99,25 @@ void Program::run()
 
 			//m_modelVisualisation->currentVisualisation()->camera().ProcessMouseMovement();
 		}
+		/* Quickly implement keyboard movement */
+		if (!ImGui::GetIO().WantCaptureKeyboard)
+		{
+			int cm{ 0 };
+			int w = glfwGetKey(m_window, GLFW_KEY_W);
+			int a = glfwGetKey(m_window, GLFW_KEY_A);
+			int s = glfwGetKey(m_window, GLFW_KEY_S);
+			int d = glfwGetKey(m_window, GLFW_KEY_D);
+			if (w == GLFW_PRESS)
+				cm += (int)Camera_Movement::FORWARD;
+			if (a == GLFW_PRESS)
+				cm += (int)Camera_Movement::LEFT;
+			if (s == GLFW_PRESS)
+				cm += (int)Camera_Movement::BACKWARD;
+			if (d == GLFW_PRESS)
+				cm += (int)Camera_Movement::RIGHT;
+			m_modelVisualisation->currentVisualisation()->keyMovement((Camera_Movement)cm);
+		}
+
 
 		
 		m_modelVisualisation->runVisualisation();

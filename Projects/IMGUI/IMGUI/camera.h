@@ -6,10 +6,11 @@
 
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
 enum Camera_Movement {
-	FORWARD,
-	BACKWARD,
-	LEFT,
-	RIGHT
+	NONE = 0x00,
+	FORWARD = 0x01,
+	BACKWARD = 0x02,
+	LEFT = 0x04,
+	RIGHT = 0x08
 };
 
 // Default camera values
@@ -76,13 +77,13 @@ public:
 	void ProcessKeyboard(Camera_Movement direction, float deltaTime)
 	{
 		float velocity = m_movementSpeed * deltaTime;
-		if (direction == FORWARD)
+		if (direction & FORWARD)
 			m_position += m_front * velocity;
-		if (direction == BACKWARD)
+		if (direction & BACKWARD)
 			m_position -= m_front * velocity;
-		if (direction == LEFT)
+		if (direction & LEFT)
 			m_position -= m_right * velocity;
-		if (direction == RIGHT)
+		if (direction & RIGHT)
 			m_position += m_right * velocity;
 	}
 

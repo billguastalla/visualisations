@@ -22,9 +22,10 @@ Visualisation_Sandbox::Visualisation_Sandbox()
 	:
 	m_lightPos{ 0.0f,0.0f,0.0f },
 	m_objectShader{ nullptr },
-	m_mesh{}
+	m_mesh{}, m_lightMesh{}
 {
-	MeshGenerator::generateGraph(6,8,m_mesh);
+	MeshGenerator::generateGraph(200,200,m_mesh);
+	MeshGenerator::generateCube(m_lightMesh);
 }
 
 void Visualisation_Sandbox::activate()
@@ -67,8 +68,9 @@ void Visualisation_Sandbox::renderFrame()
 	glm::mat4 view = m_camera.GetViewMatrix();
 
 	glm::mat4 model{ 1.0f };
-	float angle = 0.4f * sin(glfwGetTime());
-	model = glm::rotate(model, glm::radians(angle), glm::vec3(0.4f, 0.3f, 0.5f));
+	float angle = 90;
+	model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::scale(model, glm::vec3{ 50.0,50.0,50.0 });
 
 	m_objectShader->setMat4("projection", projection);
 	m_objectShader->setMat4("view", view);
@@ -76,14 +78,16 @@ void Visualisation_Sandbox::renderFrame()
 
 
 	glm::mat4 lightModel{ 1.0f };
-	m_lightPos = glm::vec3(10 * sin(glfwGetTime()), 10 * cos(glfwGetTime()), 10 * sin(glfwGetTime()));
+	m_lightPos = glm::vec3(3, 30 * cos(0.1*glfwGetTime()), 30 * sin(0.1*glfwGetTime()));
 	lightModel = glm::translate(lightModel, m_lightPos);
 	lightModel = glm::scale(lightModel, glm::vec3{ 0.2f });
 	m_objectShader->setVec3("lightPos", m_lightPos);
 	m_objectShader->setVec3("viewPos", m_camera.m_position);
 
 
-	MeshGenerator::generateGraph(20, 30, m_mesh);
 
 	m_mesh.draw(m_objectShader);
+	m_objectShader->setMat4("model", lightModel);
+	m_objectShader->setVec3("objectColour", glm::vec3{ 0.8f,0.6f,0.6f });
+	m_lightMesh.draw(m_objectShader);
 }
