@@ -43,13 +43,22 @@ void Window_VideoRendering::draw()
 	ImGui::SameLine();
 	ImGui::InputText("", fnChar, 255);
 
+	//fn = std::string{ fnChar };
+	fn.clear();
+	for (int c = 0; c < 255; ++c)
+		if (fnChar[c] != '\0')
+			fn.push_back(fnChar[c]);
+		else
+			break;
+	m_videoModel->setFileName(fn);
+
 	//bool recAudio{ m_videoModel->recordAudio() };
 	//ImGui::Checkbox("Record Audio", &recAudio);
 	//m_videoModel->setRecordAudio(recAudio);
 
-	//bool renderUI{ m_videoModel->renderUI() };
-	//ImGui::Checkbox("Render UI", &renderUI);
-	//m_videoModel->setRenderUI(renderUI);
+	bool renderUI{ m_videoModel->renderUI() };
+	ImGui::Checkbox("Render Interface", &renderUI);
+	m_videoModel->setRenderUI(renderUI);
 
 
 	ImGui::Text("Transport: ");
@@ -86,13 +95,5 @@ void Window_VideoRendering::draw()
 		m_videoModel->pause();
 
 
-	//fn = std::string{ fnChar };
-	fn.clear();
-	for (int c = 0; c < 255; ++c)
-		if (fnChar[c] != '\0')
-			fn.push_back(fnChar[c]);
-		else
-			break;
-	m_videoModel->setFileName(fn);
 	ImGui::End();
 }

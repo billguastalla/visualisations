@@ -30,6 +30,9 @@ private:
 
 	glm::vec3 m_lightPos;
 	
+	unsigned int m_frameCounter;
 	Mesh m_meshTop, m_meshBottom;
 	Mesh m_lightMesh;
+
+	glm::mat4 m_mainModelMat, m_bottomModelMat, m_topModelMat;
 };

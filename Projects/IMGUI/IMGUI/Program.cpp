@@ -17,7 +17,7 @@
 
 #include <imgui/imgui.h>
 
-Program::Program(GLFWwindow * window, std::string glslVersion)
+Program::Program(GLFWwindow* window, std::string glslVersion)
 	: m_window{ window },
 	m_interface{},
 	m_glslVersion{ glslVersion }
@@ -45,9 +45,9 @@ void Program::initialise()
 	m_modelVisualisation = std::shared_ptr<Model_Visualisation>{ new Model_Visualisation{ m_settingsVisualisation } };
 
 	/* Set up window instances */
-	Window_Abstract * videoRenderWindow = new Window_VideoRendering{ m_modelVideoRendering };
-	Window_Abstract * audioInterfaceWindow = new Window_AudioInterface{ m_modelAudioInterface };
-	Window_Abstract * visualisationWindow = new Window_Visualisation{ m_modelVisualisation };
+	Window_Abstract* videoRenderWindow = new Window_VideoRendering{ m_modelVideoRendering };
+	Window_Abstract* audioInterfaceWindow = new Window_AudioInterface{ m_modelAudioInterface };
+	Window_Abstract* visualisationWindow = new Window_Visualisation{ m_modelVisualisation };
 
 	m_interface.addWindow(videoRenderWindow);
 	m_interface.addWindow(audioInterfaceWindow);
@@ -68,8 +68,6 @@ void Program::run()
 	// Main loop
 	while (!glfwWindowShouldClose(m_window))
 	{
-		m_interface.render();
-
 		//Gist<float> audioAnalysis{ buf.framecountPerChannel(),test.sampleRate() };
 		//audioAnalysis.processAudioFrame(buf.data(0));
 
@@ -89,19 +87,21 @@ void Program::run()
 		}
 
 
-		if (! ImGui::GetIO().WantCaptureMouse)
+		if (!ImGui::GetIO().WantCaptureMouse)
 		{
 			int leftMouse = glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_1);
 			double xPos{ 0.0 }, yPos{ 0.0 };
 			glfwGetCursorPos(m_window, &xPos, &yPos);
 
-			m_modelVisualisation->currentVisualisation()->mouseMovement(xPos,yPos,leftMouse == 1);
+			m_modelVisualisation->currentVisualisation()->mouseMovement(xPos, yPos, leftMouse == 1);
 
 			//m_modelVisualisation->currentVisualisation()->camera().ProcessMouseMovement();
 		}
 		/* Quickly implement keyboard movement */
 		if (!ImGui::GetIO().WantCaptureKeyboard)
 		{
+
+			/* Movement */
 			int cm{ 0 };
 			int w = glfwGetKey(m_window, GLFW_KEY_W);
 			int a = glfwGetKey(m_window, GLFW_KEY_A);
@@ -125,12 +125,29 @@ void Program::run()
 			if (zero == GLFW_PRESS)
 				cm += (int)Camera_Movement::RESET_POSITION;
 			m_modelVisualisation->currentVisualisation()->keyMovement((Camera_Movement)cm);
+
+			/* Show/hide UI*/
+
 		}
 
 
-		
+
 		m_modelVisualisation->runVisualisation();
-		m_modelVideoRendering->renderFrame();
+
+
+		/* If renderUI is enabled, draw the interface before rendering. */
+		if (m_modelVideoRendering->renderUI())
+		{
+			m_interface.render();
+			m_modelVideoRendering->renderFrame();
+
+		}
+		else
+		{
+			m_modelVideoRendering->renderFrame();
+			m_interface.render();
+		}
+
 
 
 		//int visualisation = m_interface.visualisationSelection();

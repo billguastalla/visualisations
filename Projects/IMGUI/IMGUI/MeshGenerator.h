@@ -72,7 +72,7 @@ MeshVertex{-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f},
 	}
 
 	// z = 0 for now.
-	void generateGraph(unsigned int width, unsigned int height, Mesh& m)
+	void generateGraph(unsigned int width, unsigned int height, Mesh& m, std::deque<float> zData = std::deque<float>{})
 	{
 		// always -1 to 1
 		assert(width > 1 && height > 1);
@@ -80,7 +80,9 @@ MeshVertex{-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f},
 		// temp for z
 		std::normal_distribution<double> xCol{ 0.0,0.02 };
 		AbstractRandomObject a;
-
+		if (zData.empty())
+			for (int i = 0; i < (width + 1) * (height + 1); ++i)
+				zData.push_back(xCol(a.mersenneTwister()));
 		
 		double wInterval{ 1 / (double)width };
 		double hInterval{1 / (double)height};
@@ -90,11 +92,12 @@ MeshVertex{-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f},
 		/* Vertex Positions */
 		for (unsigned int w = 0; w <= width; ++w)
 		{
-			double wPos = ((double)w * wInterval) - 0.5;
+			double wPos = ((double)w * wInterval);
 			for (unsigned int h = 0; h <= height; ++h)
 			{
-				double hPos = ((double)h * hInterval) - 0.5;
-				vxs.push_back(glm::vec3{wPos,hPos, xCol(a.mersenneTwister())});
+				double hPos = ((double)h * hInterval);
+				vxs.push_back(glm::vec3{wPos-0.5,hPos-0.5,zData[counter]});
+				vxs[counter].TexCoords = glm::vec2{wPos,hPos};
 				++counter;
 			}
 		}

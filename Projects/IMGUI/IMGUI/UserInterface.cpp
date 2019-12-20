@@ -77,6 +77,14 @@ void UserInterface::render()
 		}
 		ImGui::Text("Properties:\t");
 		ImGui::SliderFloat4("Background Colour", &m_clearColour[0], 0.0f, 1.0f);
+
+		ImGui::Text("Key Bindings:\t");
+		ImGui::Text("\tMove:\t W,A,S,D");
+		ImGui::Text("\tLook around:\t Left-click");
+		ImGui::Text("\tSpeed up/down:\t [ / ]");
+		ImGui::Text("\tReset Position:\t 0");
+
+
 		ImGui::End();
 
 	}

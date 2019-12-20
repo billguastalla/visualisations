@@ -51,7 +51,6 @@ public:
 		m_indices{ i },
 		m_textures{ t },
 		m_gfxInitialised{ false },
-
 		EBO{ 0 },
 		VBO{ 0 },
 		VAO{ 0 }

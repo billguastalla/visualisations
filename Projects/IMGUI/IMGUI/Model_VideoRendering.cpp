@@ -4,7 +4,14 @@
 #include "FFMPEG_Encoder.h"
 
 Model_VideoRendering::Model_VideoRendering(std::shared_ptr<Settings_VideoRendering> & settings)
-	: m_settings{ settings }, m_encoder{ new FFMPEG_Encoder{} }, m_recordState{ RecordState::Stopped }, m_frameRate{ 30 }, m_fileName{ "VideoRenderModule.mpg" }
+	: 
+	m_settings{ settings }, 
+	m_encoder{ new FFMPEG_Encoder{} }, 
+	m_recordState{ RecordState::Stopped }, 
+	m_frameRate{ 30 }, 
+	m_fileName{ "VideoRenderModule.mpg" },
+	m_renderUI{true},
+	m_recordAudio{false}
 {
 
 }

@@ -5,7 +5,7 @@
 #include <portaudio/portaudio.h>
 
 #define SAMPLE_RATE  (44100)
-#define FRAMES_PER_BUFFER (512)
+#define FRAMES_PER_BUFFER (128)
 #define NUM_CHANNELS    (2)
 
 /* Select sample format. */

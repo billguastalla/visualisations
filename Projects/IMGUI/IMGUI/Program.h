@@ -41,6 +41,5 @@ private:
 	std::shared_ptr<Model_VideoRendering> m_modelVideoRendering;
 	std::shared_ptr<Model_AudioInterface> m_modelAudioInterface;
 	std::shared_ptr<Model_Visualisation> m_modelVisualisation;
-
 };
 
