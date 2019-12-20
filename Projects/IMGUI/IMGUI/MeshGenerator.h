@@ -90,10 +90,10 @@ MeshVertex{-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f},
 		/* Vertex Positions */
 		for (unsigned int w = 0; w <= width; ++w)
 		{
-			double wPos = (double)w * wInterval;
+			double wPos = ((double)w * wInterval) - 0.5;
 			for (unsigned int h = 0; h <= height; ++h)
 			{
-				double hPos = (double)h * hInterval;
+				double hPos = ((double)h * hInterval) - 0.5;
 				vxs.push_back(glm::vec3{wPos,hPos, xCol(a.mersenneTwister())});
 				++counter;
 			}

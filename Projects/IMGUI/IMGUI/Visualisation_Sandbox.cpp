@@ -22,9 +22,10 @@ Visualisation_Sandbox::Visualisation_Sandbox()
 	:
 	m_lightPos{ 0.0f,0.0f,0.0f },
 	m_objectShader{ nullptr },
-	m_mesh{}, m_lightMesh{}
+	m_meshTop{}, m_meshBottom{}, m_lightMesh{}
 {
-	MeshGenerator::generateGraph(200,200,m_mesh);
+	MeshGenerator::generateGraph(200, 200, m_meshTop);
+	MeshGenerator::generateGraph(200, 200, m_meshBottom);
 	MeshGenerator::generateCube(m_lightMesh);
 }
 
@@ -58,8 +59,7 @@ void Visualisation_Sandbox::renderFrame()
 {
 	// activate shader
 	m_objectShader->use();
-	m_objectShader->setVec3("lightColour", glm::vec3{ 1.0f,0.5f,0.31f });
-	m_objectShader->setVec3("objectColour", glm::vec3{ 1.0f,0.5f,0.31f });
+	m_objectShader->setVec3("lightColour", glm::vec3{ 0.9f,0.8f,0.81f });
 
 	// pass projection matrix to shader (note that in this case it could change every frame)
 	glm::mat4 projection = glm::perspective(glm::radians(m_camera.m_zoom), (float)1920 / (float)1080, 0.1f, 100.0f);
@@ -70,7 +70,7 @@ void Visualisation_Sandbox::renderFrame()
 	glm::mat4 model{ 1.0f };
 	float angle = 90;
 	model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f));
-	model = glm::scale(model, glm::vec3{ 50.0,50.0,50.0 });
+	model = glm::scale(model, glm::vec3{ 100.0,100.0,30.0 });
 
 	m_objectShader->setMat4("projection", projection);
 	m_objectShader->setMat4("view", view);
@@ -78,14 +78,23 @@ void Visualisation_Sandbox::renderFrame()
 
 
 	glm::mat4 lightModel{ 1.0f };
-	m_lightPos = glm::vec3(3, 30 * cos(0.1*glfwGetTime()), 30 * sin(0.1*glfwGetTime()));
+	m_lightPos = glm::vec3(30 * cos(0.2*glfwGetTime()),0, 30 * sin(0.2*glfwGetTime()));
 	lightModel = glm::translate(lightModel, m_lightPos);
 	lightModel = glm::scale(lightModel, glm::vec3{ 0.2f });
 	m_objectShader->setVec3("lightPos", m_lightPos);
 	m_objectShader->setVec3("viewPos", m_camera.m_position);
 
 
-	m_mesh.draw(m_objectShader);
+	glm::mat4 bottomMeshModelMatrix = glm::translate(model, glm::vec3{ 0.0,0.0,-0.15 });
+	m_objectShader->setMat4("model", bottomMeshModelMatrix);
+	m_objectShader->setVec3("objectColour", glm::vec3{ 0.5f,0.2f,0.11f });
+	m_meshBottom.draw(m_objectShader);
+	glm::mat4 topMeshModelMatrix = glm::translate(model, glm::vec3{ 0.0, 0.0,0.15 });
+	m_objectShader->setMat4("model", topMeshModelMatrix);
+	m_objectShader->setVec3("objectColour", glm::vec3{ 0.2f,0.3f,0.61f });
+	m_meshTop.draw(m_objectShader);
+
+
 	m_objectShader->setMat4("model", lightModel);
 	m_objectShader->setVec3("objectColour", glm::vec3{ 0.8f,0.6f,0.6f });
 	m_lightMesh.draw(m_objectShader);

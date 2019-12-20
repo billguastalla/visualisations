@@ -22,7 +22,7 @@ void main()
 	float diff = max(dot(norm, lightDir),0.0);
 	vec3 diffuse = diff * lightColour;
 
-	float ambientStrength = 0.1;
+	float ambientStrength = 0.3;
 	vec3 ambient = ambientStrength * lightColour;
 	
 	vec3 result = (ambient + diffuse + specular) * objectColour;

@@ -30,6 +30,6 @@ private:
 
 	glm::vec3 m_lightPos;
 	
-	Mesh m_mesh;
+	Mesh m_meshTop, m_meshBottom;
 	Mesh m_lightMesh;
 };
