@@ -107,6 +107,9 @@ void Program::run()
 			int a = glfwGetKey(m_window, GLFW_KEY_A);
 			int s = glfwGetKey(m_window, GLFW_KEY_S);
 			int d = glfwGetKey(m_window, GLFW_KEY_D);
+			int rightBracket = glfwGetKey(m_window, GLFW_KEY_RIGHT_BRACKET);
+			int leftBracket = glfwGetKey(m_window, GLFW_KEY_LEFT_BRACKET);
+			int zero = glfwGetKey(m_window, GLFW_KEY_0);
 			if (w == GLFW_PRESS)
 				cm += (int)Camera_Movement::FORWARD;
 			if (a == GLFW_PRESS)
@@ -115,6 +118,12 @@ void Program::run()
 				cm += (int)Camera_Movement::BACKWARD;
 			if (d == GLFW_PRESS)
 				cm += (int)Camera_Movement::RIGHT;
+			if (rightBracket == GLFW_PRESS)
+				cm += (int)Camera_Movement::INCREASE_MOVEMENT_SPEED;
+			if (leftBracket == GLFW_PRESS)
+				cm += (int)Camera_Movement::DECREASE_MOVEMENT_SPEED;
+			if (zero == GLFW_PRESS)
+				cm += (int)Camera_Movement::RESET_POSITION;
 			m_modelVisualisation->currentVisualisation()->keyMovement((Camera_Movement)cm);
 		}
 

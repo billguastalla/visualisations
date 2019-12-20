@@ -10,7 +10,10 @@ enum Camera_Movement {
 	FORWARD = 0x01,
 	BACKWARD = 0x02,
 	LEFT = 0x04,
-	RIGHT = 0x08
+	RIGHT = 0x08,
+	INCREASE_MOVEMENT_SPEED = 0x10,
+	DECREASE_MOVEMENT_SPEED = 0x20,
+	RESET_POSITION = 0x40,
 };
 
 // Default camera values
@@ -85,6 +88,19 @@ public:
 			m_position -= m_right * velocity;
 		if (direction & RIGHT)
 			m_position += m_right * velocity;
+		if (direction & Camera_Movement::DECREASE_MOVEMENT_SPEED)
+			m_movementSpeed *= 0.95;
+		if (direction & Camera_Movement::INCREASE_MOVEMENT_SPEED)
+			m_movementSpeed *= 1.05;
+		if (direction & Camera_Movement::RESET_POSITION)
+			resetPosition();
+	}
+
+	void resetPosition()
+	{
+		m_position = glm::vec3(0.0f, 0.0f, 0.0f);
+		m_up = glm::vec3(0.0f, 1.0f, 0.0f);
+		updateCameraVectors();
 	}
 
 	// Processes input received from a mouse input system. Expects the offset value in both the x and y direction.

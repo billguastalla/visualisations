@@ -85,7 +85,6 @@ void Visualisation_Sandbox::renderFrame()
 	m_objectShader->setVec3("viewPos", m_camera.m_position);
 
 
-
 	m_mesh.draw(m_objectShader);
 	m_objectShader->setMat4("model", lightModel);
 	m_objectShader->setVec3("objectColour", glm::vec3{ 0.8f,0.6f,0.6f });
