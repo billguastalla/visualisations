@@ -40,23 +40,36 @@ public:
 	std::string fileName() { return m_fileName; }
 	void setFileName(std::string fn) { m_fileName = fn; }
 
+	/* TODO: Connect this to the encoder and set it in the UI */
 	int frameRate() { return m_frameRate; }
-	void setFrameRate(int fr) { m_frameRate = fr; }
+	bool setFrameRate(int fr);
 
 	bool recordAudio() { return m_recordAudio; }
 	void setRecordAudio(bool rec) { m_recordAudio = rec; }
 
 	bool renderUI() { return m_renderUI; }
 	void setRenderUI(bool ren) { m_renderUI = ren; }
+
+	int frameCount() const { return m_frameCount; }
+
+
+	const std::string framerateOptionsString() const;
+	const int combo_FRtoOPT(int fr) const;
+	const int combo_OPTToFR(int opt) const;
+
 private:
 	std::shared_ptr<Settings_VideoRendering> m_settings;
 	std::shared_ptr<FFMPEG_Encoder> m_encoder;
 
 	/* UI Values */
-	//const char *filename, AVCodecID codec_id, int fps, int width, int height
 	RecordState m_recordState;
 	std::string m_fileName;
 	int m_frameRate;
+
+	/*	This is a duplicate of (m_currentFrame in FFMPEG_Encoder) 
+		only to allow the user to see the last video's total framecount after finishing rendering. */
+	int m_frameCount;
+
 	bool m_recordAudio;
 	bool m_renderUI;
 };

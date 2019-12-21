@@ -86,7 +86,6 @@ void Program::run()
 			//m_modelVideoRendering->processAudio();
 		}
 
-
 		if (!ImGui::GetIO().WantCaptureMouse)
 		{
 			int leftMouse = glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_1);
@@ -100,7 +99,6 @@ void Program::run()
 		/* Quickly implement keyboard movement */
 		if (!ImGui::GetIO().WantCaptureKeyboard)
 		{
-
 			/* Movement */
 			int cm{ 0 };
 			int w = glfwGetKey(m_window, GLFW_KEY_W);
@@ -125,48 +123,21 @@ void Program::run()
 			if (zero == GLFW_PRESS)
 				cm += (int)Camera_Movement::RESET_POSITION;
 			m_modelVisualisation->currentVisualisation()->keyMovement((Camera_Movement)cm);
-
-			/* Show/hide UI*/
-
 		}
 
-
-
+		/* Draw the current visualisation. */
 		m_modelVisualisation->runVisualisation();
-
-
-		/* If renderUI is enabled, draw the interface before rendering. */
+		/* If user wants to see UI in the video output, draw the interface before rendering a video frame. */
 		if (m_modelVideoRendering->renderUI())
 		{
 			m_interface.render();
 			m_modelVideoRendering->renderFrame();
-
 		}
 		else
 		{
 			m_modelVideoRendering->renderFrame();
 			m_interface.render();
 		}
-
-
-
-		//int visualisation = m_interface.visualisationSelection();
-		//if (visualisation == 0)
-		//{
-		//	m_vis_oscilloscope.processSamples(audioBuffer, 20);
-		//	m_vis_oscilloscope.renderFrame();
-		//}
-		//else if (visualisation == 1)
-		//{
-		//	m_vis_cubes.processSamples(audioBuffer, 20);
-		//	m_vis_cubes.renderFrame();
-		//}
-
-		/*
-		int display_w, display_h;
-		glfwMakeContextCurrent(window);
-		glfwGetFramebufferSize(window, &display_w, &display_h);
-		glViewport(0, 0, display_w, display_h);*/
 
 		glfwMakeContextCurrent(m_window);
 		glfwSwapBuffers(m_window);
@@ -179,8 +150,6 @@ void Program::run()
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
-
-
 }
 
 //void Program::updateGlobalAudioBuffer(std::shared_ptr<LockableBuffer>& buf)

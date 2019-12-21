@@ -54,10 +54,8 @@ public:
 	/* Finish: */
 	FinishResult ffmpeg_encoder_finish();
 
+	int currentFrame() { return m_currentFrame; }
 private:
-	void allocate();
-	void unallocate();
-
 	bool m_started;
 
 	/*	
@@ -98,5 +96,5 @@ private:
 	/* Frame counting */
 	bool m_countFrames = true;
 	int m_maxFrames = -1;
-	int m_currentFrame = 1;
+	int m_currentFrame;
 };

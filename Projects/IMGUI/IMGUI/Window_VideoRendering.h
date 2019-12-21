@@ -12,7 +12,7 @@ public:
 
 	void draw();
 	const std::string windowTitle() const override { return "Video Rendering"; }
-
+	const std::string recordState() const;
 private:
 	std::shared_ptr<Model_VideoRendering> m_videoModel;
 };

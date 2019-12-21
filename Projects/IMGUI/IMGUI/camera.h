@@ -89,9 +89,9 @@ public:
 		if (direction & RIGHT)
 			m_position += m_right * velocity;
 		if (direction & Camera_Movement::DECREASE_MOVEMENT_SPEED)
-			m_movementSpeed *= 0.95;
+			m_movementSpeed *= 0.95f;
 		if (direction & Camera_Movement::INCREASE_MOVEMENT_SPEED)
-			m_movementSpeed *= 1.05;
+			m_movementSpeed *= 1.05f;
 		if (direction & Camera_Movement::RESET_POSITION)
 			resetPosition();
 	}

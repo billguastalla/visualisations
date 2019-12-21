@@ -21,8 +21,9 @@ public:
 	void renderFrame() override;
 
 	std::string titleString() override { return "Sandbox"; };
-private:
 
+
+private:
 	Shader* m_objectShader;
 	Shader* m_lampShader;
 

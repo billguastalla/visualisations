@@ -9,7 +9,7 @@
 #include <vector>
 #include <string>
 
-Window_VideoRendering::Window_VideoRendering(std::shared_ptr<Model_VideoRendering> & Model)
+Window_VideoRendering::Window_VideoRendering(std::shared_ptr<Model_VideoRendering>& Model)
 	:
 	m_videoModel{ Model }
 {
@@ -43,14 +43,6 @@ void Window_VideoRendering::draw()
 	ImGui::SameLine();
 	ImGui::InputText("", fnChar, 255);
 
-	//fn = std::string{ fnChar };
-	fn.clear();
-	for (int c = 0; c < 255; ++c)
-		if (fnChar[c] != '\0')
-			fn.push_back(fnChar[c]);
-		else
-			break;
-	m_videoModel->setFileName(fn);
 
 	//bool recAudio{ m_videoModel->recordAudio() };
 	//ImGui::Checkbox("Record Audio", &recAudio);
@@ -63,6 +55,23 @@ void Window_VideoRendering::draw()
 
 	ImGui::Text("Transport: ");
 	ImGui::SameLine();
+
+	std::string recordStatus{ "\tStatus: [" };
+	recordStatus.append(recordState());
+	recordStatus.push_back(']');
+	ImGui::Text(recordStatus.c_str());
+
+	std::string frameCount{ "\tFrames rendered: " };
+	frameCount += std::to_string(m_videoModel->frameCount());
+	ImGui::Text(frameCount.c_str());
+
+	ImGui::Text("\tFramerate: ");
+	ImGui::SameLine();
+	int sel = m_videoModel->combo_FRtoOPT(m_videoModel->frameRate());
+	std::string framerateOpts = m_videoModel->framerateOptionsString();
+	ImGui::Combo("", &sel, &framerateOpts[0]);
+	m_videoModel->setFrameRate(m_videoModel->combo_OPTToFR(sel));
+
 
 	bool pauseClicked{ false }, startClicked{ false }, resumeClicked{ false }, stopClicked{ false };
 	switch (m_videoModel->state())
@@ -95,5 +104,30 @@ void Window_VideoRendering::draw()
 		m_videoModel->pause();
 
 
+	fn.clear();
+	for (int c = 0; c < 255; ++c)
+		if (fnChar[c] != '\0')
+			fn.push_back(fnChar[c]);
+		else
+			break;
+	m_videoModel->setFileName(fn);
+
+
+
 	ImGui::End();
+}
+
+const std::string Window_VideoRendering::recordState() const
+{
+	switch (m_videoModel->state())
+	{
+	case Model_VideoRendering::RecordState::Paused:
+		return std::string{ "Paused" };
+	case Model_VideoRendering::RecordState::Started:
+		return std::string{ "Started" };
+	case Model_VideoRendering::RecordState::Stopped:
+		return std::string{ "Stopped" };
+	default:
+		return std::string{ "Unknown" };
+	}
 }

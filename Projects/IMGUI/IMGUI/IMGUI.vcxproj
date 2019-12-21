@@ -181,6 +181,7 @@
     <ClCompile Include="Settings_AudioInterface.cpp" />
     <ClCompile Include="Settings_VideoRendering.cpp" />
     <ClCompile Include="Settings_Visualisation.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Visualisation.cpp" />
     <ClCompile Include="Visualisation_Fractal.cpp" />
     <ClCompile Include="Visualisation_GameOfLife.cpp" />
@@ -224,6 +225,7 @@
     <ClInclude Include="Settings_AudioInterface.h" />
     <ClInclude Include="Settings_VideoRendering.h" />
     <ClInclude Include="Settings_Visualisation.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="Visualisation_Fractal.h" />
     <ClInclude Include="Visualisation_GameOfLife.h" />
     <ClInclude Include="Visualisation_GOL\GameOfLife_Element.h" />

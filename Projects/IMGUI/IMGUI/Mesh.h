@@ -1,6 +1,10 @@
 /*
-Possible features:
-1. Stretching
+Features:
+	1. Implement mandelbrot/julia sets as surfaces
+	2. Redraw sets based on camera distance.
+	3. Programatic texture loading and generation:
+		-> Mesh-based specular map generation
+	4. Skybox
 */
 #pragma once
 #include <glad/glad.h>
@@ -9,13 +13,15 @@ Possible features:
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "shader.h"
+#include "Texture.h"
 
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <vector>
-using namespace std;
+
+using std::vector;
 
 struct MeshVertex
 {
@@ -35,12 +41,6 @@ struct MeshVertex
 	glm::vec3 Tangent;
 	// bitangent
 	glm::vec3 Bitangent;
-};
-
-struct Texture {
-	unsigned int id;
-	string type;
-	string path;
 };
 
 class Mesh {
@@ -64,6 +64,8 @@ public:
 		m_indices = i;
 		m_textures = t;
 	}
+	void addTexture(const Texture& t);
+
 	void draw(Shader* shader);
 private:
 	void gfxInit();

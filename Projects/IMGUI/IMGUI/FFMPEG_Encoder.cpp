@@ -19,7 +19,13 @@ void FFMPEG_Encoder::rgbIntoFrame(AVFrame * frame, const AVCodecContext * ctx, c
 }
 
 FFMPEG_Encoder::FFMPEG_Encoder()
-	: m_started{ false }
+	:
+	m_started{ false },
+	m_AVCodecContext{nullptr},
+	m_AVFrame{nullptr},
+	m_AVPacket{},
+	m_currentFrame{0},
+	m_maxFrames{ -1 }
 {
 }
 

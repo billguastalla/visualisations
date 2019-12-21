@@ -31,12 +31,27 @@ Visualisation_Sandbox::Visualisation_Sandbox()
 	MeshGenerator::generateCube(m_lightMesh);
 
 
+	int s = 64;
+	std::vector<unsigned char> n = TextureGenerator::noise(s, s, 3);
+	Texture tex = TextureGenerator::loadTexture(n, s, s, 3);
+	tex.t = Texture::Type::Diffuse;
+	m_meshTop.addTexture(tex);	
+
+	n = TextureGenerator::noise(s, s, 3);
+	Texture tex2 = TextureGenerator::loadTexture(n, s, s, 3);
+	tex2.t = Texture::Type::Specular;
+	m_meshTop.addTexture(tex2);
+
+
+
+
+
 	float angle = 90;
 	m_mainModelMat = glm::mat4{ 1.0 };
 	m_mainModelMat = glm::rotate(m_mainModelMat, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f));
-	m_mainModelMat = glm::scale(m_mainModelMat, glm::vec3{ 100.0,100.0,30.0 });
-	m_bottomModelMat = glm::translate(m_mainModelMat, glm::vec3{ 0.0,0.0,-0.15 });
-	m_topModelMat = glm::translate(m_mainModelMat, glm::vec3{ 0.0, 0.0,0.15 });
+	m_mainModelMat = glm::scale(m_mainModelMat, glm::vec3{ 50.0,50.0,30.0 });
+	m_bottomModelMat = glm::translate(m_mainModelMat, glm::vec3{ 0.0,0.0,-0.30 });
+	m_topModelMat = glm::translate(m_mainModelMat, glm::vec3{ 0.0, 0.0,0.30 });
 
 
 	//unsigned int texture;
@@ -60,6 +75,10 @@ Visualisation_Sandbox::Visualisation_Sandbox()
 	//	std::cout << "Failed to load texture" << std::endl;
 	//}
 	//stbi_image_free(data);
+
+
+
+
 }
 
 void Visualisation_Sandbox::activate()
@@ -122,7 +141,7 @@ void Visualisation_Sandbox::renderFrame()
 
 
 	glm::mat4 lightModel{ 1.0f };
-	m_lightPos = glm::vec3(30 * cos(0.4 * glfwGetTime()), 0, 30 * sin(0.4 * glfwGetTime()));
+	m_lightPos = glm::vec3(20 * cos(0.4 * glfwGetTime()), 0, 20 * sin(0.4 * glfwGetTime()));
 	lightModel = glm::translate(lightModel, m_lightPos);
 	lightModel = glm::scale(lightModel, glm::vec3{ 0.2f });
 	m_objectShader->setVec3("lightPos", m_lightPos);
