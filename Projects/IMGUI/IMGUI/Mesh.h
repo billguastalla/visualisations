@@ -5,6 +5,9 @@ Features:
 	3. Programatic texture loading and generation:
 		-> Mesh-based specular map generation
 	4. Skybox
+	5. Other surfaces:
+		-> Mobius strip,
+		-> 
 */
 #pragma once
 #include <glad/glad.h>

@@ -1,6 +1,7 @@
 #pragma once
 #include "Visualisation.h"
 #include "Camera.h"
+#include "Mesh.h"
 
 #include <deque>
 #include <complex>

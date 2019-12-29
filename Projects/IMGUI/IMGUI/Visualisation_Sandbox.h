@@ -33,6 +33,10 @@ private:
 	
 	unsigned int m_frameCounter;
 	Mesh m_meshTop, m_meshBottom;
+
+	std::vector<Mesh> m_spheres;
+	std::vector<glm::mat4> m_sphereMats;
+
 	Mesh m_lightMesh;
 
 	glm::mat4 m_mainModelMat, m_bottomModelMat, m_topModelMat;

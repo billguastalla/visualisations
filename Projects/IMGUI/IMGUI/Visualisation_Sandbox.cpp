@@ -28,23 +28,37 @@ Visualisation_Sandbox::Visualisation_Sandbox()
 {
 	MeshGenerator::generateGraph(200, 200, m_meshTop);
 	MeshGenerator::generateGraph(200, 200, m_meshBottom);
+
 	MeshGenerator::generateCube(m_lightMesh);
 
+
+	int iMax{ 1000 };
+	for (int i{2}; i < iMax; ++i)
+	{
+		float thetSubcoil = 2.0f * 3.14159f * (float)i / 40.0f;
+		float thetCircle = 2.0f * 3.14159f * ((float)i / (float)iMax);
+		Mesh m{};
+		glm::mat4 mat{1.0};
+		MeshGenerator::generateSphere(16,m); // (float)(i-5.5f)*4
+		mat = glm::translate(mat, glm::vec3{
+							(10.0f*sin(thetCircle)), 
+							5.0f*cos(thetSubcoil) + (10.0f * cos(thetCircle)),
+							5.0f*cos(thetSubcoil) });
+		mat = glm::scale(mat, glm::vec3{0.4f,0.4f,0.4f});
+		m_spheres.push_back(m);
+		m_sphereMats.push_back(mat);
+	}
 
 	int s = 64;
 	std::vector<unsigned char> n = TextureGenerator::noise(s, s, 3);
 	Texture tex = TextureGenerator::loadTexture(n, s, s, 3);
 	tex.t = Texture::Type::Diffuse;
-	m_meshTop.addTexture(tex);	
+	m_meshTop.addTexture(tex);
 
 	n = TextureGenerator::noise(s, s, 3);
 	Texture tex2 = TextureGenerator::loadTexture(n, s, s, 3);
 	tex2.t = Texture::Type::Specular;
 	m_meshTop.addTexture(tex2);
-
-
-
-
 
 	float angle = 90;
 	m_mainModelMat = glm::mat4{ 1.0 };
@@ -52,7 +66,6 @@ Visualisation_Sandbox::Visualisation_Sandbox()
 	m_mainModelMat = glm::scale(m_mainModelMat, glm::vec3{ 50.0,50.0,30.0 });
 	m_bottomModelMat = glm::translate(m_mainModelMat, glm::vec3{ 0.0,0.0,-0.30 });
 	m_topModelMat = glm::translate(m_mainModelMat, glm::vec3{ 0.0, 0.0,0.30 });
-
 
 	//unsigned int texture;
 	//glGenTextures(1, &texture);
@@ -75,10 +88,6 @@ Visualisation_Sandbox::Visualisation_Sandbox()
 	//	std::cout << "Failed to load texture" << std::endl;
 	//}
 	//stbi_image_free(data);
-
-
-
-
 }
 
 void Visualisation_Sandbox::activate()
@@ -147,6 +156,19 @@ void Visualisation_Sandbox::renderFrame()
 	m_objectShader->setVec3("lightPos", m_lightPos);
 	m_objectShader->setVec3("viewPos", m_camera.m_position);
 
+
+	//glm::mat4 spherModel = glm::mat4{ 1.0 };
+	//spherModel = glm::scale(spherModel, glm::vec3{ 5.0,5.0,5.0 });
+	m_objectShader->setVec3("objectColour", glm::vec3{ 0.25f,0.7f,0.61f });
+
+	auto i = m_spheres.begin();
+	auto j = m_sphereMats.begin();
+	while(i != m_spheres.end() && j != m_sphereMats.end())
+	{
+		m_objectShader->setMat4("model", *j);
+		i->draw(m_objectShader);
+		++i,++j;
+	}
 
 	m_objectShader->setMat4("model", m_bottomModelMat);
 	m_objectShader->setVec3("objectColour", glm::vec3{ 0.5f,0.2f,0.11f });

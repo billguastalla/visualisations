@@ -12,6 +12,7 @@
 
 #include "MetaDistribution.h"
 
+
 #include <iostream>
 #include <complex>
 #include <vector>
@@ -283,7 +284,7 @@ void Visualisation_Fractal::processSamples(const Buffer & buf, unsigned samples)
 	for (size_t i = 0; i < m_cubeColours.size(); ++i)
 		m_cubeColours[i] = glm::vec3{ sin(i * 0.06 * glfwGetTime()),cos(i * 0.12 * glfwGetTime()),sin(i * 0.18 * glfwGetTime()) };
 	
-
+	
 	//m_lineStripData = buildFractalData(c);
 	//glBindBuffer(GL_ARRAY_BUFFER, m_lineStripVBO);
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * seq.size(), &seq[0], GL_STATIC_DRAW);
