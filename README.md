@@ -1,6 +1,6 @@
-# Introduction
-
 ![alt text][Screen1]
+
+# Introduction
 
 Visualisations is a desktop application which can draw a number of visualisations: 3D graphical effects, Cellular Automata, and geometric features.
 Emphasis is placed on the interaction between 3D graphics and real-time audio, and visualisations are able to respond to real-time audio
@@ -16,16 +16,16 @@ as there is little to no platform-specific code.
 
 The directory of the main project is in Projects\Visualisations.
 
-root
-  |- Configurations
-  |- Projects
-  | |- Visualisations
-  | |- StandaloneFeatures
-  | | |- AudioAttributes
-  | | |- HighDimensionalSandbox
-  | | |- Oscilloscope
-  | | |- RenderToFile
-  |- {...}
+root<br/>
+  |----- Configurations<br/>
+  |----- Projects<br/>
+  |-----|----- StandaloneFeatures<br/>
+  |-----|-----|----- AudioAttributes<br/>
+  |-----|-----|----- HighDimensionalSandbox<br/>
+  |-----|-----|----- Oscilloscope<br/>
+  |-----|-----|----- RenderToFile<br/>
+  |-----|----- Visualisations<br/>
+  |----- {...}<br/>
   
 
 Under Projects\StandaloneFeatures\, there are four other projects.
@@ -35,6 +35,8 @@ One justification for this is that as a developer of your own software, you migh
 capabilities were designed in this project. If so you can go to root\StandaloneFeatureDev\RenderToFile, 
 and see how FFMPEG is used in this OpenGL desktop application.
 
+
+![alt text][Screen2]
 
 # Dependencies & Install Instructions
 
@@ -90,8 +92,5 @@ One of the reasons it is useful is because it aligns data types on the CPU close
 [STB Image](https://github.com/nothings/stb) is a C/C++ image loading library, as a single header, stb_image.h.
 
 
-`# Unit Tests
-
-`{...}
-
-[Screen1]: https://billguastalla.com/visualisations/screens/Screen1.png "Visualisations"
+[Screen1]: https://billguastalla.com/visualisations/screens/Screen1.png "Mesh Surface Oscilloscope"
+[Screen2]: https://billguastalla.com/visualisations/screens/Screen2.png "Point Clouds"
