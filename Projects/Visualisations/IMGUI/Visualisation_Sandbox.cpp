@@ -41,10 +41,10 @@ Visualisation_Sandbox::Visualisation_Sandbox()
 		glm::mat4 mat{1.0};
 		MeshGenerator::generateSphere(16,m); // (float)(i-5.5f)*4
 		mat = glm::translate(mat, glm::vec3{
-							(10.0f*sin(thetCircle)), 
-							5.0f*cos(thetSubcoil) + (10.0f * cos(thetCircle)),
-							5.0f*cos(thetSubcoil) });
-		mat = glm::scale(mat, glm::vec3{0.4f,0.4f,0.4f});
+							(15.0f*cos(thetCircle)), 
+							5.0f* cos(thetSubcoil) * (3.0f * tan(thetCircle)),
+							5.0f*tan(thetSubcoil) });
+		mat = glm::scale(mat, glm::vec3{0.3f,0.3f,0.3f});
 		m_spheres.push_back(m);
 		m_sphereMats.push_back(mat);
 	}
@@ -163,11 +163,18 @@ void Visualisation_Sandbox::renderFrame()
 
 	auto i = m_spheres.begin();
 	auto j = m_sphereMats.begin();
+	int k = 0;
 	while(i != m_spheres.end() && j != m_sphereMats.end())
 	{
+		float componentPhase1 = (float)((int)(glfwGetTime() * 20 + (5*k)) % 255) / 255.0f;
+		float componentPhase2 = (float)((int)(glfwGetTime() * 30 + (7*k)) % 255) / 255.0f;
+		float componentPhase3 = (float)((int)(glfwGetTime() * 50 + (11*k)) % 255) / 255.0f;
+		
+
 		m_objectShader->setMat4("model", *j);
+		m_objectShader->setVec3("objectColour", glm::vec3{ componentPhase1,componentPhase2, componentPhase3});
 		i->draw(m_objectShader);
-		++i,++j;
+		++i,++j, ++k;
 	}
 
 	m_objectShader->setMat4("model", m_bottomModelMat);
