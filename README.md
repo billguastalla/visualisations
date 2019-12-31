@@ -17,15 +17,15 @@ as there is little to no platform-specific code.
 The directory of the main project is in Projects\Visualisations.
 
 root<br/>
-  |- Configurations<br/>
-  |- Projects<br/>
-  | |- Visualisations<br/>
-  | |- StandaloneFeatures<br/>
-  | | |- AudioAttributes<br/>
-  | | |- HighDimensionalSandbox<br/>
-  | | |- Oscilloscope<br/>
-  | | |- RenderToFile<br/>
-  |- {...}<br/>
+  |----- Configurations<br/>
+  |----- Projects<br/>
+  |     |----- StandaloneFeatures<br/>
+  |     |     |----- AudioAttributes<br/>
+  |     |     |----- HighDimensionalSandbox<br/>
+  |     |     |----- Oscilloscope<br/>
+  |     |     |----- RenderToFile<br/>
+  |     |----- Visualisations<br/>
+  |----- {...}<br/>
   
 
 Under Projects\StandaloneFeatures\, there are four other projects.
