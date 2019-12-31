@@ -1,0 +1,342 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Graphics">
+      <UniqueIdentifier>{efa638b5-0549-452d-a352-4c8abc5e1476}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Audio Modules">
+      <UniqueIdentifier>{cd4ecbc4-642d-47e7-90c9-82757c6008cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Visualisations">
+      <UniqueIdentifier>{86764f44-ae0a-4bd8-bc68-97077704019d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Visualisations\Engine">
+      <UniqueIdentifier>{73b7d8f6-17b0-45e6-8827-075c751d52b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Visualisations\Implementations">
+      <UniqueIdentifier>{67d455ff-9e3a-4a96-9d12-7b1f79458306}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics">
+      <UniqueIdentifier>{8de58a76-91c9-4a7f-b1ec-9ea084ab5c39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Visualisations">
+      <UniqueIdentifier>{8aff6159-ffe3-410d-b4b0-6870590f13be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Visualisations\Engine">
+      <UniqueIdentifier>{3e4ca746-88fa-4ef2-aeed-cbd3eb798b00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Visualisations\Implementations">
+      <UniqueIdentifier>{f647b7b1-f187-40e2-a324-c7b524420a09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI">
+      <UniqueIdentifier>{59668d22-d40f-4ebd-838e-83d1d920ad03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI\imgui">
+      <UniqueIdentifier>{a5ff7cdd-1aac-44c2-91bd-839bf630311c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Program">
+      <UniqueIdentifier>{7a6e4d02-6480-40cc-8dd1-b2c554ed2494}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Program">
+      <UniqueIdentifier>{b918123e-9b21-4cbc-ad10-9a2ae62e02e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI">
+      <UniqueIdentifier>{26c9bf4d-fa2f-4564-9ec4-8b372f2c2a55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI\imgui">
+      <UniqueIdentifier>{e7f893fd-02d3-4d62-840f-afa3e28a72b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Video Rendering">
+      <UniqueIdentifier>{de97881e-4299-4a1f-ae10-c8c1758ce002}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Video Rendering">
+      <UniqueIdentifier>{917b9847-9dbd-4a8c-a7d1-b1403d59e67f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI\Windows">
+      <UniqueIdentifier>{8f2664ac-fd19-47ea-a3a2-79b70cc8853a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI\Windows">
+      <UniqueIdentifier>{3b192587-ea67-4614-8f88-673ea24ba72e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Program\Controllers">
+      <UniqueIdentifier>{48b7b00f-570c-42d9-8e2f-ac7acef11973}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Program\Controllers\Settings">
+      <UniqueIdentifier>{3d1598c0-ac36-4c20-a90d-03d204fe4758}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Program\Controllers">
+      <UniqueIdentifier>{1427295d-3860-431d-a3ee-ccee575e8018}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Program\Controllers\Settings">
+      <UniqueIdentifier>{6b5c0090-fa5c-4412-b3f5-298576dd7735}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio Interface">
+      <UniqueIdentifier>{2dbeffd9-2404-4644-8fc1-d594fad7c77b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Audio Modules\Analysis">
+      <UniqueIdentifier>{94f689f7-b901-4947-b557-692c3ea9bb1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Visualisations\Engine\GameOfLife">
+      <UniqueIdentifier>{1fffa070-d56b-4322-ba06-ec872c3bfa94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Visualisations\Engine\GameOfLife">
+      <UniqueIdentifier>{fd9d4cd3-6b23-454b-9f15-c9375280c12f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Visualisations\Engine\Models">
+      <UniqueIdentifier>{5cc7a0bf-2372-42b5-bff0-e83deae2a97d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Recorder.cpp">
+      <Filter>Source Files\Audio Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer.cpp">
+      <Filter>Source Files\Audio Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Includes\glad\glad.c">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Includes\imgui\imgui.cpp">
+      <Filter>Source Files\UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Includes\imgui\examples\imgui_impl_glfw.cpp">
+      <Filter>Source Files\UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Includes\imgui\examples\imgui_impl_opengl3.cpp">
+      <Filter>Source Files\UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Includes\imgui\imgui_draw.cpp">
+      <Filter>Source Files\UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Includes\imgui\imgui_demo.cpp">
+      <Filter>Source Files\UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation_Cubes.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation_Oscilloscope.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Program.cpp">
+      <Filter>Source Files\Program</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="FFMPEG_Encoder.cpp">
+      <Filter>Source Files\Video Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Window_VideoRendering.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings_VideoRendering.cpp">
+      <Filter>Source Files\Program\Controllers\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings_AudioInterface.cpp">
+      <Filter>Source Files\Program\Controllers\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings_Visualisation.cpp">
+      <Filter>Source Files\Program\Controllers\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="Window_Visualisation.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Window_AudioInterface.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Window_Abstract.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_AudioInterface.cpp">
+      <Filter>Source Files\Program\Controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_VideoRendering.cpp">
+      <Filter>Source Files\Program\Controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_Visualisation.cpp">
+      <Filter>Source Files\Program\Controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Includes\kissfft\kiss_fft.c">
+      <Filter>Source Files\Audio Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation_PointClouds.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation_Fractal.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation_Sandbox.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation_GOL\GameOfLife_Element.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation_GOL\GameOfLife_ElementList.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation_GOL\GameOfLife_Game.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation_GOL\GameOfLife_Grid.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation_GameOfLife.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation_Splinters.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Buffer.h">
+      <Filter>Header Files\Audio Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Recorder.h">
+      <Filter>Header Files\Audio Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Includes\imgui\imgui.h">
+      <Filter>Header Files\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Includes\imgui\imgui_internal.h">
+      <Filter>Header Files\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Includes\imgui\imconfig.h">
+      <Filter>Header Files\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Includes\imgui\stb_rect_pack.h">
+      <Filter>Header Files\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Includes\imgui\stb_textedit.h">
+      <Filter>Header Files\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Includes\imgui\stb_truetype.h">
+      <Filter>Header Files\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Header Files\Graphics\Visualisations\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files\Graphics\Visualisations\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_Oscilloscope.h">
+      <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_Cubes.h">
+      <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation.h">
+      <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="Program.h">
+      <Filter>Header Files\Program</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface.h">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\Graphics\Visualisations\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="FFMPEG_Encoder.h">
+      <Filter>Header Files\Video Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Window_VideoRendering.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings_VideoRendering.h">
+      <Filter>Header Files\Program\Controllers\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings_AudioInterface.h">
+      <Filter>Header Files\Program\Controllers\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Window_Visualisation.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Window_AudioInterface.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings_Visualisation.h">
+      <Filter>Header Files\Program\Controllers\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Window_Abstract.h">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_AudioInterface.h">
+      <Filter>Header Files\Program\Controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_VideoRendering.h">
+      <Filter>Header Files\Program\Controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_Visualisation.h">
+      <Filter>Header Files\Program\Controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_PointClouds.h">
+      <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="MetaDistribution.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractRandomObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_Fractal.h">
+      <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_Sandbox.h">
+      <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_GOL\GameOfLife_Element.h">
+      <Filter>Header Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_GOL\GameOfLife_ElementList.h">
+      <Filter>Header Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_GOL\GameOfLife_Game.h">
+      <Filter>Header Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_GOL\GameOfLife_Grid.h">
+      <Filter>Header Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_GameOfLife.h">
+      <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_Splinters.h">
+      <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files\Graphics\Visualisations\Engine\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshGenerator.h">
+      <Filter>Header Files\Graphics\Visualisations\Engine\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files\Graphics\Visualisations\Engine\Models</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
