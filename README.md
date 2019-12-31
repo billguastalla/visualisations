@@ -4,6 +4,9 @@ Visualisations is a desktop application which can draw a number of visualisation
 Emphasis is placed on the interaction between 3D graphics and real-time audio, and visualisations are able to respond to real-time audio
 from a microphone. Individual visualisations can be encoded and written to file to mpg video files within the application.
 
+
+![alt text][Screen1]
+
 ## Platforms and Development Environments
 
 The project is developed on a Windows 10 x64 environment, on Visual Studio 2019, version 16.1.3.
@@ -66,15 +69,16 @@ Below are descriptions of each library used, and links to find their sources.
 
 [GLFW](https://www.glfw.org/) is a window manager to provide contexts to draw OpenGL framebuffers, and to retrieve events from human-interface devices.
 
-### PORTAUDIO (Last used version )
+### PORTAUDIO (Last used version 1246720)
 
 [PortAudio](http://www.portaudio.com/) is a general multi-platform interface to audio hardware. It is used here to record real-time audio.
 
 ## Dependencies: Header-only
 
-### GLM
+### GLM (Last Used Version ?)
 
-[GLM](https://glm.g-truc.net/0.9.9/index.html)
+[GLM](https://glm.g-truc.net/0.9.9/index.html) is a mathematics and vector library for use with OpenGL.
+One of the reasons it is useful is because it aligns data types on the CPU closely with the native types of the GLSL shading language.
 
 ### IMGUI (Last Used Version: 1.6.2)
 
@@ -83,3 +87,10 @@ Below are descriptions of each library used, and links to find their sources.
 ### STB-Image (Last Used Version: 2.1.9)
 
 [STB Image](https://github.com/nothings/stb) is a C/C++ image loading library, as a single header, stb_image.h.
+
+
+# Unit Tests
+
+{...}
+
+[Screen1]: https://billguastalla.com/visualisations/screens/screen1.png "Visualisations"

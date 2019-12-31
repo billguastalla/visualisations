@@ -32,6 +32,7 @@ Recorder::Recorder()
 {
 	m_err = Pa_Initialize();
 
+
 	m_inputParameters.device = Pa_GetDefaultInputDevice(); /* default input device */
 	m_inputParameters.channelCount = 2;                    /* stereo input */
 	m_inputParameters.sampleFormat = PA_SAMPLE_TYPE;
