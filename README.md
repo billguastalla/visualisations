@@ -19,12 +19,12 @@ The directory of the main project is in Projects\Visualisations.
 root<br/>
   |----- Configurations<br/>
   |----- Projects<br/>
-  |     |----- StandaloneFeatures<br/>
-  |     |     |----- AudioAttributes<br/>
-  |     |     |----- HighDimensionalSandbox<br/>
-  |     |     |----- Oscilloscope<br/>
-  |     |     |----- RenderToFile<br/>
-  |     |----- Visualisations<br/>
+  |-----|----- StandaloneFeatures<br/>
+  |-----|-----|----- AudioAttributes<br/>
+  |-----|-----|----- HighDimensionalSandbox<br/>
+  |-----|-----|----- Oscilloscope<br/>
+  |-----|-----|----- RenderToFile<br/>
+  |-----|----- Visualisations<br/>
   |----- {...}<br/>
   
 
