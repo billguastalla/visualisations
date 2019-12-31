@@ -1,11 +1,10 @@
 # Introduction
 
+![alt text][Screen1]
+
 Visualisations is a desktop application which can draw a number of visualisations: 3D graphical effects, Cellular Automata, and geometric features.
 Emphasis is placed on the interaction between 3D graphics and real-time audio, and visualisations are able to respond to real-time audio
 from a microphone. Individual visualisations can be encoded and written to file to mpg video files within the application.
-
-
-![alt text][Screen1]
 
 ## Platforms and Development Environments
 
@@ -18,14 +17,16 @@ as there is little to no platform-specific code.
 The directory of the main project is in Projects\Visualisations.
 
 root
-	\Configurations
-	\Projects
-		\Visualisations
-		\StandaloneFeatures
-			\AudioAttributes
-			\HighDimensionalSandbox
-			\Oscilloscope
-			\RenderToFile
+  |- Configurations
+  |- Projects
+  | |- Visualisations
+  | |- StandaloneFeatures
+  | | |- AudioAttributes
+  | | |- HighDimensionalSandbox
+  | | |- Oscilloscope
+  | | |- RenderToFile
+  |- {...}
+  
 
 Under Projects\StandaloneFeatures\, there are four other projects.
 These exist to demonstrate specific features used or to be used in the main project, as standalone projects.
@@ -89,8 +90,8 @@ One of the reasons it is useful is because it aligns data types on the CPU close
 [STB Image](https://github.com/nothings/stb) is a C/C++ image loading library, as a single header, stb_image.h.
 
 
-# Unit Tests
+`# Unit Tests
 
-{...}
+`{...}
 
 [Screen1]: https://billguastalla.com/visualisations/screens/Screen1.png "Visualisations"
