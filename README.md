@@ -1,6 +1,6 @@
-# Introduction
-
 ![alt text][Screen1]
+
+# Introduction
 
 Visualisations is a desktop application which can draw a number of visualisations: 3D graphical effects, Cellular Automata, and geometric features.
 Emphasis is placed on the interaction between 3D graphics and real-time audio, and visualisations are able to respond to real-time audio
@@ -16,16 +16,16 @@ as there is little to no platform-specific code.
 
 The directory of the main project is in Projects\Visualisations.
 
-root
-  |- Configurations
-  |- Projects
-  | |- Visualisations
-  | |- StandaloneFeatures
-  | | |- AudioAttributes
-  | | |- HighDimensionalSandbox
-  | | |- Oscilloscope
-  | | |- RenderToFile
-  |- {...}
+root<br/>
+  |- Configurations<br/>
+  |- Projects<br/>
+  | |- Visualisations<br/>
+  | |- StandaloneFeatures<br/>
+  | | |- AudioAttributes<br/>
+  | | |- HighDimensionalSandbox<br/>
+  | | |- Oscilloscope<br/>
+  | | |- RenderToFile<br/>
+  |- {...}<br/>
   
 
 Under Projects\StandaloneFeatures\, there are four other projects.
