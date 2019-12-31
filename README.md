@@ -93,4 +93,4 @@ One of the reasons it is useful is because it aligns data types on the CPU close
 
 {...}
 
-[Screen1]: https://billguastalla.com/visualisations/screens/screen1.png "Visualisations"
+[Screen1]: https://billguastalla.com/visualisations/screens/Screen1.png "Visualisations"
