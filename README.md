@@ -36,6 +36,8 @@ capabilities were designed in this project. If so you can go to root\StandaloneF
 and see how FFMPEG is used in this OpenGL desktop application.
 
 
+![alt text][Screen2]
+
 # Dependencies & Install Instructions
 
 The project uses a mixture of shared and static libraries. It's advisable for contributors to build the dependencies locally,
@@ -90,8 +92,5 @@ One of the reasons it is useful is because it aligns data types on the CPU close
 [STB Image](https://github.com/nothings/stb) is a C/C++ image loading library, as a single header, stb_image.h.
 
 
-`# Unit Tests
-
-`{...}
-
-[Screen1]: https://billguastalla.com/visualisations/screens/Screen1.png "Visualisations"
+[Screen1]: https://billguastalla.com/visualisations/screens/Screen1.png "Mesh Surface Oscilloscope"
+[Screen2]: https://billguastalla.com/visualisations/screens/Screen2.png "Point Clouds"
