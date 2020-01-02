@@ -23,10 +23,12 @@ public:
 
 	void run();
 
-
 	/* This one way to do it, not very thought through yet. */
 //	void updateGlobalAudioBuffer(std::shared_ptr<LockableBuffer> & buf);
 private:
+	void interpretMouseInput();
+	void interpretKeyboardInput();
+
 	GLFWwindow * m_window;
 	std::string m_glslVersion;
 

@@ -93,8 +93,8 @@
     <LibraryPath>..\Libraries\$(Platform)\$(Configuration);..\..\IMGUI\$(Platform)\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>..\..\IMGUI;..\Includes;$(IncludePath)</IncludePath>
-    <LibraryPath>..\Libraries\$(Platform)\$(Configuration);..\..\IMGUI\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>..\..\Visualisations;..\Includes;$(IncludePath)</IncludePath>
+    <LibraryPath>..\Libraries\$(Platform)\$(Configuration);..\..\Visualisations\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
