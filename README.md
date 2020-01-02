@@ -6,6 +6,13 @@ Visualisations is a desktop application which can draw a number of visualisation
 Emphasis is placed on the interaction between 3D graphics and real-time audio, and visualisations are able to respond to real-time audio
 from a microphone. Individual visualisations can be encoded and written to file to mpg video files within the application.
 
+## Running
+
+Installers for releases are made available for Windows 10 x64,
+and the binaries are available [here](https://billguastalla.com/visualisations/binaries/).
+
+Installers are produced using [NSIS](https://nsis.sourceforge.io/Main_Page).
+
 ## Platforms and Development Environments
 
 The project is developed on a Windows 10 x64 environment, on Visual Studio 2019, version 16.1.3.
