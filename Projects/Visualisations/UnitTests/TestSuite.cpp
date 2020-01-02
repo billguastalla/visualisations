@@ -4,7 +4,6 @@
 #include <IMGUI\Buffer.h>
 #include <IMGUI\Recorder.h>
 #include <portaudio\portaudio.h>
-
 #include <IMGUI\FFMPEG_Encoder.h>
 
 TEST_CASE("PORTAUDIO: Devices Exist")
