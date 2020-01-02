@@ -24,13 +24,16 @@ Visualisation_Sandbox::Visualisation_Sandbox()
 	:
 	m_lightPos{ 0.0f,0.0f,0.0f },
 	m_objectShader{ nullptr },
-	m_meshTop{}, m_meshBottom{}, m_lightMesh{}
+	m_lampShader{nullptr},
+	m_meshTop{},
+	m_meshBottom{},
+	m_lightMesh{},
+	m_frameCounter{ 0 }
 {
 	MeshGenerator::generateGraph(200, 200, m_meshTop);
 	MeshGenerator::generateGraph(200, 200, m_meshBottom);
 
 	MeshGenerator::generateCube(m_lightMesh);
-
 
 	int iMax{ 1000 };
 	for (int i{2}; i < iMax; ++i)
@@ -157,6 +160,9 @@ void Visualisation_Sandbox::renderFrame()
 	m_objectShader->setVec3("viewPos", m_camera.m_position);
 
 
+
+
+
 	//glm::mat4 spherModel = glm::mat4{ 1.0 };
 	//spherModel = glm::scale(spherModel, glm::vec3{ 5.0,5.0,5.0 });
 	m_objectShader->setVec3("objectColour", glm::vec3{ 0.25f,0.7f,0.61f });
@@ -164,8 +170,22 @@ void Visualisation_Sandbox::renderFrame()
 	auto i = m_spheres.begin();
 	auto j = m_sphereMats.begin();
 	int k = 0;
+	size_t kMax{ m_sphereMats.size() };
 	while(i != m_spheres.end() && j != m_sphereMats.end())
 	{
+		float thetSubcoil = 2.0f * 3.14159f * (float)k / 40.0f;
+		float thetCircle = 2.0f * 3.14159f * ((float)k / (float)kMax);
+		thetSubcoil += (glfwGetTime()*0.1);
+		thetCircle += (glfwGetTime()*0.02);
+
+		glm::mat4 & mat = *j;
+		*j = glm::mat4{ 1.0 };
+		*j = glm::translate(*j, glm::vec3{
+							(15.0f * cos(thetCircle)),
+							5.0f * cos(thetSubcoil) * (3.0f * tan(thetCircle)),
+							5.0f * tan(thetSubcoil) });
+		mat = glm::scale(mat, glm::vec3{ 0.3f,0.3f,0.3f });
+
 		float componentPhase1 = (float)((int)(glfwGetTime() * 20 + (5*k)) % 255) / 255.0f;
 		float componentPhase2 = (float)((int)(glfwGetTime() * 30 + (7*k)) % 255) / 255.0f;
 		float componentPhase3 = (float)((int)(glfwGetTime() * 50 + (11*k)) % 255) / 255.0f;
