@@ -12,6 +12,8 @@ The project is developed on a Windows 10 x64 environment, on Visual Studio 2019,
 It is possible to build it on linux environments, and this should be reasonably easy,
 as there is little to no platform-specific code.
 
+<!--  -->
+
 ## Projects in this Repository
 
 The directory of the main project is in Projects\Visualisations.
@@ -34,7 +36,6 @@ These exist to demonstrate specific features used or to be used in the main proj
 One justification for this is that as a developer of your own software, you might just want to see the how video rendering
 capabilities were designed in this project. If so you can go to root\StandaloneFeatureDev\RenderToFile, 
 and see how FFMPEG is used in this OpenGL desktop application.
-
 
 ![alt text][Screen2]
 
@@ -91,6 +92,11 @@ One of the reasons it is useful is because it aligns data types on the CPU close
 
 [STB Image](https://github.com/nothings/stb) is a C/C++ image loading library, as a single header, stb_image.h.
 
+# Unit Tests
+
+Unit tests are written in a project called UnitTests, under the main solution.
+The framework for unit testing used here is called [Catch2](https://github.com/catchorg/Catch2/blob/master/docs/tutorial.md).
+To add new unit tests, look at TestSuite.cpp.
 
 [Screen1]: https://billguastalla.com/visualisations/screens/Screen1.png "Mesh Surface Oscilloscope"
 [Screen2]: https://billguastalla.com/visualisations/screens/Screen2.png "Point Clouds"
