@@ -7,7 +7,7 @@ Features:
 	4. Skybox
 	5. Other surfaces:
 		-> Mobius strip,
-		-> 
+		->
 */
 #pragma once
 #include <glad/glad.h>
@@ -59,6 +59,19 @@ public:
 		VAO{ 0 }
 	{
 	}
+	/* Copy */
+	Mesh(const Mesh& other)
+		:
+		m_vertices{ other.m_vertices },
+		m_indices{ other.m_indices },
+		m_textures{ other.m_textures },
+		m_gfxInitialised{ false },
+		EBO{ 0 },
+		VBO{ 0 },
+		VAO{ 0 }
+	{
+	}
+
 
 	void regenerateMesh(vector<MeshVertex> v, vector<unsigned int> i, vector<Texture> t = vector<Texture>{})
 	{
@@ -70,6 +83,10 @@ public:
 	void addTexture(const Texture& t);
 
 	void draw(Shader* shader);
+
+	void appendMesh(const Mesh& other);
+	void translate(const glm::vec3& pos);
+	void scale(const glm::vec3& mag);
 private:
 	void gfxInit();
 	void gfxDelete();

@@ -42,7 +42,7 @@ Visualisation_Sandbox::Visualisation_Sandbox()
 		float thetCircle = 2.0f * 3.14159f * ((float)i / (float)iMax);
 		Mesh m{};
 		glm::mat4 mat{1.0};
-		MeshGenerator::generateSphere(16,m); // (float)(i-5.5f)*4
+		MeshGenerator::generateArrow(m); // (float)(i-5.5f)*4
 		mat = glm::translate(mat, glm::vec3{
 							(15.0f*cos(thetCircle)), 
 							5.0f* cos(thetSubcoil) * (3.0f * tan(thetCircle)),
@@ -175,8 +175,8 @@ void Visualisation_Sandbox::renderFrame()
 	{
 		float thetSubcoil = 2.0f * 3.14159f * (float)k / 40.0f;
 		float thetCircle = 2.0f * 3.14159f * ((float)k / (float)kMax);
-		thetSubcoil += (glfwGetTime()*0.1);
-		thetCircle += (glfwGetTime()*0.02);
+		thetSubcoil += (glfwGetTime()*0.01);
+		thetCircle += (glfwGetTime()*0.005);
 
 		glm::mat4 & mat = *j;
 		*j = glm::mat4{ 1.0 };
