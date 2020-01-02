@@ -147,16 +147,16 @@ MeshVertex{-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f},
 			}
 		} // 0,1,res,res,1,res+1  do from: 0 to < res ,
 		std::vector<unsigned int> idxs;
-		for (unsigned int w = 0; w <= res-1; ++w)
-			for(unsigned int h = 0; h <= res; ++h)
+		for (unsigned int w = 0; w < res; ++w)
+			for(unsigned int h = 0; h < res; ++h)
 		{
 			std::vector<unsigned int> j{
 				((res + 1) * w) + h,
 				((res + 1) * w) + h + 1,
-				((res + 1) * w) + h + res, 
+				((res + 1) * w) + h + res + 1, 
 				((res + 1) * w) + h + 1,
-				((res + 1) * w) + h + res + 1,
-				((res + 1) * w) + h + res
+				((res + 1) * w) + h + res + 2,
+				((res + 1) * w) + h + res + 1
 			};
 			idxs.insert(idxs.end(), j.begin(), j.end());
 		}
