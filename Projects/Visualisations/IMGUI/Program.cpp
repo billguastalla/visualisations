@@ -85,45 +85,8 @@ void Program::run()
 			m_modelVisualisation->processAudio(currentAudio);
 			//m_modelVideoRendering->processAudio();
 		}
-
-		if (!ImGui::GetIO().WantCaptureMouse)
-		{
-			int leftMouse = glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_1);
-			double xPos{ 0.0 }, yPos{ 0.0 };
-			glfwGetCursorPos(m_window, &xPos, &yPos);
-
-			m_modelVisualisation->currentVisualisation()->mouseMovement(xPos, yPos, leftMouse == 1);
-
-			//m_modelVisualisation->currentVisualisation()->camera().ProcessMouseMovement();
-		}
-		/* Quickly implement keyboard movement */
-		if (!ImGui::GetIO().WantCaptureKeyboard)
-		{
-			/* Movement */
-			int cm{ 0 };
-			int w = glfwGetKey(m_window, GLFW_KEY_W);
-			int a = glfwGetKey(m_window, GLFW_KEY_A);
-			int s = glfwGetKey(m_window, GLFW_KEY_S);
-			int d = glfwGetKey(m_window, GLFW_KEY_D);
-			int rightBracket = glfwGetKey(m_window, GLFW_KEY_RIGHT_BRACKET);
-			int leftBracket = glfwGetKey(m_window, GLFW_KEY_LEFT_BRACKET);
-			int zero = glfwGetKey(m_window, GLFW_KEY_0);
-			if (w == GLFW_PRESS)
-				cm += (int)Camera_Movement::FORWARD;
-			if (a == GLFW_PRESS)
-				cm += (int)Camera_Movement::LEFT;
-			if (s == GLFW_PRESS)
-				cm += (int)Camera_Movement::BACKWARD;
-			if (d == GLFW_PRESS)
-				cm += (int)Camera_Movement::RIGHT;
-			if (rightBracket == GLFW_PRESS)
-				cm += (int)Camera_Movement::INCREASE_MOVEMENT_SPEED;
-			if (leftBracket == GLFW_PRESS)
-				cm += (int)Camera_Movement::DECREASE_MOVEMENT_SPEED;
-			if (zero == GLFW_PRESS)
-				cm += (int)Camera_Movement::RESET_POSITION;
-			m_modelVisualisation->currentVisualisation()->keyMovement((Camera_Movement)cm);
-		}
+		interpretMouseInput();
+		interpretKeyboardInput();
 
 		/* Draw the current visualisation. */
 		m_modelVisualisation->runVisualisation();
@@ -149,6 +112,52 @@ void Program::run()
 			glClearColor(0.3f, 0.4f, 0.1f, 1.0f);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+}
+
+void Program::interpretMouseInput()
+{
+	if (!ImGui::GetIO().WantCaptureMouse)
+	{
+		int leftMouse = glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_1);
+		double xPos{ 0.0 }, yPos{ 0.0 };
+		glfwGetCursorPos(m_window, &xPos, &yPos);
+
+		m_modelVisualisation->currentVisualisation()->mouseMovement(xPos, yPos, leftMouse == 1);
+
+		//m_modelVisualisation->currentVisualisation()->camera().ProcessMouseMovement();
+	}
+}
+
+void Program::interpretKeyboardInput()
+{
+	/* Quickly implement keyboard movement */
+	if (!ImGui::GetIO().WantCaptureKeyboard)
+	{
+		/* Movement */
+		int cm{ 0 };
+		int w = glfwGetKey(m_window, GLFW_KEY_W);
+		int a = glfwGetKey(m_window, GLFW_KEY_A);
+		int s = glfwGetKey(m_window, GLFW_KEY_S);
+		int d = glfwGetKey(m_window, GLFW_KEY_D);
+		int rightBracket = glfwGetKey(m_window, GLFW_KEY_RIGHT_BRACKET);
+		int leftBracket = glfwGetKey(m_window, GLFW_KEY_LEFT_BRACKET);
+		int zero = glfwGetKey(m_window, GLFW_KEY_0);
+		if (w == GLFW_PRESS)
+			cm += (int)Camera_Movement::FORWARD;
+		if (a == GLFW_PRESS)
+			cm += (int)Camera_Movement::LEFT;
+		if (s == GLFW_PRESS)
+			cm += (int)Camera_Movement::BACKWARD;
+		if (d == GLFW_PRESS)
+			cm += (int)Camera_Movement::RIGHT;
+		if (rightBracket == GLFW_PRESS)
+			cm += (int)Camera_Movement::INCREASE_MOVEMENT_SPEED;
+		if (leftBracket == GLFW_PRESS)
+			cm += (int)Camera_Movement::DECREASE_MOVEMENT_SPEED;
+		if (zero == GLFW_PRESS)
+			cm += (int)Camera_Movement::RESET_POSITION;
+		m_modelVisualisation->currentVisualisation()->keyMovement((Camera_Movement)cm);
 	}
 }
 
