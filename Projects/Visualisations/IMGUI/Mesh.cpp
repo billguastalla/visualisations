@@ -7,7 +7,7 @@ void Mesh::addTexture(const Texture& t)
 	m_textures.push_back(t);
 }
 
-void Mesh::draw(Shader * shader)
+void Mesh::draw(Shader* shader)
 {
 	gfxInit();
 
@@ -50,6 +50,31 @@ void Mesh::draw(Shader * shader)
 	// always good practice to set everything back to defaults once configured.
 	glActiveTexture(GL_TEXTURE0);
 
+}
+
+void Mesh::appendMesh(const Mesh& other)
+{
+	std::vector<unsigned int> indices{ other.m_indices };
+	for (auto i = indices.begin(); i != indices.end(); ++i)
+		*i += m_vertices.size();
+	m_indices.insert(m_indices.end(), indices.begin(), indices.end());
+	m_vertices.insert(m_vertices.end(), other.m_vertices.begin(), other.m_vertices.end());
+	m_textures.insert(m_textures.end(), other.m_textures.begin(), other.m_textures.end());
+
+	//give me a cone =cone
+	//one shall keep this. okay.
+}
+
+void Mesh::translate(const glm::vec3& pos)
+{
+	for (auto i = m_vertices.begin(); i != m_vertices.end(); ++i)
+		i->Position += pos;
+}
+
+void Mesh::scale(const glm::vec3& mag)
+{
+	for (auto i = m_vertices.begin(); i != m_vertices.end(); ++i)
+		i->Position *= mag;
 }
 
 void Mesh::gfxInit()

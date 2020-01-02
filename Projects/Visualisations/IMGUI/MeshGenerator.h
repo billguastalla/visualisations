@@ -126,7 +126,7 @@ MeshVertex{-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f},
 		m.regenerateMesh(vxs, idxs);
 	}
 
-	void generateSphere(unsigned int res , Mesh & m)
+	void generateSphere(unsigned int res, Mesh& m)
 	{
 		// 6 points first each corner: i.e. three orthogonal circles/lines, one point either side
 		assert(res >= 3);
@@ -141,25 +141,135 @@ MeshVertex{-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f},
 			{
 				float theta{ (float)j * thetaInterval };
 				float phi{ (float)i * phiInterval };
-				glm::vec3 coord{ sin(phi)*cos(theta),sin(phi)*sin(theta),cos(phi) };
+				glm::vec3 coord{ sin(phi) * cos(theta),sin(phi) * sin(theta),cos(phi) };
 				glm::vec2 texCoord{ cos(theta),sin(phi) };//check this
 				vxs.push_back(MeshVertex{ coord,coord,texCoord });
 			}
 		} // 0,1,res,res,1,res+1  do from: 0 to < res ,
 		std::vector<unsigned int> idxs;
 		for (unsigned int w = 0; w < res; ++w)
-			for(unsigned int h = 0; h < res; ++h)
-		{
-			std::vector<unsigned int> j{
-				((res + 1) * w) + h,
-				((res + 1) * w) + h + 1,
-				((res + 1) * w) + h + res + 1, 
-				((res + 1) * w) + h + 1,
-				((res + 1) * w) + h + res + 2,
-				((res + 1) * w) + h + res + 1
-			};
-			idxs.insert(idxs.end(), j.begin(), j.end());
-		}
+			for (unsigned int h = 0; h < res; ++h)
+			{
+				std::vector<unsigned int> j{
+					((res + 1) * w) + h,
+					((res + 1) * w) + h + 1,
+					((res + 1) * w) + h + res + 1,
+					((res + 1) * w) + h + 1,
+					((res + 1) * w) + h + res + 2,
+					((res + 1) * w) + h + res + 1
+				};
+				idxs.insert(idxs.end(), j.begin(), j.end());
+			}
 		m.regenerateMesh(vxs, idxs);
+	}
+
+	void generateCylinder(unsigned int res, float height, float radius, Mesh& m)
+	{
+		// 6 points first each corner: i.e. three orthogonal circles/lines, one point either side
+		assert(res >= 3);
+		// -1 to +1, NOT inclusive (open)
+		float thetaInterval = 2 * 3.14159265 / ((float)res);
+		float heightInterval = height / ((float)res);
+		std::vector<MeshVertex> vxs{};
+		for (int i = 0; i <= res; ++i)
+		{
+			for (int j = 0; j <= res; ++j)
+			{
+				float theta{ (float)j * thetaInterval };
+				float h{ (float)i * heightInterval };
+				glm::vec3 coord{ radius * cos(theta),radius * sin(theta),h };
+				glm::vec3 norm{ radius * cos(theta),radius * sin(theta),radius/height};
+				glm::vec2 texCoord{ cos(theta / 2.0), h };
+				vxs.push_back(MeshVertex{ coord,norm,texCoord });
+			}
+		} // 0,1,res,res,1,res+1  do from: 0 to < res ,
+		std::vector<unsigned int> idxs;
+		for (unsigned int w = 0; w < res; ++w)
+			for (unsigned int h = 0; h < res; ++h)
+			{
+				std::vector<unsigned int> j{
+					((res + 1) * w) + h,
+					((res + 1) * w) + h + 1,
+					((res + 1) * w) + h + res + 1,
+					((res + 1) * w) + h + 1,
+					((res + 1) * w) + h + res + 2,
+					((res + 1) * w) + h + res + 1
+				};
+				idxs.insert(idxs.end(), j.begin(), j.end());
+			}
+		m.regenerateMesh(vxs, idxs);
+	}
+
+	// psi takes zero to pi/2
+	void generateCone(unsigned int res, float height, float radius, Mesh& m)
+	{
+		// 6 points first each corner: i.e. three orthogonal circles/lines, one point either side
+		assert(res >= 3);
+		// -1 to +1, NOT inclusive (open)
+		float thetaInterval = 2 * 3.14159265 / ((float)res);
+		float radiusInterval = radius / ((float)res);
+		float heightInterval = height / ((float)res);
+		// no of points on circle: 3 + res.
+		std::vector<MeshVertex> vxs{};
+		for (int i = 0; i <= res; ++i) // move phi from 0 to pi
+		{
+			for (int j = 0; j <= res; ++j) // move theta from 0 to 2pi
+			{
+				float theta{ (float)j * thetaInterval };
+				float r{ (float)(res - i) * radiusInterval };
+				float h{ (float)i * heightInterval };
+				glm::vec3 coord{ r * cos(theta),r * sin(theta),h };
+				glm::vec2 texCoord{ cos(theta),h / height };//check this
+				vxs.push_back(MeshVertex{ coord,coord,texCoord });
+			}
+		} // 0,1,res,res,1,res+1  do from: 0 to < res ,
+		std::vector<unsigned int> idxs;
+		for (unsigned int w = 0; w < res; ++w)
+			for (unsigned int h = 0; h < res; ++h)
+			{
+				std::vector<unsigned int> j{
+					((res + 1) * w) + h,
+					((res + 1) * w) + h + 1,
+					((res + 1) * w) + h + res + 1,
+					((res + 1) * w) + h + 1,
+					((res + 1) * w) + h + res + 2,
+					((res + 1) * w) + h + res + 1
+				};
+				idxs.insert(idxs.end(), j.begin(), j.end());
+			}
+		m.regenerateMesh(vxs, idxs);
+	}
+
+	//void generateTorus(unsigned int res, float innerRadius, float outerRadius)
+	//{
+	//	// 6 points first each corner: i.e. three orthogonal circles/lines, one point either side
+	//	assert(res >= 3);
+	//	// -1 to +1, NOT inclusive (open)
+	//	float thetaInterval = 2 * 3.14159265 / ((float)res);
+	//	float radiusInterval = radius / ((float)res);
+	//	float heightInterval = height / ((float)res);
+	//	// no of points on circle: 3 + res.
+	//	std::vector<MeshVertex> vxs{};
+	//	for (int i = 0; i <= res; ++i) // move phi from 0 to pi
+	//	{
+	//		for (int j = 0; j <= res; ++j) // move theta from 0 to 2pi
+	//		{
+	//			float theta{ (float)j * thetaInterval };
+	//			float r{ (float)(res - i) * radiusInterval };
+	//			float h{ (float)i * heightInterval };
+	//			glm::vec3 coord{ r * cos(theta),r * sin(theta),h };
+	//			glm::vec2 texCoord{ cos(theta),h / height };//check this
+	//			vxs.push_back(MeshVertex{ coord,coord,texCoord });
+	//		}
+	//	} // 0,1,res,res,1,res+1  do from: 0 to < res ,
+	//}
+
+	void generateArrow(Mesh& m)
+	{
+		Mesh mCone{};
+		generateCone(25, 2.0, 0.6, mCone);
+		mCone.translate(glm::vec3{ 0.0,0.0,5.0 });
+		generateCylinder(25, 5.0, 0.2, m);
+		m.appendMesh(mCone);
 	}
 }
