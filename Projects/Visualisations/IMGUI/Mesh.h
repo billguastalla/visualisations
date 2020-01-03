@@ -56,7 +56,8 @@ public:
 		m_gfxInitialised{ false },
 		EBO{ 0 },
 		VBO{ 0 },
-		VAO{ 0 }
+		VAO{ 0 },
+		m_normalArrows{ nullptr }
 	{
 	}
 	/* Copy */
@@ -68,7 +69,8 @@ public:
 		m_gfxInitialised{ false },
 		EBO{ 0 },
 		VBO{ 0 },
-		VAO{ 0 }
+		VAO{ 0 },
+		m_normalArrows{ nullptr }
 	{
 	}
 
@@ -87,7 +89,13 @@ public:
 	void appendMesh(const Mesh& other);
 	void translate(const glm::vec3& pos);
 	void scale(const glm::vec3& mag);
+	void rotate(const glm::vec3& axis, float angle);
+	
+	void showNormals(bool y);
 private:
+	/* Normals */
+	std::unique_ptr<Mesh> m_normalArrows;
+
 	void gfxInit();
 	void gfxDelete();
 

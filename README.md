@@ -13,6 +13,10 @@ and the binaries are available [here](https://billguastalla.com/visualisations/b
 
 Installers are produced using [NSIS](https://nsis.sourceforge.io/Main_Page).
 
+<video width="1280" height="720" controls>
+  <source src="https://billguastalla.com/visualisations/samples/Visualisations%20v0.4.mp4" type="video/mp4">
+</video>
+
 ## Platforms and Development Environments
 
 The project is developed on a Windows 10 x64 environment, on Visual Studio 2019, version 16.1.3.
