@@ -30,14 +30,14 @@ Visualisation_Sandbox::Visualisation_Sandbox()
 	m_lightMesh{},
 	m_frameCounter{ 0 }
 {
-	MeshGenerator::generateGraph(20, 20, m_meshTop);
+	MeshGenerator::generateGraph(32, 32, m_meshTop);
 	MeshGenerator::generateGraph(200, 200, m_meshBottom);
 
-	m_meshTop.showNormals(true);
+	//m_meshTop.showNormals(true);
 
 	MeshGenerator::generateCube(m_lightMesh);
 
-	int iMax{ 1000 };
+	int iMax{ 100 };
 	for (int i{2}; i < iMax; ++i)
 	{
 		float thetSubcoil = 2.0f * 3.14159f * (float)i / 40.0f;
@@ -128,7 +128,7 @@ void Visualisation_Sandbox::deactivate()
 	m_objectShader = nullptr;
 }
 
-void Visualisation_Sandbox::processSamples(const Buffer& buf, unsigned samples)
+void Visualisation_Sandbox::processSamples(const Buffer & buf, unsigned samples)
 {
 
 	if (m_frameCounter % 10 == 0)
