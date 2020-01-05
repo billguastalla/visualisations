@@ -55,11 +55,9 @@ int main(int, char**)
 #endif
 
 	GLFWwindow* window{ nullptr };
-
 	mainInit(window, 1920,1080);
 
 	std::string glsl_version{ "#version 330" };
-
 	Program program{ window, glsl_version};
 	program.initialise();
 	program.run();
