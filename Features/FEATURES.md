@@ -50,6 +50,7 @@ Areas to look at to inspire new visualisations.
 Gaussian Curvature, and the Gauss-Bonnet Theorem.
 Building metrics for medium range integrals over the curvature of a surface,
 at a point, could yield interesting functionals.
+Minimal surfaces: Local optimisations of surface area.
 
 ### Statistical Physics
 
@@ -87,15 +88,20 @@ Implement a skybox.
 ## Audio file loading
 
 Load audio files into the program, and read them into buffers.
-- Provide a transport system:
+
+### Transport
+
+- Provide a transport system in the GUI:
 	- Play, Pause, Stop.
 	- Slider, with time played, and time remaining.
 
-## Synchronised rendering
+### Synchronised rendering
 
 Two options for synchronisation:
 	- Force synchronisation to framerate.
 	- Real-time playing.
+
+### Audio-Buffer handling
 Provide various options of generating buffers:
 	- Short, medium and long-term buffers:
 	- Buffer offset: where does the current time value sit on the current sample array,
@@ -112,7 +118,7 @@ in different ways by different tracks.
 
 ## Kinetics
 
-Force, energy, momentum and velocity, should be determined by 
+Force, energy, momentum and velocity, should be computable. 'Fixes' for energy/momentum conservation should be implementable.
 Objects should be able to provide their own force-fields and effective ranges.
 Design of a scene of physical objects should be by default separated from mesh implementations,
 and the physics processing should make transformations to a set of model matrices.
@@ -124,7 +130,14 @@ Use OpenCL to defer particle position/velocity computation to the GPU in paralel
 ## Geometric Algebra
 
 Incorporate GA code, generated from gaigen or otherwise, and use it to:
-- Re-implement the camera class.
+- Re-implement the camera class
 - Implement orthogonal transformations.
 - Implement fields.
 
+### High-dimensional rendering
+
+(Later on)
+Rendering of high-dimensional objects in 3D.
+One approach is the intersection of higher-dimensional polytopes,
+using the world or the camera. See HighDimensionalRendering for an overview
+of the mesh-generation problem.
