@@ -41,6 +41,24 @@ and adding or removing particles to/from the field.
 Find a way of rendering fractals in 3D: Most importantly, find out how best to wind a mesh
 across iteratively generated points from the above sets..
 
+## Visualisations: Inspiration from Physics
+
+Areas to look at to inspire new visualisations.
+
+### Differential Geometry
+
+Gaussian Curvature, and the Gauss-Bonnet Theorem.
+Building metrics for medium range integrals over the curvature of a surface,
+at a point, could yield interesting functionals.
+
+### Statistical Physics
+
+Random walks, brownian motion, Langevin equation, Monte Carlo dynamics.
+
+### Quantum Mechanics
+
+Wavefunctions, observables and time-evolution.
+
 # Graphics Engine Features
 
 ## Bloom
@@ -55,6 +73,10 @@ Options should be made available in the GUI:
 ## Depth of field
 
 Use the objects that the camera is looking at to determine a distance to pass to glm::lookAt(..)
+Possible options in the GUI:
+- Enable/disable DOF
+- View-determined/slider-determined DOF
+- Strength of blur
 
 ## Skyboxes
 
@@ -66,17 +88,17 @@ Implement a skybox.
 
 Load audio files into the program, and read them into buffers.
 - Provide a transport system:
-	-> Play, Pause, Stop.
-	-> Slider, with time played, and time remaining.
+	- Play, Pause, Stop.
+	- Slider, with time played, and time remaining.
 
 ## Synchronised rendering
 
 Two options for synchronisation:
-	-> Force synchronisation to framerate.
-	-> Real-time playing.
+	- Force synchronisation to framerate.
+	- Real-time playing.
 Provide various options of generating buffers:
-	-> Short, medium and long-term buffers:
-	-> Buffer offset: where does the current time value sit on the current sample array,
+	- Short, medium and long-term buffers:
+	- Buffer offset: where does the current time value sit on the current sample array,
 	   at the beginning, or at the middle? Provide an option to tune this.
 
 ## Multi-track recording
@@ -105,3 +127,4 @@ Incorporate GA code, generated from gaigen or otherwise, and use it to:
 - Re-implement the camera class.
 - Implement orthogonal transformations.
 - Implement fields.
+
