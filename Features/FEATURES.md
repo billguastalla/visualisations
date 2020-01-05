@@ -1,7 +1,8 @@
-# Introduction
+# Note
 
-This is a backlog of features to add to the project.
-Formalising these features into specific tasks is done outside of the repository.
+This is a backlog of features to add to the project. 
+Formalising these features into specific tasks is done outside of the repository, and
+outlines of features appear here to illustrate the direction of the project.
 
 # Visualisations
 
@@ -80,17 +81,19 @@ Provide various options of generating buffers:
 
 ## Multi-track recording
 
-(Much later)
+(Later on.)
 Load multiple audio files and map them to different buffers.
 This way visualisations can contain multiple audio streams so that visualisations can be affected
 in different ways by different tracks.
 
 # Physics Engine Features
 
-## Kinetic objects
+## Kinetics
 
 Force, energy, momentum and velocity, should be determined by 
 Objects should be able to provide their own force-fields and effective ranges.
+Design of a scene of physical objects should be by default separated from mesh implementations,
+and the physics processing should make transformations to a set of model matrices.
 
 ## OpenCL
 
