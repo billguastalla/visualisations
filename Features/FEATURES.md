@@ -1,7 +1,8 @@
-# Introduction
+# Note
 
-This is a list of features to add to the project.
-Formalising these features into specific tasks.
+This is a backlog of features to add to the project. 
+Formalising these features into specific tasks is done outside of the repository, and
+outlines of features appear here to illustrate the direction of the project.
 
 # Visualisations
 
@@ -35,6 +36,11 @@ can be accelarated in different directions with conserved energy.
 Find ways of modifying the shape of the field based on audio input,
 and adding or removing particles to/from the field.
 
+## Fractals: Mandelbrot, Mandelbulb, Julia
+
+Find a way of rendering fractals in 3D: Most importantly, find out how best to wind a mesh
+across iteratively generated points from the above sets..
+
 # Graphics Engine Features
 
 ## Bloom
@@ -53,20 +59,49 @@ Use the objects that the camera is looking at to determine a distance to pass to
 ## Skyboxes
 
 Implement a skybox.
-<!-- 
+
 # Audio Engine Features
 
-## 
+## Audio file loading
+
+Load audio files into the program, and read them into buffers.
+- Provide a transport system:
+	-> Play, Pause, Stop.
+	-> Slider, with time played, and time remaining.
+
+## Synchronised rendering
+
+Two options for synchronisation:
+	-> Force synchronisation to framerate.
+	-> Real-time playing.
+Provide various options of generating buffers:
+	-> Short, medium and long-term buffers:
+	-> Buffer offset: where does the current time value sit on the current sample array,
+	   at the beginning, or at the middle? Provide an option to tune this.
 
 ## Multi-track recording
 
+(Later on.)
+Load multiple audio files and map them to different buffers.
+This way visualisations can contain multiple audio streams so that visualisations can be affected
+in different ways by different tracks.
+
 # Physics Engine Features
 
-## Kinetic objects
+## Kinetics
 
-Force, energy, momentum and 
+Force, energy, momentum and velocity, should be determined by 
+Objects should be able to provide their own force-fields and effective ranges.
+Design of a scene of physical objects should be by default separated from mesh implementations,
+and the physics processing should make transformations to a set of model matrices.
 
 ## OpenCL
 
 Use OpenCL to defer particle position/velocity computation to the GPU in paralell.
--->
+
+## Geometric Algebra
+
+Incorporate GA code, generated from gaigen or otherwise, and use it to:
+- Re-implement the camera class.
+- Implement orthogonal transformations.
+- Implement fields.
