@@ -6,6 +6,11 @@ outlines of features appear here to illustrate the direction of the project.
 
 # Visualisations
 
+### User Interface
+
+Make parameters of specific visualisations available to the user via the GUI.
+Provide a virtual function that writes IMGUI
+
 ## Vector fields (Visualisation/Physics Engine)
 
 This is both a general idea, and a visualisation.
