@@ -30,4 +30,14 @@ private:
 	std::vector<glm::vec3> m_cubePositions;
 
 	glm::vec3 m_lightPos;
+
+
+	// HDR & Bloom
+	bool m_hdrEnabled;
+	float m_exposure;
+	Shader* m_hdrShader;
+	//		HDR Framebuffer Object, Colour Buffer, Render buffer
+	unsigned int hdrFBO, colourBuffer, rboDepth;
+
+
 };
