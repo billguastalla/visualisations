@@ -8,8 +8,10 @@ outlines of features appear here to illustrate the direction of the project.
 
 ### User Interface
 
-Make parameters of specific visualisations available to the user via the GUI.
-Provide a virtual function that writes IMGUI
+- Make parameters of specific visualisations available to the user via the GUI:
+Provide a virtual function that writes IMGUI.
+- activate() and deactivate() on Visualisations can be called on switching visualisations,
+  as intended, rather instantiating all visualisations on start-up.
 
 ## Vector fields (Visualisation/Physics Engine)
 
@@ -67,14 +69,23 @@ Wavefunctions, observables and time-evolution.
 
 # Graphics Engine Features
 
-## Bloom
+## HDR & Bloom, Exposure Tuning.
 
+### Implement
 Implement the bloom effect. Two framebuffers, bright components extracted from one, then apply a gaussian blur to it and recombine with
 the unchanged framebuffer.
+
+### Interface
 Options should be made available in the GUI:
 - Enable/disable bloom
 - Set blur strength.
 - Set threshold light intensity.
+
+### Structure
+
+Bloom should be a feature made available to all visualisations.
+Bloom is a post-processing feature, and a framework should be designed to allow it to be turned on/off
+and tuned for all visualisations with minimal systematic modification to the visualisation shaders.
 
 ## Depth of field
 
