@@ -51,7 +51,7 @@ int main(int, char**)
 			-> For now we'll just use FreeConsole()
 	*/
 #ifdef WIN32
-	FreeConsole();
+	//FreeConsole();
 #endif
 
 	GLFWwindow* window{ nullptr };

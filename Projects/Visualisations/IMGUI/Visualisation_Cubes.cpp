@@ -33,11 +33,34 @@ Visualisation_Cubes::Visualisation_Cubes()
 
 void Visualisation_Cubes::activate()
 {
+	/* HDR: Set up shader */
 	m_hdrShader = new Shader{"../Shaders/Bloom/hdr.vs","../Shaders/Bloom/hdr.fs" };
 
+	/* HDR: Generate Frame Buffer */
+	glGenFramebuffers(1, &m_hdrFBO);
+	glGenTextures(1, &m_colourBuffer);
+	/* HDR: Generate Colour Buffer (2D Texture) */
+	glBindTexture(GL_TEXTURE_2D, m_colourBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 1920, 1080, 0, GL_RGBA, GL_FLOAT, nullptr);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	/* HDR: Generate Render Buffer */
+	glGenRenderbuffers(1, &m_rboDepth);
+	glBindRenderbuffer(GL_RENDERBUFFER, m_rboDepth);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 1920, 1080);
+	/* HDR: Attach buffer */
+	glBindFramebuffer(GL_FRAMEBUFFER, m_hdrFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_colourBuffer,0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_rboDepth);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "Framebuffer incomplete" << std::endl;
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	// build and compile our shader program
-	// ------------------------------------
+	m_hdrShader->use();
+	m_hdrShader->setInt("hdrBuffer", 0);
+
+
+
 	m_objectShader = new Shader{ "../Shaders/Cubes_Vertex.vs", "../Shaders/Cubes_ObjectFragment.fs" };
 	m_lampShader = new Shader{ "../Shaders/Cubes_Vertex.vs", "../Shaders/Cubes_LampFragment.fs" };
 
@@ -119,8 +142,6 @@ void Visualisation_Cubes::activate()
 
 void Visualisation_Cubes::deactivate()
 {
-	// optional: de-allocate all resources once they've outlived their purpose:
-	// ------------------------------------------------------------------------
 	glDeleteVertexArrays(1, &m_cubeVAO);
 	glDeleteVertexArrays(1, &m_lightVAO);
 	glDeleteBuffers(1, &m_cubeVBO);
@@ -168,20 +189,14 @@ void Visualisation_Cubes::processSamples(const Buffer & buf, unsigned samples)
 
 void Visualisation_Cubes::renderFrame()
 {
-	// per-frame time logic
-	// --------------------
 	float currentFrame = (float)glfwGetTime();
 	m_deltaTime = currentFrame - m_lastFrame;
 	m_lastFrame = currentFrame;
 
-	//// input
-	//// -----
-	//processInput(window);
 
-	//// render
-	//// ------
-	//glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	/* HDR: BIND FRAMEBUFFER */
+	glBindFramebuffer(GL_FRAMEBUFFER, m_hdrFBO);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// activate shader
 	m_objectShader->use();
@@ -202,10 +217,7 @@ void Visualisation_Cubes::renderFrame()
 	lightModel = glm::scale(lightModel, glm::vec3{ 0.2f });
 	m_objectShader->setVec3("lightPos", m_lightPos);
 	m_objectShader->setVec3("viewPos", m_camera.m_position);
-
-
-
-
+		   
 	// render boxes
 	glBindVertexArray(m_cubeVAO);
 	for (unsigned int i = 0; i < 9; i++)
@@ -224,13 +236,53 @@ void Visualisation_Cubes::renderFrame()
 	m_lampShader->setMat4("model", lightModel);
 	glBindVertexArray(m_lightVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
+
+	/* HDR: UNBIND FRAMEBUFFER */
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	m_hdrShader->use();
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_colourBuffer);
+	m_hdrShader->setInt("hdr", m_hdrEnabled);
+	m_hdrShader->setFloat("exposure", m_exposure);
+	renderQuad();
+
 }
 
-
+unsigned int quadVAO = 0;
+unsigned int quadVBO;
+void Visualisation_Cubes::renderQuad()
+{
+	if (quadVAO == 0)
+	{
+		float quadVertices[] = {
+			// positions        // texture Coords
+			-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+			-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+			 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+			 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+		};
+		// setup plane VAO
+		glGenVertexArrays(1, &quadVAO);
+		glGenBuffers(1, &quadVBO);
+		glBindVertexArray(quadVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	}
+	glBindVertexArray(quadVAO);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glBindVertexArray(0);
+}
 
 ////// Bloom, later:
 
-///*
+////*
 //Here:
 //	-> Make a framebuffer,
 //	-> Make two textures, one for original render, second for brightness/blur

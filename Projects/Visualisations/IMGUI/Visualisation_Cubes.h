@@ -37,7 +37,8 @@ private:
 	float m_exposure;
 	Shader* m_hdrShader;
 	//		HDR Framebuffer Object, Colour Buffer, Render buffer
-	unsigned int hdrFBO, colourBuffer, rboDepth;
+	unsigned int m_hdrFBO, m_colourBuffer, m_rboDepth;
 
+	static void renderQuad();
 
 };
