@@ -1,5 +1,10 @@
 #version 330 core
-out vec4 FragColour;
+
+// When OpenGL sees these two layout locations, it will write corresponding variables to each indexed
+// colourbuffer, in one render pass.
+layout (location = 0) out vec4 FragColour;
+layout (location = 1) out vec4 BrightColour;
+
 in vec3 Normal;
 in vec3 FragPos;
 
@@ -10,6 +15,7 @@ uniform vec3 viewPos;
 
 void main()
 {
+	// LIGHTING: Specular, Diffuse, Ambient lighting
 	vec3 norm = normalize(Normal);
 	vec3 lightDir = normalize(lightPos - FragPos);
 
@@ -27,4 +33,11 @@ void main()
 	
 	vec3 result = (ambient + diffuse + specular) * objectColour;
     FragColour = vec4(result, 1.0);
+	
+	// BLOOM: Threshold for brightness, used to extract bright features of image.
+	float brightness = dot(FragColour.rgb,vec3(0.2126,0.7152,0.0722));
+	if(brightness > 1.0)
+		BrightColour = vec4(FragColour.rgb,1.0);
+	else
+		BrightColour = vec4(0.0,0.0,0.0,0.0);
 }

@@ -24,6 +24,43 @@ Visualisation_Cubes::Visualisation_Cubes()
 
 void Visualisation_Cubes::activate()
 {
+	/*
+	Here:
+		-> Make a framebuffer,
+		-> Make two textures, one for original render, second for brightness/blur
+		-> Instantiate screen-sized and screen formatted images in textures
+		-> Setup normal rules for textures: linear interpolation and clamp to edges.
+		-> Connect the textures to the framebuffer.
+	*/
+	unsigned int hdrFBO{ 0 };
+	glGenFramebuffers(1, &hdrFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
+	unsigned int colourBuffers[2];
+	glGenTextures(2, colourBuffers);
+	for (unsigned int i = 0; i < 2; ++i)
+	{
+		glBindTexture(GL_TEXTURE_2D, colourBuffers[i]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F,
+			1920, 1080, 0, GL_RGB, GL_FLOAT, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i,
+			GL_TEXTURE_2D, colourBuffers[i],0);
+	}
+	// Telling OpenGL that we're rendering to multiple colourbuffers.
+	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	glDrawBuffers(2, attachments);
+
+
+
+
+
+
+
+
+
 	// build and compile our shader program
 	// ------------------------------------
 	m_objectShader = new Shader{ "../Shaders/Cubes_Vertex.vs", "../Shaders/Cubes_ObjectFragment.fs" };
