@@ -80,6 +80,8 @@ Options should be made available in the GUI:
 - Enable/disable bloom
 - Set blur strength.
 - Set threshold light intensity.
+- Choose HDR Tone mapping mechanism
+- Set view-based exposure, and relaxation curve.
 
 ### Structure
 
