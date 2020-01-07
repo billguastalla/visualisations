@@ -24,6 +24,8 @@ public:
 	void renderFrame() override;
 	std::string titleString() override { return "N-D Game of Life"; };
 
+
+	void drawInterface() override;
 private:
 	unsigned int m_cubeVAO, m_lightVAO, m_cubeVBO;
 

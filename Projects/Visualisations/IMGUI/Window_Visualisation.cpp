@@ -27,6 +27,8 @@ void Window_Visualisation::draw()
 
 	ImGui::Text("\tFramerate: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
+
+	ImGui::Text("Post Processing:");
 	/* Post-processing details: */
 	bool wireframe = m_visualisation->postProcessing()->wireframe();
 	ImGui::Checkbox("Wireframe", &wireframe);
@@ -44,6 +46,12 @@ void Window_Visualisation::draw()
 
 
 
+	std::string s{ "Options: " };
+	s += m_visualisation->currentVisualisation()->titleString();
+	s += ":";
+	ImGui::Text(s.c_str());
+	m_visualisation->currentVisualisation()->drawInterface();
+	
 
 	ImGui::End();
 

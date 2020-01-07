@@ -15,19 +15,16 @@ class Visualisation_Fractal : public Visualisation
 public:
 	Visualisation_Fractal();
 
-	/* Set up callbacks, shaders, vertex objects */
 	void activate() override;
-	/* Free callbacks, shaders, vertex objects */
 	void deactivate() override;
 
 	void processSamples(const Buffer & buf, unsigned samples) override;
 	void renderFrame() override;
 
-	std::string titleString() override { return "Mandelbulb Set"; };
-private:
-	int inSet(std::complex<long double> z, std::complex<long double> c);
-	std::vector<glm::vec3> buildFractalData(std::complex<long double> k);
+	std::string titleString() override { return "Mandelbulb"; };
 
+	void drawInterface() override;
+private:
 	unsigned int m_cubeVAO, m_lightVAO, m_cubeVBO;
 	unsigned int m_lineStripVAO, m_lineStripVBO;
 
@@ -38,15 +35,15 @@ private:
 	std::vector<float> m_vertices;
 	glm::vec3 m_lightPos;
 	
-
 	std::vector<glm::vec3> m_cubePositions;
 	std::vector<glm::vec3> m_cubeColours;
-
-
 	std::vector<glm::vec3> m_lineStripData;
 
-	std::deque<double> m_signalPowerHistory;
+	std::vector<glm::vec3> m_mandelbulb;	
+	int m_mandelbulbRes = 32;
+	float m_mandelbulbN = 8.0f;
+	glm::vec3 m_mandelbulbInitialVector = glm::vec3{ 0.0,0.0,0.0 };
 
-	long double m_FCT = 2.85, m_hFCT = m_FCT / 2.0;
-	long int m_iterations = 512;
+	Mesh m_sphere;
+
 };

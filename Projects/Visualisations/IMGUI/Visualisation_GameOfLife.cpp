@@ -247,3 +247,8 @@ void Visualisation_GameOfLife::renderFrame()
 	glBindVertexArray(m_lightVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 }
+
+void Visualisation_GameOfLife::drawInterface()
+{
+
+}

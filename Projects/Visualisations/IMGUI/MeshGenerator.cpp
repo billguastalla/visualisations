@@ -1,4 +1,4 @@
-#include "MeshGenerator.h"
+﻿#include "MeshGenerator.h"
 
 auto buildMeshIndices = [](const unsigned int & width, const unsigned int & height)
 {
@@ -226,4 +226,104 @@ void MeshGenerator::generateArrow(unsigned int res, Mesh& m)
 	mCone.translate(glm::vec3{ 0.0,0.0,5.0 });
 	generateCylinder(res, 5.0, 0.2, m);
 	m.appendMesh(mCone);
+}
+
+std::vector<glm::vec3> MeshGenerator::generateMandelbulb(unsigned int res, double n, glm::vec3 initialPos)
+{
+
+
+	//// WIKIPEDIA
+	auto theta = [](double x, double y, double z) {
+		return std::atan(sqrt((x * x) + (y * y)) / z);
+	};
+	auto phi = [](double x, double y) {
+		return std::atan(y / x);
+	};
+	auto radial = [](double x, double y, double z) {
+		return sqrt((x * x) + (y * y) + (z * z));
+	};
+	auto mandelBulbIter = [radial, phi, theta](glm::dvec3 in, double n) {
+		glm::dvec3 out{ 0.0 };
+		double r = radial(in.x, in.y, in.z);
+		double th = theta(in.x, in.y, in.z);
+		double ph = phi(in.x, in.y);
+		out.x = (sin(n * th) * cos(n * ph));
+		out.y = (sin(n * th) * sin(n * ph));
+		out.z = cos(n * ph);
+		//out *= pow(r,n);
+		return out;
+	};
+
+	auto yangTwinbee = [](double x, double y, double z) {
+		return std::atan2(sqrt((x * x) + (y * y)),z);
+	};
+	auto zangTwinbee = [](double x, double y) {
+		return std::atan(y / x);
+	};
+	auto radialTwinbee = [](double x, double y, double z) {
+		return sqrt((x * x) + (y * y) + (z * z));
+	};
+	//auto mandelBulbIterTwinbee = [radialTwinbee, yangTwinbee, zangTwinbee](glm::dvec3 in, double n) {
+	//	glm::dvec3 out{ 0.0 };
+	//	double r = radialTwinbee(in.x, in.y, in.z);
+	//	double yang = yangTwinbee(in.x, in.y, in.z);
+	//	double zang = zangTwinbee(in.x, in.y);
+	//	out.x = r*r * (sin((yang*2.0)+(0.5*3.14159)) * cos((zang * 2.0) + (3.14159)));
+	//	out.y = r*r * (sin((yang*2.0) + (0.5*3.14159)) * sin((zang * 2.0) + (3.14159)));
+	//	out.z = r*r * cos((yang * 2.0) + (0.5 * 3.14159));
+	////	out *= pow(r,n);
+	//	return out;
+	//};
+
+
+	auto buildSequence = [mandelBulbIter](glm::dvec3 initial, double n, int iterations) {
+		std::vector<glm::dvec3> set;
+		glm::dvec3 current{ initial };
+		set.push_back(initial);
+		for (int i = 0; i < (iterations - 1); ++i)
+		{
+			/* Addition function changed !!! */
+			//glm::dvec3 next = current + mandelBulbIter(current, n);
+			//set.push_back(next);
+			//current = next;
+			set.push_back(current = mandelBulbIter(current,n));
+		}
+		return set;
+	};
+	auto normaliseSet = [](std::vector<glm::dvec3>& set, const glm::vec3& scale = glm::vec3{ 1.0 }) {
+		glm::dvec3 max{ 0.0 };
+		for (std::vector<glm::dvec3>::iterator i = set.begin(); i != set.end(); ++i)
+		{
+			if (max.x < std::abs(i->x))
+				max.x = std::abs(i->x);
+			if (max.y < std::abs(i->y))
+				max.y = std::abs(i->y);
+			if (max.z < std::abs(i->z))
+				max.z = std::abs(i->z);
+		}
+		for (std::vector<glm::dvec3>::iterator i = set.begin(); i != set.end(); ++i)
+		{
+			*i /= max;
+			*i *= scale;
+		}
+	};
+	auto doubleToFloat = [](std::vector<glm::dvec3> vec) {
+		std::vector<glm::vec3> o{};
+		for (std::vector<glm::dvec3>::iterator i = vec.begin(); i != vec.end(); ++i)
+			o.push_back(glm::vec3{ i->x,i->y,i->z });
+		return o;
+	};
+
+	std::vector<glm::dvec3> seq = buildSequence(initialPos,n, res);
+	//normaliseSet(seq);
+	std::vector<glm::vec3> seqFP = doubleToFloat(seq);
+	return seqFP;
+	
+	//std::vector<MeshVertex> vxs{};
+	//for (auto i = seqFP.begin(); i != seqFP.end(); ++i)
+	//	vxs.push_back(*i);
+
+	//std::vector<unsigned int> idxs{ buildMeshIndices(width, height) };
+	//buildSmoothNormals(vxs, idxs);
+	//m.regenerateMesh(vxs, idxs);
 }

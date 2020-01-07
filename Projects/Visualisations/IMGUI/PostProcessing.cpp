@@ -4,7 +4,7 @@
 PostProcessing::PostProcessing()
 	:
 	// HDR/Bloom
-	m_hdrEnabled{ true },
+	m_hdrEnabled{ false },
 	m_exposure{ 1.0f },
 	m_hdrShader{ nullptr },
 
