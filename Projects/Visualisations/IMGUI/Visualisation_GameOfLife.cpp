@@ -39,13 +39,8 @@ Visualisation_GameOfLife::Visualisation_GameOfLife()
 
 void Visualisation_GameOfLife::activate()
 {
-	// build and compile our shader program
-	// ------------------------------------
 	m_objectShader = new Shader{ "../Shaders/Cubes_Vertex.vs", "../Shaders/Cubes_ObjectFragment.fs" };
 	m_lampShader = new Shader{ "../Shaders/Cubes_Vertex.vs", "../Shaders/Cubes_LampFragment.fs" };
-
-	// set up vertex data(and buffer(s)) and configure vertex attributes
-	// ------------------------------------------------------------------
 
 	m_lightPos = { 0.0,0.0,-8.0 };
 
@@ -116,8 +111,6 @@ void Visualisation_GameOfLife::activate()
 
 void Visualisation_GameOfLife::deactivate()
 {
-	// optional: de-allocate all resources once they've outlived their purpose:
-	// ------------------------------------------------------------------------
 	glDeleteVertexArrays(1, &m_cubeVAO);
 	glDeleteVertexArrays(1, &m_lightVAO);
 	glDeleteBuffers(1, &m_cubeVBO);
@@ -137,10 +130,6 @@ void Visualisation_GameOfLife::processSamples(const Buffer & buf, unsigned sampl
 	std::normal_distribution<double> colImplX{ randColour.createDistribution() };
 	std::normal_distribution<double> colImplY{ randColour.createDistribution() };
 	std::normal_distribution<double> colImplZ{ randColour.createDistribution() };
-	//double maxMean = colImplX.mean() > colImplY.mean() ? colImplX.mean() : ((colImplY.mean() > colImplZ.mean()) ? colImplY.mean() : colImplZ.mean());
-	//maxMean *= 0.5;
-
-
 	AbstractRandomObject a;
 
 	if (m_frameLoop % 4 == 0)
@@ -188,8 +177,6 @@ void Visualisation_GameOfLife::processSamples(const Buffer & buf, unsigned sampl
 
 			m_game->currentGrid()->clear();
 			m_game->currentGrid()->insertPrimitive();
-
-//			m_game->currentGrid()->setRandAlive(30);
 		}
 		m_game->nextTurn();
 		m_frameLoop = 0;
@@ -211,20 +198,9 @@ void Visualisation_GameOfLife::processSamples(const Buffer & buf, unsigned sampl
 
 void Visualisation_GameOfLife::renderFrame()
 {
-	// per-frame time logic
-	// --------------------
 	float currentFrame = glfwGetTime();
 	m_deltaTime = currentFrame - m_lastFrame;
 	m_lastFrame = currentFrame;
-
-	//// input
-	//// -----
-	//processInput(window);
-
-	//// render
-	//// ------
-	//glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// activate shader
 	m_objectShader->use();
@@ -271,55 +247,3 @@ void Visualisation_GameOfLife::renderFrame()
 	glBindVertexArray(m_lightVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 }
-
-//
-//// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-//// ---------------------------------------------------------------------------------------------------------
-//void processInput(GLFWwindow *window)
-//{
-//	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-//		glfwSetWindowShouldClose(window, true);
-//
-//	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-//		camera.ProcessKeyboard(FORWARD, deltaTime);
-//	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-//		camera.ProcessKeyboard(BACKWARD, deltaTime);
-//	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-//		camera.ProcessKeyboard(LEFT, deltaTime);
-//	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-//		camera.ProcessKeyboard(RIGHT, deltaTime);
-//}
-//
-//// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-//// ---------------------------------------------------------------------------------------------
-//void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-//{
-//	// make sure the viewport matches the new window dimensions; note that width and 
-//	// height will be significantly larger than specified on retina displays.
-//	glViewport(0, 0, width, height);
-//}
-//
-//// glfw: whenever the mouse moves, this callback is called
-//// -------------------------------------------------------
-//void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-//{
-//	if (firstMouse)
-//	{
-//		lastX = xpos;
-//		lastY = ypos;
-//		firstMouse = false;
-//	}
-//
-//	float xoffset = xpos - lastX;
-//	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-//
-//	lastX = xpos;
-//	lastY = ypos;
-//
-//	camera.ProcessMouseMovement(xoffset, yoffset);
-//}
-//
-//void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-//{
-//	camera.ProcessMouseScroll(yoffset);
-//}

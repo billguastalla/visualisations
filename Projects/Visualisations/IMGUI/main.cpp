@@ -22,7 +22,7 @@ static int mainInit(GLFWwindow * & window, int width, int height)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_SAMPLES, 4); /* MSAA */
+	glfwWindowHint(GLFW_SAMPLES, 8); /* MSAA */
 
 	// Create window with graphics context
 	window = glfwCreateWindow(1920, 1080, "Visualisations", nullptr, nullptr);

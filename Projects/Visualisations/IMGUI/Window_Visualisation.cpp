@@ -17,11 +17,6 @@ Window_Visualisation::~Window_Visualisation()
 
 void Window_Visualisation::draw()
 {
-	ImGui::Begin("GFX Statistics:");
-	ImGui::Text("\tFramerate: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	ImGui::End();
-
-
 	ImGui::Begin("Visualisation Properties");
 	ImGui::Text("Visualisation:\t");
 	ImGui::SameLine();
@@ -30,9 +25,25 @@ void Window_Visualisation::draw()
 	std::string visOpts = m_visualisation->visualisationOptionsString();
 	ImGui::Combo("",&sel, &visOpts[0]);
 
-	bool wireframe = m_visualisation->wireframe();
+	ImGui::Text("\tFramerate: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+	/* Post-processing details: */
+	bool wireframe = m_visualisation->postProcessing()->wireframe();
 	ImGui::Checkbox("Wireframe", &wireframe);
-	m_visualisation->setWireframe(wireframe);
+	m_visualisation->postProcessing()->setWireframe(wireframe);
+
+	bool hdrEnabled = m_visualisation->postProcessing()->HDREnabled();
+	ImGui::Checkbox("HDR", &hdrEnabled);
+	m_visualisation->postProcessing()->setHDREnabled(hdrEnabled);
+
+	float exposure = m_visualisation->postProcessing()->exposure();
+	ImGui::Text("Exposure");
+	ImGui::SameLine();
+	ImGui::SliderFloat("", &exposure, 0.0, 1.0);
+	m_visualisation->postProcessing()->setExposure(exposure);
+
+
+
 
 	ImGui::End();
 

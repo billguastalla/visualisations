@@ -28,9 +28,6 @@ private:
 	int inSet(std::complex<long double> z, std::complex<long double> c);
 	std::vector<glm::vec3> buildFractalData(std::complex<long double> k);
 
-
-
-
 	unsigned int m_cubeVAO, m_lightVAO, m_cubeVBO;
 	unsigned int m_lineStripVAO, m_lineStripVBO;
 

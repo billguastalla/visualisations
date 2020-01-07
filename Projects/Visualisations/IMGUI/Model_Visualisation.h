@@ -1,5 +1,6 @@
 #pragma once
 #include "Visualisation.h"
+#include "PostProcessing.h"
 
 #include <memory>
 #include <vector>
@@ -20,11 +21,16 @@ public:
 	void setVisualisation(int option);
 	void runVisualisation();
 
-	bool wireframe() const { return m_wireframe; }
-	void setWireframe(bool wireFrame);
+	//bool wireframe() const { return m_wireframe; }
+	//void setWireframe(bool wireFrame);
 
 	void processAudio(const Buffer & buffer);
+
+	std::shared_ptr<PostProcessing> postProcessing() { return m_postProcessing; }
 private:
+	/* There might be a better place for this.. */
+	std::shared_ptr<PostProcessing> m_postProcessing;
+
 	std::shared_ptr<Settings_Visualisation> m_settings;
 	std::vector<Visualisation*> m_visualisations;
 	int m_currentVisualisaton;

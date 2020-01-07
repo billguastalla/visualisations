@@ -37,7 +37,7 @@ Visualisation_Sandbox::Visualisation_Sandbox()
 
 	MeshGenerator::generateCube(m_lightMesh);
 
-	int iMax{ 100 };
+	int iMax{ 1000 };
 	for (int i{2}; i < iMax; ++i)
 	{
 		float thetSubcoil = 2.0f * 3.14159f * (float)i / 40.0f;

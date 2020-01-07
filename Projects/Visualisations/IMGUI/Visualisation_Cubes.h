@@ -1,6 +1,8 @@
 #pragma once
 #include "Visualisation.h"
 #include "Camera.h"
+#include "PostProcessing.h"
+
 class Buffer;
 struct GLFWwindow;
 class Shader;
@@ -30,15 +32,4 @@ private:
 	std::vector<glm::vec3> m_cubePositions;
 
 	glm::vec3 m_lightPos;
-
-
-	// HDR & Bloom
-	bool m_hdrEnabled;
-	float m_exposure;
-	Shader* m_hdrShader;
-	//		HDR Framebuffer Object, Colour Buffer, Render buffer
-	unsigned int m_hdrFBO, m_colourBuffer, m_rboDepth;
-
-	static void renderQuad();
-
 };

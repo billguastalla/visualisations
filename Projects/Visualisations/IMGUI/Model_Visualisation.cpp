@@ -14,10 +14,13 @@ Model_Visualisation::Model_Visualisation(std::shared_ptr<Settings_Visualisation>
 	m_settings{settings},
 	m_visualisations{},
 	m_currentVisualisaton{0},
-	m_wireframe{false}
+	m_wireframe{false},
+	m_postProcessing{ new PostProcessing{} }
 	//m_vis_oscilloscope{},
 	//m_vis_cubes{}
 {
+	m_postProcessing->initialise();
+
 	//m_vis_cubes.activate(); /* At some point you'll want to activate/deactivate on switching modes.*/
 	//m_vis_oscilloscope.activate();
 	Visualisation_Cubes * visCubes = new Visualisation_Cubes{};
@@ -44,6 +47,8 @@ Model_Visualisation::Model_Visualisation(std::shared_ptr<Settings_Visualisation>
 
 Model_Visualisation::~Model_Visualisation()
 {
+	m_postProcessing->deinitialise();
+
 	/* Unset the current visualisation */
 	m_currentVisualisaton = -1;
 
@@ -94,21 +99,23 @@ void Model_Visualisation::runVisualisation()
 	if (m_currentVisualisaton != -1)
 	{
 		Visualisation * currentVis = m_visualisations[m_currentVisualisaton];
+		m_postProcessing->frameRenderBegin();
 		currentVis->renderFrame();
+		m_postProcessing->frameRenderEnd();
 	}
 }
 
-void Model_Visualisation::setWireframe(bool wireFrame)
-{
-	if (m_wireframe != wireFrame)
-	{
-		if(wireFrame)
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		else
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		m_wireframe = wireFrame;
-	}
-}
+//void Model_Visualisation::setWireframe(bool wireFrame)
+//{
+//	if (m_wireframe != wireFrame)
+//	{
+//		if(wireFrame)
+//			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//		else
+//			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+//		m_wireframe = wireFrame;
+//	}
+//}
 
 void Model_Visualisation::processAudio(const Buffer & buffer)
 {

@@ -17,8 +17,8 @@ void main()
 	if(hdr)
 	{
 		// reinhard:
-		// vec3 result = hdrColour / (hdrColour + vec3(1.0));
-		vec3 result = vec3(1.0) - exp(-hdrColour * exposure);
+		vec3 result = hdrColour / (hdrColour + vec3(1.0));
+		//result = vec3(1.0) - exp(-hdrColour * exposure);
 		// gamma correction
 		result = pow(result, vec3(1.0 / gamma));
 		FragColour = vec4(result, 1.0);
