@@ -6,6 +6,8 @@
 class Settings_VideoRendering;
 class FFMPEG_Encoder;
 
+struct GLFWwindow;
+
 class Model_VideoRendering
 {
 
@@ -27,7 +29,7 @@ public:
 			-> Handle the width/height of the framebuffer, and permit/forbid modification of
 				width & height during recording
 	*/
-	Model_VideoRendering(std::shared_ptr<Settings_VideoRendering> & settings);
+	Model_VideoRendering(std::shared_ptr<Settings_VideoRendering> & settings, GLFWwindow * window);
 	~Model_VideoRendering();
 
 	void renderFrame();
@@ -72,4 +74,6 @@ private:
 
 	bool m_recordAudio;
 	bool m_renderUI;
+
+	GLFWwindow* m_window;
 };

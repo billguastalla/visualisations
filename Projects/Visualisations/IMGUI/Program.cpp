@@ -40,7 +40,7 @@ void Program::initialise()
 	m_settingsVisualisation = std::shared_ptr<Settings_Visualisation>{ new Settings_Visualisation{} };
 
 	/* Set up Model instances */
-	m_modelVideoRendering = std::shared_ptr<Model_VideoRendering>{ new Model_VideoRendering{ m_settingsVideoRendering } };
+	m_modelVideoRendering = std::shared_ptr<Model_VideoRendering>{ new Model_VideoRendering{ m_settingsVideoRendering, m_window } };
 	m_modelAudioInterface = std::shared_ptr<Model_AudioInterface>{ new Model_AudioInterface{ m_settingsAudioInterface } };
 	m_modelVisualisation = std::shared_ptr<Model_Visualisation>{ new Model_Visualisation{ m_settingsVisualisation ,m_window} };
 

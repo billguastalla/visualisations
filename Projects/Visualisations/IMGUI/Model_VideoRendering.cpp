@@ -3,7 +3,9 @@
 #include "Settings_VideoRendering.h"
 #include "FFMPEG_Encoder.h"
 
-Model_VideoRendering::Model_VideoRendering(std::shared_ptr<Settings_VideoRendering>& settings)
+#include <GLFW/glfw3.h>
+
+Model_VideoRendering::Model_VideoRendering(std::shared_ptr<Settings_VideoRendering>& settings, GLFWwindow * window)
 	:
 	m_settings{ settings },
 	m_encoder{ new FFMPEG_Encoder{} },
@@ -12,7 +14,9 @@ Model_VideoRendering::Model_VideoRendering(std::shared_ptr<Settings_VideoRenderi
 	m_frameCount{ 0 },
 	m_fileName{ "VideoRenderModule.mpg" },
 	m_renderUI{ true },
-	m_recordAudio{ false }
+	m_recordAudio{ false },
+
+	m_window{window}
 {
 }
 
@@ -35,6 +39,7 @@ bool Model_VideoRendering::start()
 	{
 		m_frameCount = 0;
 		int width{ 1920 }, height{ 1080 };
+		glfwGetWindowSize(m_window, &width, &height);
 		FFMPEG_Encoder::StartResult res = m_encoder->ffmpeg_encoder_start(m_fileName.c_str(), AVCodecID::AV_CODEC_ID_MPEG1VIDEO, m_frameRate, width, height);
 		if (res == FFMPEG_Encoder::StartResult::Success)
 		{
