@@ -1,5 +1,7 @@
 #version 330 core
-out vec4 FragColour;
+layout (location = 0) out vec4 FragColour;
+layout (location = 1) out vec4 BrightColor;
+
 in vec3 Normal;
 in vec3 FragPos;
 
@@ -10,6 +12,7 @@ uniform vec3 viewPos;
 
 void main()
 {
+	// LIGHTING: Specular, Diffuse, Ambient lighting
 	vec3 norm = normalize(Normal);
 	vec3 lightDir = normalize(lightPos - FragPos);
 
@@ -27,4 +30,11 @@ void main()
 	
 	vec3 result = (ambient + diffuse + specular) * objectColour;
     FragColour = vec4(result, 1.0);
+	
+    // check whether result is higher than some threshold, if so, output as bloom threshold color
+    float brightness = dot(result, vec3(0.3126, 0.3152, 0.3722));
+    if(brightness > 1.0)
+        BrightColor = vec4(result, 1.0);
+    else
+        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
 }

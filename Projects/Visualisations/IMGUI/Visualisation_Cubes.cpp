@@ -18,14 +18,16 @@ Visualisation_Cubes::Visualisation_Cubes()
 	:
 	m_lightPos{0.0f,0.0f,0.0f},
 	m_objectShader{ nullptr },
-	m_lampShader{ nullptr }
+	m_lampShader{ nullptr },
+	m_cubeVAO{},
+	m_cubeVBO{},
+	m_lightVAO{},
+	m_cubePositions{}
 {
 }
 
 void Visualisation_Cubes::activate()
 {
-	// build and compile our shader program
-	// ------------------------------------
 	m_objectShader = new Shader{ "../Shaders/Cubes_Vertex.vs", "../Shaders/Cubes_ObjectFragment.fs" };
 	m_lampShader = new Shader{ "../Shaders/Cubes_Vertex.vs", "../Shaders/Cubes_LampFragment.fs" };
 
@@ -103,12 +105,12 @@ void Visualisation_Cubes::activate()
 	glBindBuffer(GL_ARRAY_BUFFER, m_cubeVBO);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	m_active = true;
 }
 
 void Visualisation_Cubes::deactivate()
 {
-	// optional: de-allocate all resources once they've outlived their purpose:
-	// ------------------------------------------------------------------------
 	glDeleteVertexArrays(1, &m_cubeVAO);
 	glDeleteVertexArrays(1, &m_lightVAO);
 	glDeleteBuffers(1, &m_cubeVBO);
@@ -120,6 +122,8 @@ void Visualisation_Cubes::deactivate()
 	m_lampShader = nullptr;
 	delete m_objectShader;
 	m_objectShader = nullptr;
+
+	m_active = false;
 }
 
 void Visualisation_Cubes::processSamples(const Buffer & buf, unsigned samples)
@@ -156,20 +160,9 @@ void Visualisation_Cubes::processSamples(const Buffer & buf, unsigned samples)
 
 void Visualisation_Cubes::renderFrame()
 {
-	// per-frame time logic
-	// --------------------
 	float currentFrame = (float)glfwGetTime();
 	m_deltaTime = currentFrame - m_lastFrame;
 	m_lastFrame = currentFrame;
-
-	//// input
-	//// -----
-	//processInput(window);
-
-	//// render
-	//// ------
-	//glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// activate shader
 	m_objectShader->use();
@@ -190,7 +183,7 @@ void Visualisation_Cubes::renderFrame()
 	lightModel = glm::scale(lightModel, glm::vec3{ 0.2f });
 	m_objectShader->setVec3("lightPos", m_lightPos);
 	m_objectShader->setVec3("viewPos", m_camera.m_position);
-
+		   
 	// render boxes
 	glBindVertexArray(m_cubeVAO);
 	for (unsigned int i = 0; i < 9; i++)
@@ -210,3 +203,4 @@ void Visualisation_Cubes::renderFrame()
 	glBindVertexArray(m_lightVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 }
+

@@ -1,6 +1,8 @@
 #pragma once
 #include "Visualisation.h"
 #include "Camera.h"
+#include "PostProcessing.h"
+
 class Buffer;
 struct GLFWwindow;
 class Shader;

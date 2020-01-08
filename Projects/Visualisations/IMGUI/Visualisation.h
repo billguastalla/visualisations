@@ -30,6 +30,7 @@ public:
 
 	virtual void processSamples(const Buffer& buf, unsigned samples) = 0;
 	virtual void renderFrame() = 0;
+	virtual void drawInterface() {};
 
 	virtual std::string titleString() = 0;
 

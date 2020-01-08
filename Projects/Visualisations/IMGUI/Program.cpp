@@ -42,7 +42,7 @@ void Program::initialise()
 	/* Set up Model instances */
 	m_modelVideoRendering = std::shared_ptr<Model_VideoRendering>{ new Model_VideoRendering{ m_settingsVideoRendering } };
 	m_modelAudioInterface = std::shared_ptr<Model_AudioInterface>{ new Model_AudioInterface{ m_settingsAudioInterface } };
-	m_modelVisualisation = std::shared_ptr<Model_Visualisation>{ new Model_Visualisation{ m_settingsVisualisation } };
+	m_modelVisualisation = std::shared_ptr<Model_Visualisation>{ new Model_Visualisation{ m_settingsVisualisation ,m_window} };
 
 	/* Set up window instances */
 	Window_Abstract* videoRenderWindow = new Window_VideoRendering{ m_modelVideoRendering };

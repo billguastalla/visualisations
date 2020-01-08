@@ -35,16 +35,10 @@ Visualisation_PointClouds::Visualisation_PointClouds()
 
 void Visualisation_PointClouds::activate()
 {
-	// build and compile our shader program
-	// ------------------------------------
 	m_objectShader = new Shader{ "../Shaders/Cubes_Vertex.vs", "../Shaders/Cubes_ObjectFragment.fs" };
 	m_lampShader = new Shader{ "../Shaders/Cubes_Vertex.vs", "../Shaders/Cubes_LampFragment.fs" };
 
-	// set up vertex data(and buffer(s)) and configure vertex attributes
-	// ------------------------------------------------------------------
-
 	m_lightPos = { 0.0,0.0,-8.0 };
-
 	m_vertices = {
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 		0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
@@ -104,12 +98,12 @@ void Visualisation_PointClouds::activate()
 	glBindBuffer(GL_ARRAY_BUFFER, m_cubeVBO);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	m_active = true;
 }
 
 void Visualisation_PointClouds::deactivate()
 {
-	// optional: de-allocate all resources once they've outlived their purpose:
-	// ------------------------------------------------------------------------
 	glDeleteVertexArrays(1, &m_cubeVAO);
 	glDeleteVertexArrays(1, &m_lightVAO);
 	glDeleteBuffers(1, &m_cubeVBO);
@@ -122,12 +116,12 @@ void Visualisation_PointClouds::deactivate()
 	m_lampShader = nullptr;
 	delete m_objectShader;
 	m_objectShader = nullptr;
+
+	m_active = false;
 }
 
 void Visualisation_PointClouds::processSamples(const Buffer & buf, unsigned samples)
 {
-	/* SPAGHETTI IS GOOD WHEN EXPERIMENTING */
-
 	MetaDistribution<double> dist{ 0.0f,0.01f,0.1f,0.01f };
 
 	std::vector<std::vector<kiss_fft_cpx>> res = buf.fft();

@@ -22,9 +22,6 @@
     <Filter Include="Header Files\Graphics\Visualisations">
       <UniqueIdentifier>{86764f44-ae0a-4bd8-bc68-97077704019d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Graphics\Visualisations\Engine">
-      <UniqueIdentifier>{73b7d8f6-17b0-45e6-8827-075c751d52b1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Graphics\Visualisations\Implementations">
       <UniqueIdentifier>{67d455ff-9e3a-4a96-9d12-7b1f79458306}</UniqueIdentifier>
     </Filter>
@@ -33,9 +30,6 @@
     </Filter>
     <Filter Include="Source Files\Graphics\Visualisations">
       <UniqueIdentifier>{8aff6159-ffe3-410d-b4b0-6870590f13be}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Graphics\Visualisations\Engine">
-      <UniqueIdentifier>{3e4ca746-88fa-4ef2-aeed-cbd3eb798b00}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Graphics\Visualisations\Implementations">
       <UniqueIdentifier>{f647b7b1-f187-40e2-a324-c7b524420a09}</UniqueIdentifier>
@@ -88,13 +82,19 @@
     <Filter Include="Header Files\Audio Modules\Analysis">
       <UniqueIdentifier>{94f689f7-b901-4947-b557-692c3ea9bb1b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Graphics\Visualisations\Engine\GameOfLife">
-      <UniqueIdentifier>{1fffa070-d56b-4322-ba06-ec872c3bfa94}</UniqueIdentifier>
+    <Filter Include="Source Files\Graphics\Engine">
+      <UniqueIdentifier>{3e4ca746-88fa-4ef2-aeed-cbd3eb798b00}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Graphics\Visualisations\Engine\GameOfLife">
+    <Filter Include="Source Files\Graphics\Engine\GameOfLife">
       <UniqueIdentifier>{fd9d4cd3-6b23-454b-9f15-c9375280c12f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Graphics\Visualisations\Engine\Models">
+    <Filter Include="Header Files\Graphics\Engine">
+      <UniqueIdentifier>{73b7d8f6-17b0-45e6-8827-075c751d52b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Engine\GameOfLife">
+      <UniqueIdentifier>{1fffa070-d56b-4322-ba06-ec872c3bfa94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Engine\Models">
       <UniqueIdentifier>{5cc7a0bf-2372-42b5-bff0-e83deae2a97d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -133,7 +133,7 @@
       <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
-      <Filter>Source Files\Graphics\Visualisations\Engine</Filter>
+      <Filter>Source Files\Graphics\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Program.cpp">
       <Filter>Source Files\Program</Filter>
@@ -187,16 +187,16 @@
       <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
     </ClCompile>
     <ClCompile Include="Visualisation_GOL\GameOfLife_Element.cpp">
-      <Filter>Source Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+      <Filter>Source Files\Graphics\Engine\GameOfLife</Filter>
     </ClCompile>
     <ClCompile Include="Visualisation_GOL\GameOfLife_ElementList.cpp">
-      <Filter>Source Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+      <Filter>Source Files\Graphics\Engine\GameOfLife</Filter>
     </ClCompile>
     <ClCompile Include="Visualisation_GOL\GameOfLife_Game.cpp">
-      <Filter>Source Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+      <Filter>Source Files\Graphics\Engine\GameOfLife</Filter>
     </ClCompile>
     <ClCompile Include="Visualisation_GOL\GameOfLife_Grid.cpp">
-      <Filter>Source Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+      <Filter>Source Files\Graphics\Engine\GameOfLife</Filter>
     </ClCompile>
     <ClCompile Include="Visualisation_GameOfLife.cpp">
       <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
@@ -214,6 +214,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MeshGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -243,10 +246,10 @@
       <Filter>Header Files\UI\imgui</Filter>
     </ClInclude>
     <ClInclude Include="Vertex.h">
-      <Filter>Header Files\Graphics\Visualisations\Engine</Filter>
+      <Filter>Header Files\Graphics\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
-      <Filter>Header Files\Graphics\Visualisations\Engine</Filter>
+      <Filter>Header Files\Graphics\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Visualisation_Oscilloscope.h">
       <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
@@ -264,7 +267,7 @@
       <Filter>Header Files\UI</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>Header Files\Graphics\Visualisations\Engine</Filter>
+      <Filter>Header Files\Graphics\Engine</Filter>
     </ClInclude>
     <ClInclude Include="FFMPEG_Encoder.h">
       <Filter>Header Files\Video Rendering</Filter>
@@ -315,16 +318,16 @@
       <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
     </ClInclude>
     <ClInclude Include="Visualisation_GOL\GameOfLife_Element.h">
-      <Filter>Header Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+      <Filter>Header Files\Graphics\Engine\GameOfLife</Filter>
     </ClInclude>
     <ClInclude Include="Visualisation_GOL\GameOfLife_ElementList.h">
-      <Filter>Header Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+      <Filter>Header Files\Graphics\Engine\GameOfLife</Filter>
     </ClInclude>
     <ClInclude Include="Visualisation_GOL\GameOfLife_Game.h">
-      <Filter>Header Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+      <Filter>Header Files\Graphics\Engine\GameOfLife</Filter>
     </ClInclude>
     <ClInclude Include="Visualisation_GOL\GameOfLife_Grid.h">
-      <Filter>Header Files\Graphics\Visualisations\Engine\GameOfLife</Filter>
+      <Filter>Header Files\Graphics\Engine\GameOfLife</Filter>
     </ClInclude>
     <ClInclude Include="Visualisation_GameOfLife.h">
       <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
@@ -333,13 +336,16 @@
       <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
-      <Filter>Header Files\Graphics\Visualisations\Engine\Models</Filter>
+      <Filter>Header Files\Graphics\Engine\Models</Filter>
     </ClInclude>
     <ClInclude Include="MeshGenerator.h">
-      <Filter>Header Files\Graphics\Visualisations\Engine\Models</Filter>
+      <Filter>Header Files\Graphics\Engine\Models</Filter>
     </ClInclude>
     <ClInclude Include="Texture.h">
-      <Filter>Header Files\Graphics\Visualisations\Engine\Models</Filter>
+      <Filter>Header Files\Graphics\Engine\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessing.h">
+      <Filter>Header Files\Graphics\Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
