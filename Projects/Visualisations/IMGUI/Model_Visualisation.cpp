@@ -9,17 +9,23 @@
 
 #include "Buffer.h"
 
-Model_Visualisation::Model_Visualisation(std::shared_ptr<Settings_Visualisation> & settings)
+#include <GLFW/glfw3.h>
+Model_Visualisation::Model_Visualisation(std::shared_ptr<Settings_Visualisation> & settings, GLFWwindow* win)
 	:
 	m_settings{settings},
 	m_visualisations{},
 	m_currentVisualisaton{0},
 	m_wireframe{false},
-	m_postProcessing{ new PostProcessing{} }
+	m_postProcessing{ new PostProcessing{} },
+	m_window{win}
 	//m_vis_oscilloscope{},
 	//m_vis_cubes{}
 {
-	m_postProcessing->initialise();
+
+	/* TODO: Make sure any viewport-based stuff is modifiable when viewport is changed!! */
+	int w{1920}, h{ 1080 };
+	glfwGetWindowSize(win, &w, &h);
+	m_postProcessing->initialise(w,h);
 
 	//m_vis_cubes.activate(); /* At some point you'll want to activate/deactivate on switching modes.*/
 	//m_vis_oscilloscope.activate();
@@ -30,12 +36,17 @@ Model_Visualisation::Model_Visualisation(std::shared_ptr<Settings_Visualisation>
 	Visualisation_Sandbox * visSandbox = new Visualisation_Sandbox{};
 	Visualisation_GameOfLife * visGameOfLife = new Visualisation_GameOfLife{};
 
+	/* This has now been delegated to visualisation switching, 
+		on account of the increased total memory demands of visualisations.
+		See: void Model_Visualisation::setVisualisation(int option)
+	*/
+
 	visCubes->activate();
-	visFractal->activate();
-	visGameOfLife->activate();
-	visOscilloscope->activate();
-	visPointClouds->activate();
-	visSandbox->activate();
+	//visFractal->activate();
+	//visGameOfLife->activate();
+	//visOscilloscope->activate();
+	//visPointClouds->activate();
+	//visSandbox->activate();
 
 	m_visualisations.push_back(visCubes);
 	m_visualisations.push_back(visFractal);
@@ -85,10 +96,19 @@ void Model_Visualisation::setVisualisation(int option)
 	if (option == m_currentVisualisaton)
 		return;
 
+
 	if (option < (int)m_visualisations.size() && option >= 0)
+	{
+		if(currentVisualisation())
+			currentVisualisation()->deactivate();
 		m_currentVisualisaton = option;
+		if (currentVisualisation())
+			currentVisualisation()->activate();
+	}
 	else
 		m_currentVisualisaton = -1;
+
+
 
 	/* Can activate/deactivate here if you'd like, but currently it's in the constructor/destructor.
 		As vis code gets heavier we can move it if needed. */

@@ -7,7 +7,7 @@ class PostProcessing
 public:
 	PostProcessing();
 
-	void initialise();
+	void initialise(int width, int height);
 	void deinitialise();
 
 	void frameRenderBegin();
@@ -30,9 +30,16 @@ private:
 
 	// HDR & Bloom
 	bool m_hdrEnabled;
+	bool m_bloomEnabled;
 	float m_exposure;
-	Shader * m_hdrShader;
+	//Shader* m_hdrShader;
+	Shader* m_bloomShader;
+	Shader * m_blurShader;
 
 	// HDR Framebuffer Object, Colour Buffer, Render buffer
-	unsigned int m_hdrFBO, m_colourBuffer, m_rboDepth;
+	unsigned int m_hdrFBO, m_colourBuffers[2], m_rboDepth;
+
+	// Bloom: Blurring
+	unsigned int m_pingpongFBO[2];
+	unsigned int m_pingpongColorbuffers[2];
 };

@@ -105,6 +105,8 @@ void Visualisation_Cubes::activate()
 	glBindBuffer(GL_ARRAY_BUFFER, m_cubeVBO);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	m_active = true;
 }
 
 void Visualisation_Cubes::deactivate()
@@ -120,6 +122,8 @@ void Visualisation_Cubes::deactivate()
 	m_lampShader = nullptr;
 	delete m_objectShader;
 	m_objectShader = nullptr;
+
+	m_active = false;
 }
 
 void Visualisation_Cubes::processSamples(const Buffer & buf, unsigned samples)

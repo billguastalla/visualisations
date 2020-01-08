@@ -47,6 +47,8 @@ void Visualisation_Fractal::activate()
 	m_mandelbulb = MeshGenerator::generateMandelbulb(m_mandelbulbRes, m_mandelbulbN, m_mandelbulbInitialVector);
 	MeshGenerator::generateSphere(4, m_sphere);
 	m_sphere.scale(glm::vec3{ 0.004, 0.004, 0.004 });
+
+	m_active = true;
 }
 
 void Visualisation_Fractal::deactivate()

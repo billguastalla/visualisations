@@ -7,11 +7,13 @@
 
 class Settings_Visualisation;
 class LockableBuffer;
+struct GLFWwindow;
+
 
 class Model_Visualisation
 {
 public:
-	Model_Visualisation(std::shared_ptr<Settings_Visualisation> & settings);
+	Model_Visualisation(std::shared_ptr<Settings_Visualisation> & settings, GLFWwindow * win);
 	~Model_Visualisation();
 
 	int visualisationOptionsCount();
@@ -35,5 +37,8 @@ private:
 	std::vector<Visualisation*> m_visualisations;
 	int m_currentVisualisaton;
 	bool m_wireframe;
+
+
+	GLFWwindow* m_window;
 };
 
