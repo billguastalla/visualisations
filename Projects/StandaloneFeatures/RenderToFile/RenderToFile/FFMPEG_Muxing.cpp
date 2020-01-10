@@ -45,12 +45,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 #include "FFMPEG_Muxing.h"
 #include <iostream>
 
-#define STREAM_DURATION   10.0
-#define STREAM_FRAME_RATE 60 /* 25 images/s */
-#define STREAM_PIX_FMT    AV_PIX_FMT_YUV420P /* default pix_fmt */
+//#define STREAM_DURATION   10.0
+//#define STREAM_FRAME_RATE 60 /* 25 images/s */
+//#define STREAM_PIX_FMT    AV_PIX_FMT_YUV420P /* default pix_fmt */
 #define SCALE_FLAGS SWS_BICUBIC
 
 void FFMPEG_Muxer::log_packet(const AVFormatContext* fmt_ctx, const AVPacket* pkt)
@@ -77,7 +78,6 @@ int FFMPEG_Muxer::write_frame(AVFormatContext* fmt_ctx, const AVRational* time_b
 	return av_interleaved_write_frame(fmt_ctx, pkt);
 }
 
-/* Add an output stream. */
 void FFMPEG_Muxer::add_stream(OutputStream* ost, AVFormatContext* oc,
 	AVCodec ** codec,
 	enum AVCodecID codec_id)
@@ -150,11 +150,11 @@ void FFMPEG_Muxer::add_stream(OutputStream* ost, AVFormatContext* oc,
 		 * identical to 1. */
 
 		 /* B.G: Replaced initialisation with av_make_q, C++ doesn't support AVRational t = { int, int }*/
-		ost->st->time_base = av_make_q(1,STREAM_FRAME_RATE);
+		ost->st->time_base = av_make_q(1,m_settings.m_framerate);
 		c->time_base = ost->st->time_base;
 
 		c->gop_size = 12; /* emit one intra frame every twelve frames at most */
-		c->pix_fmt = STREAM_PIX_FMT;
+		c->pix_fmt = m_settings.m_pixelFormat;
 		if (c->codec_id == AV_CODEC_ID_MPEG2VIDEO) {
 			/* just for testing, we also add B-frames */
 			c->max_b_frames = 2;
@@ -176,11 +176,7 @@ void FFMPEG_Muxer::add_stream(OutputStream* ost, AVFormatContext* oc,
 		c->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 }
 
-/**************************************************************/
-/* audio output */
-
-AVFrame* FFMPEG_Muxer::alloc_audio_frame(enum AVSampleFormat sample_fmt,
-	uint64_t channel_layout,
+AVFrame* FFMPEG_Muxer::alloc_audio_frame(enum AVSampleFormat sample_fmt, uint64_t channel_layout,
 	int sample_rate, int nb_samples)
 {
 	AVFrame* frame = av_frame_alloc();
@@ -269,8 +265,6 @@ void FFMPEG_Muxer::open_audio(AVFormatContext* oc, AVCodec* codec, OutputStream*
 	}
 }
 
-/* Prepare a 16 bit dummy audio frame of 'frame_size' samples and
- * 'nb_channels' channels. */
 AVFrame* FFMPEG_Muxer::get_audio_frame(OutputStream* ost)
 {
 	AVFrame* frame{ ost->tmp_frame };
@@ -280,7 +274,7 @@ AVFrame* FFMPEG_Muxer::get_audio_frame(OutputStream* ost)
 	/* check if we want to generate more frames */
 	/* B.G: Replaced initialisation with av_make_q, C++ doesn't support AVRational t = { int, int }*/
 	if (av_compare_ts(ost->next_pts, ost->enc->time_base,
-		STREAM_DURATION, av_make_q(1, 1)) >= 0)
+		m_settings.m_streamDuration, av_make_q(1, 1)) >= 0)
 		return nullptr;
 
 	for (j = 0; j < frame->nb_samples; j++) {
@@ -297,10 +291,6 @@ AVFrame* FFMPEG_Muxer::get_audio_frame(OutputStream* ost)
 	return frame;
 }
 
-/*
- * encode one audio frame and send it to the muxer
- * return 1 when encoding is finished, 0 otherwise
- */
 int FFMPEG_Muxer::write_audio_frame(AVFormatContext* oc, OutputStream* ost)
 {
 	AVCodecContext* c{ nullptr };
@@ -380,9 +370,6 @@ int FFMPEG_Muxer::write_audio_frame(AVFormatContext* oc, OutputStream* ost)
 	return (frame || got_packet) ? 0 : 1;
 }
 
-/**************************************************************/
-/* video output */
-
 AVFrame* FFMPEG_Muxer::alloc_picture(enum AVPixelFormat pix_fmt, int width, int height)
 {
 	AVFrame* picture;
@@ -450,7 +437,6 @@ void FFMPEG_Muxer::open_video(AVFormatContext* oc, AVCodec* codec, OutputStream*
 	}
 }
 
-/* Prepare a dummy image. */
 void FFMPEG_Muxer::fill_yuv_image(AVFrame* pict, int frame_index,
 	int width, int height)
 {
@@ -479,7 +465,7 @@ AVFrame* FFMPEG_Muxer::get_video_frame(OutputStream* ost)
 	/* check if we want to generate more frames */
 	/* B.G: Replaced Initialiser */
 	if (av_compare_ts(ost->next_pts, c->time_base,
-		STREAM_DURATION, av_make_q(1,1)) >= 0)
+		m_settings.m_streamDuration, av_make_q(1,1)) >= 0)
 		return nullptr;
 
 	/* when we pass a frame to the encoder, it may keep a reference to it
@@ -516,10 +502,6 @@ AVFrame* FFMPEG_Muxer::get_video_frame(OutputStream* ost)
 	return ost->frame;
 }
 
-/*
- * encode one video frame and send it to the muxer
- * return 1 when encoding is finished, 0 otherwise
- */
 int FFMPEG_Muxer::write_video_frame(AVFormatContext* oc, OutputStream* ost)
 {
 	int ret{ 0 };
@@ -584,9 +566,6 @@ void FFMPEG_Muxer::close_stream(AVFormatContext* oc, OutputStream* ost)
 	sws_freeContext(ost->sws_ctx);
 	swr_free(&ost->swr_ctx);
 }
-
-/**************************************************************/
-/* media file output */
 
 int main(int argc, char** argv)
 {

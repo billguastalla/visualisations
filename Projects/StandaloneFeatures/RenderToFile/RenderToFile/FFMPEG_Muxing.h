@@ -26,7 +26,7 @@
 #include <string>
 #include <math.h>
 
-#pragma warning(disable 4996)
+//#pragma warning(disable 4996)
 #define __STDC_CONSTANT_MACROS
 extern "C"
 {
