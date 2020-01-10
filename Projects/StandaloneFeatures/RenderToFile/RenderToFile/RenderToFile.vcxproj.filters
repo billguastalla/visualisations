@@ -45,6 +45,9 @@
     <ClCompile Include="FFMPEG_EncoderCMD.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FFMPEG_Muxing.cpp">
+      <Filter>Source Files\DLL Implementation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -61,6 +64,12 @@
     </ClInclude>
     <ClInclude Include="FFMPEG_EncoderCMD.h">
       <Filter>Header Files\CMD Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="FFMPEG_Help.h">
+      <Filter>Header Files\DLL Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="FFMPEG_Muxing.h">
+      <Filter>Header Files\DLL Implementation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

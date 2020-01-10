@@ -34,7 +34,7 @@ void FFMPEG_EncoderCMD::start()
 		// open pipe to ffmpeg's stdin in binary write mode
 		m_ffmpeg = _popen(cmd.c_str(), "wb");
 		/* Set up buffer */
-		m_buffer = new int[m_width*m_height];
+		m_buffer = new int[(size_t)m_width * (size_t)m_height];
 	}
 	m_started = true;
 }

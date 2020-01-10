@@ -21,32 +21,32 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{68234DB3-F9E9-42C2-9C30-82C1AE0E0A61}</ProjectGuid>
     <RootNamespace>RenderToFile</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -143,6 +143,7 @@
   <ItemGroup>
     <ClCompile Include="..\Includes\glad\glad.c" />
     <ClCompile Include="FFMPEG_EncoderCMD.cpp" />
+    <ClCompile Include="FFMPEG_Muxing.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="FFMPEG_Encoder.cpp" />
     <ClCompile Include="ffmpeg_template-cmd.cpp" />
@@ -152,6 +153,8 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="FFMPEG_Encoder.h" />
     <ClInclude Include="FFMPEG_EncoderCMD.h" />
+    <ClInclude Include="FFMPEG_Help.h" />
+    <ClInclude Include="FFMPEG_Muxing.h" />
     <ClInclude Include="LIBPNG_Capture.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>
