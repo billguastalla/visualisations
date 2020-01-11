@@ -8,19 +8,25 @@
 		- Write tests for rendering sample video in all formats, in unittests.
 		- Check with FFMPEG or StackOverflow/CodeReview that the code is appropriate.
 
+	Structure: (main components are..)
+		-> Top level interface:
+			-> Add audio stream
+			-> Add video stream
+		
 		Streams:
 			-> Allow external input of audio via interface.
 			-> Allow external input of video via interface.
 
 		- Publish. Reasons:
-			-> Want to be able to run code and not exit program on failure.
+			-> Want to be able to run code without exiting the program on failure.
 			-> Want to be able to re-run muxer multiple times with different settings.
 			-> Want to be able to see the structure clearly.
-			-> Want to run this in the C++11 standard without warnings.
+			-> Want to compile this in the C++11 standard without warnings.
+				(Note: Disable MSVC compiler extensions before publishing as a separate repo!)
 */
 /*
-	Bill Guastalla 2019: MUXING:
-		This is a quick port from C -> C++ for a code example found in the FFMPEG
+	Bill Guastalla 2020: MUXING:
+		This is a port from C -> C++11 for a code example found in the FFMPEG
 		documentation. The original work is by Fabrice Bellard, and the corresponding
 		MIT copyright notice can be found, and should remain, just below.
 */
@@ -45,26 +51,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 #include "FFMPEG_Muxing.h"
 #include <iostream>
 
-//#define STREAM_DURATION   10.0
-//#define STREAM_FRAME_RATE 60 /* 25 images/s */
-//#define STREAM_PIX_FMT    AV_PIX_FMT_YUV420P /* default pix_fmt */
+ //#define STREAM_DURATION   10.0
+ //#define STREAM_FRAME_RATE 60 /* 25 images/s */
+ //#define STREAM_PIX_FMT    AV_PIX_FMT_YUV420P /* default pix_fmt */
 #define SCALE_FLAGS SWS_BICUBIC
 
 void FFMPEG_Muxer::log_packet(const AVFormatContext* fmt_ctx, const AVPacket* pkt)
 {
 	AVRational* time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
-
+	/* B.G: Replaced with cout. */
+	/*std::cout
+		<< "pts:" << pkt->pts << " "
+		<< "pts_time:" << av_q2d(*time_base) * pkt->pts << " "
+		<< "dts:" << pkt->dts << " "
+		<< "dts_time:" << av_q2d(*time_base) * pkt->dts << " "
+		<< "duration:" << pkt->duration << " "
+		<< "duration_time:" << av_q2d(*time_base) * pkt->duration << " "
+		<< "stream_index:" << pkt->stream_index << std::endl;*/
 	//printf("pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s stream_index:%d\n",
 	//       av_ts2str(pkt->pts), av_ts2timestr(pkt->pts, time_base),
 	//       av_ts2str(pkt->dts), av_ts2timestr(pkt->dts, time_base),
 	//       av_ts2str(pkt->duration), av_ts2timestr(pkt->duration, time_base),
 	//       pkt->stream_index);
-
-	/* B.G: TODO: Replace with cout. */
 }
 
 int FFMPEG_Muxer::write_frame(AVFormatContext* fmt_ctx, const AVRational* time_base, AVStream* st, AVPacket* pkt)
@@ -78,32 +89,40 @@ int FFMPEG_Muxer::write_frame(AVFormatContext* fmt_ctx, const AVRational* time_b
 	return av_interleaved_write_frame(fmt_ctx, pkt);
 }
 
-void FFMPEG_Muxer::add_stream(OutputStream* ost, AVFormatContext* oc,
-	AVCodec ** codec,
-	enum AVCodecID codec_id)
+bool FFMPEG_Muxer::add_stream(OutputStream* ost, AVFormatContext* oc, AVCodec** codec, enum AVCodecID codec_id)
 {
-	AVCodecContext* c;
-	int i;
+	AVCodecContext* c{ nullptr };
 
 	/* find the encoder */
 	*codec = avcodec_find_encoder(codec_id);
 	if (!(*codec)) {
-		fprintf(stderr, "Could not find encoder for '%s'\n",
-			avcodec_get_name(codec_id));
-		std::cout << "ERROR";
+
+		std::string error{ "Adding Stream: Could not find encoder for " };
+		error = error.append(avcodec_get_name(codec_id));
+		reportError(error);
+		return false;
 	}
 
 	ost->st = avformat_new_stream(oc, nullptr);
+
 	if (!ost->st) {
-		fprintf(stderr, "Could not allocate stream\n");
-		std::cout << "ERROR";
+		reportError("Adding Stream: Could not allocate stream.");
+		return false;
 	}
-	ost->st->id = oc->nb_streams - 1;
+	else
+		m_allocationStage = (AllocationStage)(m_allocationStage +
+			AllocationStage::OutputStream_Stream);
+
+	ost->st->id = (oc->nb_streams - 1);
 	c = avcodec_alloc_context3(*codec);
 	if (!c) {
-		fprintf(stderr, "Could not alloc an encoding context\n");
-		std::cout << "ERROR";
-	}
+		reportError("Adding Stream: Could not allocate an encoding context");
+		deallocate();
+		return false;
+	} else
+		m_allocationStage = (AllocationStage)(m_allocationStage +
+			AllocationStage::OutputStream_CodecContext);
+
 	ost->enc = c;
 
 	switch ((*codec)->type) {
@@ -111,11 +130,11 @@ void FFMPEG_Muxer::add_stream(OutputStream* ost, AVFormatContext* oc,
 	{
 		c->sample_fmt = (*codec)->sample_fmts ?
 			(*codec)->sample_fmts[0] : AV_SAMPLE_FMT_FLTP;
-		c->bit_rate = 64000;
-		c->sample_rate = 44100;
+		c->bit_rate = m_settings.m_audioBitRate;
+		c->sample_rate = m_settings.m_audioDefaultSampleRate;
 		if ((*codec)->supported_samplerates) {
 			c->sample_rate = (*codec)->supported_samplerates[0];
-			for (i = 0; (*codec)->supported_samplerates[i]; i++) {
+			for (int i = 0; (*codec)->supported_samplerates[i]; i++) {
 				if ((*codec)->supported_samplerates[i] == 44100)
 					c->sample_rate = 44100;
 			}
@@ -124,7 +143,7 @@ void FFMPEG_Muxer::add_stream(OutputStream* ost, AVFormatContext* oc,
 		c->channel_layout = AV_CH_LAYOUT_STEREO;
 		if ((*codec)->channel_layouts) {
 			c->channel_layout = (*codec)->channel_layouts[0];
-			for (i = 0; (*codec)->channel_layouts[i]; i++) {
+			for (int i = 0; (*codec)->channel_layouts[i]; i++) {
 				if ((*codec)->channel_layouts[i] == AV_CH_LAYOUT_STEREO)
 					c->channel_layout = AV_CH_LAYOUT_STEREO;
 			}
@@ -133,24 +152,24 @@ void FFMPEG_Muxer::add_stream(OutputStream* ost, AVFormatContext* oc,
 
 		/* B.G: Non-standard type-conversion. */
 		// AVRational = { .num = 1,.den = c->sample_rate }; (one day we can use designated initialisers, C++20)
-		ost->st->time_base = av_make_q(1,c->sample_rate);
+		ost->st->time_base = av_make_q(1, c->sample_rate);
 		break;
 	}
 	case AVMEDIA_TYPE_VIDEO:
 	{
 		c->codec_id = codec_id;
 
-		c->bit_rate = 4000000;
+		c->bit_rate = m_settings.m_videoBitRate;
 		/* Resolution must be a multiple of two. */
-		c->width = 1920;
-		c->height = 1080;
+		c->width = m_settings.m_frameWidth;
+		c->height = m_settings.m_frameHeight;
 		/* timebase: This is the fundamental unit of time (in seconds) in terms
 		 * of which frame timestamps are represented. For fixed-fps content,
 		 * timebase should be 1/framerate and timestamp increments should be
 		 * identical to 1. */
 
 		 /* B.G: Replaced initialisation with av_make_q, C++ doesn't support AVRational t = { int, int }*/
-		ost->st->time_base = av_make_q(1,m_settings.m_framerate);
+		ost->st->time_base = av_make_q(1, m_settings.m_framerate);
 		c->time_base = ost->st->time_base;
 
 		c->gop_size = 12; /* emit one intra frame every twelve frames at most */
@@ -174,18 +193,22 @@ void FFMPEG_Muxer::add_stream(OutputStream* ost, AVFormatContext* oc,
 	/* Some formats want stream headers to be separate. */
 	if (oc->oformat->flags & AVFMT_GLOBALHEADER)
 		c->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+
+	return true;
 }
 
 AVFrame* FFMPEG_Muxer::alloc_audio_frame(enum AVSampleFormat sample_fmt, uint64_t channel_layout,
 	int sample_rate, int nb_samples)
 {
-	AVFrame* frame = av_frame_alloc();
-	int ret;
+	AVFrame* frame{ av_frame_alloc() };
+	int ret{0};
 
 	if (!frame) {
-		fprintf(stderr, "Error allocating an audio frame\n");
-		std::cout << "ERROR";
+		reportError("Error allocating an audio frame.");
+		return nullptr;
 	}
+	else
+		m_allocationStage = (AllocationStage)(m_allocationStage + AllocationStage::OutputStream_AudioFrame);
 
 	frame->format = sample_fmt;
 	frame->channel_layout = channel_layout;
@@ -195,11 +218,10 @@ AVFrame* FFMPEG_Muxer::alloc_audio_frame(enum AVSampleFormat sample_fmt, uint64_
 	if (nb_samples) {
 		ret = av_frame_get_buffer(frame, 0);
 		if (ret < 0) {
-			fprintf(stderr, "Error allocating an audio buffer\n");
-			std::cout << "ERROR";
+			reportError("Error allocating an audio buffer.",ret);
+			return nullptr;
 		}
 	}
-
 	return frame;
 }
 
@@ -207,17 +229,17 @@ void FFMPEG_Muxer::open_audio(AVFormatContext* oc, AVCodec* codec, OutputStream*
 {
 	int nb_samples{ 0 };
 	int ret{ 0 };
-	AVDictionary* opt{nullptr};
-	AVCodecContext * c{ ost->enc };
+	AVDictionary* opt{ nullptr };
+	AVCodecContext* c{ ost->enc };
 
 	/* open it */
 	av_dict_copy(&opt, opt_arg, 0);
 	ret = avcodec_open2(c, codec, &opt);
 	av_dict_free(&opt);
 	if (ret < 0) {
-		/* B.G: TODO: Replace with cout. */
-		//fprintf(stderr, "Could not open audio codec: %s\n", av_err2str(ret));
-		std::cout << "ERROR";
+		/* B.G: NOTE: This can happen if an unsupported sample rate is provided,
+						when the supported sample rates are not shown for the codec. */
+		reportError("Could not open audio codec.", ret);
 	}
 
 	/* init signal generator */
@@ -226,6 +248,7 @@ void FFMPEG_Muxer::open_audio(AVFormatContext* oc, AVCodec* codec, OutputStream*
 	/* increment frequency by 110 Hz per second */
 	ost->tincr2 = 2 * M_PI * 110.0 / c->sample_rate / c->sample_rate;
 
+	/* B.G: If we can send large frames then do it. */
 	if (c->codec->capabilities & AV_CODEC_CAP_VARIABLE_FRAME_SIZE)
 		nb_samples = 10000;
 	else
@@ -239,15 +262,13 @@ void FFMPEG_Muxer::open_audio(AVFormatContext* oc, AVCodec* codec, OutputStream*
 	/* copy the stream parameters to the muxer */
 	ret = avcodec_parameters_from_context(ost->st->codecpar, c);
 	if (ret < 0) {
-		fprintf(stderr, "Could not copy the stream parameters\n");
-		std::cout << "ERROR";
+		reportError("Could not copy the stream parameters\n",ret);
 	}
 
 	/* create resampler context */
 	ost->swr_ctx = swr_alloc();
 	if (!ost->swr_ctx) {
-		fprintf(stderr, "Could not allocate resampler context\n");
-		std::cout << "ERROR";
+		reportError("Could not allocate resampler context\n");
 	}
 
 	/* set options */
@@ -260,8 +281,7 @@ void FFMPEG_Muxer::open_audio(AVFormatContext* oc, AVCodec* codec, OutputStream*
 
 	/* initialize the resampling context */
 	if ((ret = swr_init(ost->swr_ctx)) < 0) {
-		fprintf(stderr, "Failed to initialize the resampling context\n");
-		std::cout << "ERROR";
+		reportError("Failed to initialize the resampling context\n",ret);
 	}
 }
 
@@ -319,23 +339,21 @@ int FFMPEG_Muxer::write_audio_frame(AVFormatContext* oc, OutputStream* ost)
 		 */
 		ret = av_frame_make_writable(ost->frame);
 		if (ret < 0)
-			std::cout << "ERROR";
+		{
+			reportError("Writing Audio Frame: Could not make frame writable", ret);
+		}
 
 		/* convert to destination format */
 		ret = swr_convert(ost->swr_ctx,
 			ost->frame->data, dst_nb_samples,
 			(const uint8_t * *)frame->data, frame->nb_samples);
 		if (ret < 0) {
-			fprintf(stderr, "Error while converting\n");
-			std::cout << "ERROR";
+			reportError("Writing Audio Frame: Error while converting frame \n",ret);
 		}
 		frame = ost->frame;
 
 		/* B.G: Replaced Initialiser */
-		AVRational timeBase;
-		timeBase.num = 1;
-		timeBase.den = c->sample_rate;
-		frame->pts = av_rescale_q(ost->samples_count, timeBase, c->time_base);
+		frame->pts = av_rescale_q(ost->samples_count, av_make_q(1, c->sample_rate), c->time_base);
 		ost->samples_count += dst_nb_samples;
 	}
 
@@ -353,17 +371,14 @@ int FFMPEG_Muxer::write_audio_frame(AVFormatContext* oc, OutputStream* ost)
 	}
 
 	if (ret < 0) {
-		/* B.G: TODO: Replace with cout. */
-		// fprintf(stderr, "Error encoding audio frame: %s\n", av_err2str(ret));
-		std::cout << "ERROR";
+		reportError("Writing Audio Frame: Error encoding audio frame: ", ret);
+
 	}
 
 	if (got_packet) {
 		ret = write_frame(oc, &c->time_base, ost->st, &pkt);
 		if (ret < 0) {
-			/* B.G: TODO: Replace with cout. */
-			// fprintf(stderr, "Error while writing audio frame: %s\n", av_err2str(ret));
-			std::cout << "ERROR";
+			reportError("Writing Audio Frame: Error while writing audio frame: ",ret);
 		}
 	}
 
@@ -384,12 +399,11 @@ AVFrame* FFMPEG_Muxer::alloc_picture(enum AVPixelFormat pix_fmt, int width, int 
 	picture->height = height;
 
 	/* allocate the buffers for the frame data */
+	/* B.G: UNKNOWN: Find out why 32 needs to be passed into alignment parameter. */
 	ret = av_frame_get_buffer(picture, 32);
 	if (ret < 0) {
-		fprintf(stderr, "Could not allocate frame data.\n");
-		std::cout << "ERROR";
+		reportError("Could not allocate frame data.", ret);
 	}
-
 	return picture;
 }
 
@@ -405,16 +419,14 @@ void FFMPEG_Muxer::open_video(AVFormatContext* oc, AVCodec* codec, OutputStream*
 	ret = avcodec_open2(c, codec, &opt);
 	av_dict_free(&opt);
 	if (ret < 0) {
-		/* B.G: TODO: Replace with cout. */
-		//fprintf(stderr, "Could not open video codec: %s\n", av_err2str(ret));
-		std::cout << "ERROR";
+		reportError("Opening Video Stream: Could not open video codec. " \
+					"Possible Causes: Video parameters incompatible with codec.",ret);
 	}
 
 	/* allocate and init a re-usable frame */
 	ost->frame = alloc_picture(c->pix_fmt, c->width, c->height);
 	if (!ost->frame) {
-		fprintf(stderr, "Could not allocate video frame\n");
-		std::cout << "ERROR";
+		reportError("Opening Video Stream: Could not allocate video frame.", ret);
 	}
 
 	/* If the output format is not YUV420P, then a temporary YUV420P
@@ -424,16 +436,14 @@ void FFMPEG_Muxer::open_video(AVFormatContext* oc, AVCodec* codec, OutputStream*
 	if (c->pix_fmt != AV_PIX_FMT_YUV420P) {
 		ost->tmp_frame = alloc_picture(AV_PIX_FMT_YUV420P, c->width, c->height);
 		if (!ost->tmp_frame) {
-			fprintf(stderr, "Could not allocate temporary picture\n");
-			std::cout << "ERROR";
+			reportError("Opening Video Stream: Could not allocate temporary picture.");
 		}
 	}
 
 	/* copy the stream parameters to the muxer */
 	ret = avcodec_parameters_from_context(ost->st->codecpar, c);
 	if (ret < 0) {
-		fprintf(stderr, "Could not copy the stream parameters\n");
-		std::cout << "ERROR";
+		reportError("Opening Video Stream: Could not copy the stream parameters.", ret);
 	}
 }
 
@@ -460,18 +470,18 @@ void FFMPEG_Muxer::fill_yuv_image(AVFrame* pict, int frame_index,
 
 AVFrame* FFMPEG_Muxer::get_video_frame(OutputStream* ost)
 {
-	AVCodecContext * c{ ost->enc };
+	AVCodecContext* c{ ost->enc };
 
 	/* check if we want to generate more frames */
 	/* B.G: Replaced Initialiser */
 	if (av_compare_ts(ost->next_pts, c->time_base,
-		m_settings.m_streamDuration, av_make_q(1,1)) >= 0)
+		m_settings.m_streamDuration, av_make_q(1, 1)) >= 0)
 		return nullptr;
 
 	/* when we pass a frame to the encoder, it may keep a reference to it
 	 * internally; make sure we do not overwrite it here */
-	if (av_frame_make_writable(ost->frame) < 0)
-		std::cout << "ERROR";
+	if (int r = av_frame_make_writable(ost->frame) < 0)
+		reportError("Getting Video Frame: Could not make frame writable.",r);
 
 	if (c->pix_fmt != AV_PIX_FMT_YUV420P) {
 		/* as we only generate a YUV420P picture, we must convert it
@@ -483,9 +493,7 @@ AVFrame* FFMPEG_Muxer::get_video_frame(OutputStream* ost)
 				c->pix_fmt,
 				SCALE_FLAGS, nullptr, nullptr, nullptr);
 			if (!ost->sws_ctx) {
-				fprintf(stderr,
-					"Could not initialize the conversion context\n");
-				std::cout << "ERROR";
+				reportError("Getting Video Frame: Could not initialize the conversion context.");
 			}
 		}
 		fill_yuv_image(ost->tmp_frame, ost->next_pts, c->width, c->height);
@@ -505,15 +513,10 @@ AVFrame* FFMPEG_Muxer::get_video_frame(OutputStream* ost)
 int FFMPEG_Muxer::write_video_frame(AVFormatContext* oc, OutputStream* ost)
 {
 	int ret{ 0 };
-	AVCodecContext* c{ nullptr };
-	AVFrame* frame{ nullptr };
 	int got_packet = 0;
+	AVCodecContext* c{ ost->enc };
+	AVFrame* frame{ get_video_frame(ost) };
 	AVPacket pkt = { 0 };
-
-	c = ost->enc;
-
-	frame = get_video_frame(ost);
-
 	av_init_packet(&pkt);
 
 	/* encode the image */
@@ -532,14 +535,9 @@ int FFMPEG_Muxer::write_video_frame(AVFormatContext* oc, OutputStream* ost)
 		got_packet = 1;
 	}
 	else
-	{
 		return 1;
-	}
-
 	if (ret < 0) {
-		/* B.G: TODO: Replace with cout. */
-		//fprintf(stderr, "Error encoding video frame: %s\n", av_err2str(ret));
-		std::cout << "ERROR";
+		reportError("Writing Video Frame: Error encoding video frame: ", ret);
 	}
 
 	if (got_packet) {
@@ -550,11 +548,8 @@ int FFMPEG_Muxer::write_video_frame(AVFormatContext* oc, OutputStream* ost)
 	}
 
 	if (ret < 0) {
-		/* B.G: TODO: Replace with cout. */
-		//fprintf(stderr, "Error while writing video frame: %s\n", av_err2str(ret));
-		std::cout << "ERROR";
+		reportError("Writing Video Frame: Error while writing video frame.",ret);
 	}
-
 	return (frame || got_packet) ? 0 : 1;
 }
 
@@ -565,6 +560,11 @@ void FFMPEG_Muxer::close_stream(AVFormatContext* oc, OutputStream* ost)
 	av_frame_free(&ost->tmp_frame);
 	sws_freeContext(ost->sws_ctx);
 	swr_free(&ost->swr_ctx);
+}
+
+bool FFMPEG_Muxer::deallocate()
+{
+	return false;
 }
 
 int main(int argc, char** argv)
@@ -602,13 +602,19 @@ bool FFMPEG_Muxer::initialise(MuxerSettings settings)
 
 	/* allocate the output media context */
 	avformat_alloc_output_context2(&oc, nullptr, nullptr, settings.m_fileName.c_str());
-	if (!oc) { /* B.G: Assumes that failure to allocate a context is because the format wasn't found from the 
-			           file extension. */
-		printf("Could not deduce output format from file extension: using MPEG.\n");
+	if (!oc) { /* B.G: Assumes that failure to allocate a context is because the format wasn't found from the
+					   file extension. */
+		reportError("Initialising: Could not deduce output format from file extension: using MPEG.\n");
 		avformat_alloc_output_context2(&oc, nullptr, "mpeg", settings.m_fileName.c_str());
 	}
 	if (!oc)
+	{
+		reportError("Initialising: Could not allocate output context.");
 		return false;
+	}
+	else /* B.G: TODO: Use a better way to add flags*/
+		m_allocationStage = (AllocationStage)(m_allocationStage +
+			AllocationStage::Output_FormatContext);
 
 	fmt = oc->oformat;
 
@@ -640,8 +646,9 @@ bool FFMPEG_Muxer::initialise(MuxerSettings settings)
 	if (!(fmt->flags & AVFMT_NOFILE)) {
 		ret = avio_open(&oc->pb, settings.m_fileName.c_str(), AVIO_FLAG_WRITE);
 		if (ret < 0) {
-			/* B.G: TODO: Replace with cout. */
-			//fprintf(stderr, "Could not open '%s': %s\n", filename, av_err2str(ret));
+			std::string errorStr{ "Initialising: Could not open file :" };
+			errorStr += filename;
+			reportError(errorStr,ret);
 			return false;
 		}
 	}
@@ -649,10 +656,14 @@ bool FFMPEG_Muxer::initialise(MuxerSettings settings)
 	/* Write the stream header, if any. */
 	ret = avformat_write_header(oc, &opt);
 	if (ret < 0) {
-		/* B.G: TODO: Replace with cout. */
-		//fprintf(stderr, "Error occurred when opening output file: %s\n", av_err2str(ret));
+		std::string errorStr{"Initialising: Error occurred when opening output file " };
+		errorStr += filename;
+		errorStr += ".";
+		reportError(errorStr,ret);
 		return false;
 	}
+
+	return true;
 }
 
 void FFMPEG_Muxer::run()
@@ -691,4 +702,34 @@ void FFMPEG_Muxer::deinitialise()
 
 	/* free the stream */
 	avformat_free_context(oc);
+}
+
+void FFMPEG_Muxer::reportError(std::string description, int errorNum)
+{
+	std::cout << "FFMPEG Muxing: " << description;
+	if (errorNum != 0)
+	{
+		char errorStr[255];
+		av_make_error_string(errorStr, 255, errorNum);
+		std::string error{ errorStr };
+		std::cout
+			<< "\n\tAPI Says:\t" << error
+			<< "\n\tError Code:\t" << errorNum;
+	}
+	std::cout << std::endl;
+}
+
+void OutputStream::deallocate()
+{
+	if(m_allocation & StreamAllocation::CodecContext)
+		avcodec_free_context(&enc);
+	if (m_allocation & StreamAllocation::Frame_Main)
+		av_frame_free(&frame);
+	if (m_allocation & StreamAllocation::Frame_Temp)
+		av_frame_free(&tmp_frame);
+	if (m_allocation & StreamAllocation::SWS_Context)
+		sws_freeContext(sws_ctx);
+	if (m_allocation & StreamAllocation::SWR_Context)
+		swr_free(&swr_ctx);
+	m_allocation = StreamAllocation::None;
 }
