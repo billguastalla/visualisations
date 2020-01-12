@@ -312,3 +312,51 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	camera.ProcessMouseScroll(yoffset);
 }
+
+
+
+
+
+#include "FFMPEG_Muxing.h"
+
+int main(int argc, char** argv)
+{
+	MuxerSettings settings{};
+
+	if (argc < 2) {
+		printf("usage: %s output_file\n"
+			"API example program to output a media file with libavformat.\n"
+			"This program generates a synthetic audio and video stream, encodes and\n"
+			"muxes them into a file named output_file.\n"
+			"The output format is automatically guessed according to the file extension.\n"
+			"Raw images can also be output by using '%%d' in the filename.\n"
+			"\n", argv[0]);
+		settings.m_fileName = std::string{ "out_no_passedname.mkv" };
+	}
+	else
+		settings.m_fileName = argv[1];
+
+	// TODO: Set flags somewhere. 
+	//for (int i = 2; i + 1 < argc; i += 2) {
+	//	if (!strcmp(argv[i], "-flags") || !strcmp(argv[i], "-fflags"))
+	//		av_dict_set(&opt, argv[i] + 1, argv[i + 1], 0);
+	//}
+	FFMPEG_Muxer mux{};
+
+
+	mux.initialise(settings);
+	mux.run();
+	mux.deinitialise();
+
+
+	settings.m_fileName = "secondRun.mkv";
+	settings.m_videoBitRate = 100000;
+	settings.m_audioBitRate = 1000;
+	settings.m_frameWidth = 320;
+	settings.m_frameHeight = 240;
+	mux.initialise(settings);
+	mux.run();
+	mux.deinitialise();
+
+	return 0;
+}

@@ -31,6 +31,9 @@
     <Filter Include="Source Files\DLL Implementation\Muxing">
       <UniqueIdentifier>{9cf9173a-a414-43aa-a0df-ba79e15867cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\DLL Implementation\Muxing\Streams">
+      <UniqueIdentifier>{76582f54-c714-4543-9ba8-7d7760fa3df4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Includes\glad\glad.c">
@@ -53,6 +56,15 @@
     </ClCompile>
     <ClCompile Include="FFMPEG_Muxing.cpp">
       <Filter>Source Files\DLL Implementation\Muxing</Filter>
+    </ClCompile>
+    <ClCompile Include="FFMPEG_Stream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FFMPEG_AudioStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FFMPEG_VideoStream.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -77,8 +89,14 @@
     <ClInclude Include="FFMPEG_Muxing.h">
       <Filter>Header Files\DLL Implementation\Muxing</Filter>
     </ClInclude>
+    <ClInclude Include="FFMPEG_Stream.h">
+      <Filter>Header Files\DLL Implementation\Muxing\Streams</Filter>
+    </ClInclude>
     <ClInclude Include="FFMPEG_AudioStream.h">
-      <Filter>Header Files\DLL Implementation\Muxing</Filter>
+      <Filter>Header Files\DLL Implementation\Muxing\Streams</Filter>
+    </ClInclude>
+    <ClInclude Include="FFMPEG_VideoStream.h">
+      <Filter>Header Files\DLL Implementation\Muxing\Streams</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
