@@ -1,3 +1,4 @@
+/* This code is from 2015, and so has some old design considerations */
 
 // Basically, the algorithm should run through games of life with different rules.
 /*
@@ -31,8 +32,6 @@ public:
 	void nextTurn();
 
 	void nextTurnOptimised();
-	void activateNeighbours(bool active);
-
 	void randomRuleset();
 private:
 	std::vector<int> m_activeElements;

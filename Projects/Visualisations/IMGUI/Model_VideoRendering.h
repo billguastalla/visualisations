@@ -8,6 +8,23 @@ class FFMPEG_Encoder;
 
 struct GLFWwindow;
 
+
+/* Not used yet: working out what's important about file rendering. */
+struct RenderSettings
+{
+	RenderSettings():
+		width{ 1920 },
+		height{ 1080 },
+		fps{ 30 },
+		bitRate{ 4000000 },
+		filename{""}
+	{}
+	int width, height;
+	int fps;
+	int bitRate;
+	std::string filename;
+};
+
 class Model_VideoRendering
 {
 

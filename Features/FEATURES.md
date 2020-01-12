@@ -4,6 +4,13 @@ This is a backlog of features to add to the project.
 Formalising these features into specific tasks is done outside of the repository, and
 outlines of features appear here to illustrate the direction of the project.
 
+# Issues
+
+- Crash: Audio: The implementation of the PortAudio interface crashes if no microphone is available.
+- Crash: VideoRendering: Framerate changes crash on video rendering.
+- Usability: Mesh: Normals are not rotated correctly.
+- 
+
 # Visualisations
 
 ### User Interface
@@ -47,6 +54,13 @@ and adding or removing particles to/from the field.
 
 Find a way of rendering fractals in 3D: Most importantly, find out how best to wind a mesh
 across iteratively generated points from the above sets..
+
+
+## Trees
+
+- Trees built as graphs of nodes, who blow in the wind.
+- One track influences the flexibility of the tree
+- Another track affects the strength of the wind flowing through it.
 
 ## Visualisations: Inspiration from Physics
 
@@ -101,37 +115,6 @@ Possible options in the GUI:
 
 Implement a skybox.
 
-# Audio Engine Features
-
-## Audio file loading
-
-Load audio files into the program, and read them into buffers.
-
-### Transport
-
-- Provide a transport system in the GUI:
-	- Play, Pause, Stop.
-	- Slider, with time played, and time remaining.
-
-### Synchronised rendering
-
-Two options for synchronisation:
-	- Force synchronisation to framerate.
-	- Real-time playing.
-
-### Audio-Buffer handling
-Provide various options of generating buffers:
-	- Short, medium and long-term buffers:
-	- Buffer offset: where does the current time value sit on the current sample array,
-	   at the beginning, or at the middle? Provide an option to tune this.
-
-## Multi-track recording
-
-(Later on.)
-Load multiple audio files and map them to different buffers.
-This way visualisations can contain multiple audio streams so that visualisations can be affected
-in different ways by different tracks.
-
 # Physics Engine Features
 
 ## Kinetics
@@ -159,3 +142,48 @@ Rendering of high-dimensional objects in 3D.
 One approach is the intersection of higher-dimensional polytopes,
 using the world or the camera. See HighDimensionalRendering for an overview
 of the mesh-generation problem.
+
+# Audio Engine Features
+
+## Audio file loading
+
+Load audio files into the program, and read them into buffers.
+
+### Transport
+
+- Provide a transport system in the GUI:
+	- Play, Pause, Stop.
+	- Slider, with time played, and time remaining.
+
+### Synchronised rendering
+
+Two options for synchronisation:
+	- Force synchronisation of audio files to framerate, when rendering.
+	- Real-time playing.
+
+### Audio-Buffer handling
+Provide various options of generating buffers:
+	- Short, medium and long-term buffers:
+	- Buffer offset: where does the current time value sit on the current sample array,
+	   at the beginning, or at the middle? Provide an option to tune this.
+
+## Multi-track recording
+
+(Later on.)
+Load multiple audio files and map them to different buffers.
+This way visualisations can contain multiple audio streams so that visualisations can be affected
+in different ways by different tracks.
+
+# Video Rendering Features
+
+## Export Codecs and Formats
+
+The ability to write video files in different formats:
+- Bit Rate
+- Resolution (with downsampling/upsampling)
+
+## Rendering effects
+
+### Audio-influenced-line-size 
+
+Change 

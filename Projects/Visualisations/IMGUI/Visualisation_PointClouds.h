@@ -37,6 +37,4 @@ private:
 	std::deque<double> m_signalPowerHistory;
 
 	glm::vec3 m_lightPos;
-
-	
 };
