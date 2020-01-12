@@ -3,9 +3,9 @@
 
 /* Adapted from: https://github.com/cirosantilli/cpp-cheat/blob/19044698f91fefa9cb75328c44f7a487d336b541/ffmpeg/encode.c */
 
-void FFMPEG_Encoder::rgbIntoFrame(AVFrame * frame, const AVCodecContext * ctx, const std::vector<uint8_t> & rgbData)
+void FFMPEG_Encoder::rgbIntoFrame(AVFrame* frame, const AVCodecContext* ctx, const std::vector<uint8_t>& rgbData)
 {
-	const uint8_t * rgbPtr = &rgbData[0];
+	const uint8_t* rgbPtr = &rgbData[0];
 
 	/* This is the number of bytes in a horizontal line of a frame. */
 	const int in_linesize[1] = { 4 * ctx->width };
@@ -14,25 +14,27 @@ void FFMPEG_Encoder::rgbIntoFrame(AVFrame * frame, const AVCodecContext * ctx, c
 		ctx->width, ctx->height, AV_PIX_FMT_YUV420P,
 		0, nullptr, nullptr, nullptr);
 	/* sws_scale needs a constant pointer to a pointer of the first element of the rgb data. */
-	sws_scale(m_swsContext, (const uint8_t * const *)&rgbPtr, in_linesize, 0,
+	sws_scale(m_swsContext, (const uint8_t * const*)& rgbPtr, in_linesize, 0,
 		ctx->height, frame->data, frame->linesize);
 }
 
 FFMPEG_Encoder::FFMPEG_Encoder()
 	:
 	m_started{ false },
-	m_AVCodecContext{nullptr},
-	m_AVFrame{nullptr},
+	m_AVCodecContext{ nullptr },
+	m_AVFrame{ nullptr },
 	m_AVPacket{},
-	m_currentFrame{0},
+	m_currentFrame{ 0 },
 	m_maxFrames{ -1 }
 {
 }
 
-FFMPEG_Encoder::StartResult FFMPEG_Encoder::ffmpeg_encoder_start(const char *filename, AVCodecID codec_id, int fps, int width, int height)
+FFMPEG_Encoder::StartResult FFMPEG_Encoder::ffmpeg_encoder_start(const char* filename, AVCodecID codec_id, int fps, int width, int height)
 {
-	/* Commented code is attempts to create mp4 containers & add framewriting for audio & video together. */
+	av_log_set_level(AV_LOG_DEBUG);
 
+
+	/* Commented code is attempts to create mp4 containers & add framewriting for audio & video together. */
 
 	/* Not working yet: MP4 Container Creation
 		-> Extracted from: https://stackoverflow.com/questions/40800489/ffmpeg-read-frame-process-it-put-it-to-output-video-copy-sound-stream-unchan
@@ -285,7 +287,7 @@ FFMPEG_Encoder::FinishResult FFMPEG_Encoder::ffmpeg_encoder_finish()
 	return FinishResult::EncoderNotStarted;
 }
 
-void FFMPEG_Encoder::frameToPacket(AVPacket * packet, AVFrame * frame, AVCodecContext * ctx)
+void FFMPEG_Encoder::frameToPacket(AVPacket* packet, AVFrame* frame, AVCodecContext* ctx)
 {
 	int ret = 0;
 	packet->data = nullptr;
@@ -304,22 +306,25 @@ void FFMPEG_Encoder::frameToPacket(AVPacket * packet, AVFrame * frame, AVCodecCo
 	//m_fileStream.write((char*)m_AVPacket.data, m_AVPacket.size);
 }
 
-void FFMPEG_Encoder::packetToFile(const AVPacket & packet)
+void FFMPEG_Encoder::packetToFile(const AVPacket& packet)
 {
 	m_fileStream.write((char*)packet.data, packet.size);
 }
-//return;
-
 
 std::vector<uint8_t> FFMPEG_Encoder::readRGB()
 {
-	size_t i, j, k, cur_gl, cur_rgb, nvals;
+	size_t i{ 0 }, 
+		j{ 0 }, 
+		k{ 0 }, 
+		cur_gl{ 0 }, 
+		cur_rgb{ 0 }, 
+		nvals{ 0 };
 	const size_t format_nchannels = m_pixelChannelCount = 4;
 
 	nvals = format_nchannels * m_AVCodecContext->width * m_AVCodecContext->height;
 
-	std::vector<GLubyte> pixelData;
-	std::vector<uint8_t> rgb;
+	std::vector<GLubyte> pixelData{};
+	std::vector<uint8_t> rgb{};
 	pixelData.resize(nvals);
 	rgb.resize(nvals);
 
@@ -337,6 +342,5 @@ std::vector<uint8_t> FFMPEG_Encoder::readRGB()
 				rgb[cur_rgb + k] = pixelData[cur_gl + k];
 		}
 	}
-
 	return rgb;
 }

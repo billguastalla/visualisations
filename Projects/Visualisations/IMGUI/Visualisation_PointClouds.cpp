@@ -16,11 +16,6 @@
 #include <complex>
 #include <vector>
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow *window);
-
 Visualisation_PointClouds::Visualisation_PointClouds()
 	:
 	m_lightPos{ 0.0f,0.0f,0.0f },
@@ -277,20 +272,10 @@ void Visualisation_PointClouds::processSamples(const Buffer & buf, unsigned samp
 
 void Visualisation_PointClouds::renderFrame()
 {
-	// per-frame time logic
-	// --------------------
 	float currentFrame = glfwGetTime();
 	m_deltaTime = currentFrame - m_lastFrame;
 	m_lastFrame = currentFrame;
 
-	//// input
-	//// -----
-	//processInput(window);
-
-	//// render
-	//// ------
-	//glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// activate shader
 	m_objectShader->use();

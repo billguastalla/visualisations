@@ -89,8 +89,8 @@
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\..\IMGUI;..\Includes;$(IncludePath)</IncludePath>
-    <LibraryPath>..\Libraries\$(Platform)\$(Configuration);..\..\IMGUI\$(Platform)\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64</LibraryPath>
+    <IncludePath>..\..\Visualisations;..\Includes;$(IncludePath)</IncludePath>
+    <LibraryPath>..\Libraries\$(Platform)\$(Configuration);..\..\Visualisations\$(Platform)\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>..\..\Visualisations;..\Includes;$(IncludePath)</IncludePath>

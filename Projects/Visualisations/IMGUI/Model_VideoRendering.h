@@ -6,6 +6,25 @@
 class Settings_VideoRendering;
 class FFMPEG_Encoder;
 
+struct GLFWwindow;
+
+
+/* Not used yet: working out what's important about file rendering. */
+struct RenderSettings
+{
+	RenderSettings():
+		width{ 1920 },
+		height{ 1080 },
+		fps{ 30 },
+		bitRate{ 4000000 },
+		filename{""}
+	{}
+	int width, height;
+	int fps;
+	int bitRate;
+	std::string filename;
+};
+
 class Model_VideoRendering
 {
 
@@ -27,7 +46,7 @@ public:
 			-> Handle the width/height of the framebuffer, and permit/forbid modification of
 				width & height during recording
 	*/
-	Model_VideoRendering(std::shared_ptr<Settings_VideoRendering> & settings);
+	Model_VideoRendering(std::shared_ptr<Settings_VideoRendering> & settings, GLFWwindow * window);
 	~Model_VideoRendering();
 
 	void renderFrame();
@@ -72,4 +91,6 @@ private:
 
 	bool m_recordAudio;
 	bool m_renderUI;
+
+	GLFWwindow* m_window;
 };

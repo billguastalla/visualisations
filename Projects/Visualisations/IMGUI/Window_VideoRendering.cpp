@@ -34,14 +34,14 @@ void Window_VideoRendering::draw()
 	*/
 	std::string fn = m_videoModel->fileName();
 
-	char fnChar[255];
+	char fnChar[256];
 	memcpy(fnChar, fn.c_str(), fn.size());
-	for (int c = fn.size(); c < 255; ++c)
+	for (int c = fn.size(); c <= 255; ++c)
 		fnChar[c] = '\0';
 
 	ImGui::Text("Output Filename");
 	ImGui::SameLine();
-	ImGui::InputText("", fnChar, 255);
+	ImGui::InputText("", fnChar, 256);
 
 
 	//bool recAudio{ m_videoModel->recordAudio() };

@@ -34,9 +34,9 @@ void FFMPEG_EncoderCMD::start()
 		// open pipe to ffmpeg's stdin in binary write mode
 		m_ffmpeg = _popen(cmd.c_str(), "wb");
 		/* Set up buffer */
-		m_buffer = new int[m_width*m_height];
+		m_buffer = new int[(size_t)m_width * (size_t)m_height];
+		m_started = true;
 	}
-	m_started = true;
 }
 
 void FFMPEG_EncoderCMD::renderFrame()
@@ -47,18 +47,21 @@ void FFMPEG_EncoderCMD::renderFrame()
 		/* Read pixels from GPU into buffer */
 		glReadPixels(0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, m_buffer);
 		/* Write buffer into FFMPEG */
-		fwrite(m_buffer, sizeof(int)*m_width*m_height, 1, m_ffmpeg);
+		fwrite(m_buffer, sizeof(int) * m_width * m_height, 1, m_ffmpeg);
 		/* ********************************************** */
 	}
 }
 
 void FFMPEG_EncoderCMD::stop()
 {
-	/* ********************* FFMPEG ***************** */
-	_pclose(m_ffmpeg);/* Bill: Check if this actually deletes m_ffmpeg. Also you should convert this to ofstream. */
-	m_ffmpeg = nullptr;
-	delete[] m_buffer;
-	m_buffer = nullptr;
-	m_started = false;
-	/* ********************************************** */
+	if (m_started)
+	{
+		/* ********************* FFMPEG ***************** */
+		_pclose(m_ffmpeg);/* Bill: Check if this actually deletes m_ffmpeg. Also you should convert this to ofstream. */
+		m_ffmpeg = nullptr;
+		delete[] m_buffer;
+		m_buffer = nullptr;
+		m_started = false;
+		/* ********************************************** */
+	}
 }
