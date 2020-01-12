@@ -44,10 +44,10 @@ extern "C"
 struct MuxerSettings /* Building the needed configuration for muxing. */
 {
 	std::string m_fileName = "default.mp4";
-	double m_streamDuration = 10.5;
+	double m_streamDuration = 25;
 
 	/* Video */
-	int m_framerate = 60; /* 25 images/s */
+	int m_framerate = 25; /* 25 images/s */
 	AVPixelFormat m_pixelFormat = AV_PIX_FMT_YUV420P; /* default pix_fmt is AV_PIX_FMT_YUV420P*/
 	int m_frameWidth = 640;
 	int m_frameHeight = 480;
@@ -78,8 +78,27 @@ private:
 
 
 	int write_frame(AVFormatContext* fmt_ctx, const AVRational* time_base, AVStream* m_avstream, AVPacket* pkt);
+
 	/* Codec** will be set up by this function. */
-	bool add_stream(FFMPEG_Stream * ost, AVFormatContext* oc, AVCodec** codec, enum AVCodecID codec_id);
+	bool add_stream(FFMPEG_Stream * ost, AVFormatContext* oc, AVCodec* codec, enum AVCodecID codec_id);
+	/* B.G: Function notes
+	1. Finds an (AVCodec*),
+	given the codec_id that represents the default codec of the AVOutputContext's output format,
+		for that AVMediaType.
+	[TODO: Remove double pointer returning and separate]
+	2. Initialises the FFMPEG_Stream with its AVStream.
+	[It appears possible to move this before (1)]
+	3. Creates an AVCodecContext specifically for the stream, when provided the AVCodec* we found.
+	[]
+	4. Writes a bunch of settings into the stream's CodecContext, depending on its AVMediaType.
+	[]
+*/
+
+	AVCodec* getCodec(const AVCodecID& id);
+	bool initialiseStream(FFMPEG_Stream* stream);
+	bool setupCodecContext(FFMPEG_Stream* stream);
+
+
 
 private:
 	MuxerSettings m_settings;
@@ -96,7 +115,6 @@ private:
 	/* Owned by the AVFormatContext, oc. Holds output format information. */
 	AVOutputFormat* fmt{ nullptr };
 
-	AVCodec * audio_codec{ nullptr },* video_codec{ nullptr };
 	int ret{ 0 };
 	AVDictionary* opt{ nullptr };
 

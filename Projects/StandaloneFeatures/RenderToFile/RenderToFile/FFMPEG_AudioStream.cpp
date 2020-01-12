@@ -1,4 +1,31 @@
 #include "FFMPEG_AudioStream.h"
+#include "FFMPEG_Muxing.h"
+void FFMPEG_AudioStream::setCodecContextParameters(const MuxerSettings & settings)
+{
+	m_avcodecEncoderContext->sample_fmt = p_codec->sample_fmts ? p_codec->sample_fmts[0] : AV_SAMPLE_FMT_FLTP;
+	m_avcodecEncoderContext->bit_rate = settings.m_audioBitRate;
+	m_avcodecEncoderContext->sample_rate = settings.m_audioDefaultSampleRate;
+	if (p_codec->supported_samplerates) {
+		m_avcodecEncoderContext->sample_rate = p_codec->supported_samplerates[0];
+		for (int i = 0; p_codec->supported_samplerates[i]; i++) {
+			if (p_codec->supported_samplerates[i] == 44100)
+				m_avcodecEncoderContext->sample_rate = 44100;
+		}
+	}
+	m_avcodecEncoderContext->channels = av_get_channel_layout_nb_channels(m_avcodecEncoderContext->channel_layout);
+	m_avcodecEncoderContext->channel_layout = AV_CH_LAYOUT_STEREO;
+	if (p_codec->channel_layouts) {
+		m_avcodecEncoderContext->channel_layout = p_codec->channel_layouts[0];
+		for (int i = 0; p_codec->channel_layouts[i]; i++) {
+			if (p_codec->channel_layouts[i] == AV_CH_LAYOUT_STEREO)
+				m_avcodecEncoderContext->channel_layout = AV_CH_LAYOUT_STEREO;
+		}
+	}
+	m_avcodecEncoderContext->channels = av_get_channel_layout_nb_channels(m_avcodecEncoderContext->channel_layout);
+	/* B.G: Non-standard type-conversion. */
+	// AVRational = { .num = 1,.den = m_avcodecEncoderContext->sample_rate }; (one day we can use designated initialisers, C++20)
+	m_avstream->time_base = av_make_q(1, m_avcodecEncoderContext->sample_rate);
+}
 
 bool FFMPEG_AudioStream::buildPacket(AVPacket & packet, AVFormatContext* oc)
 {

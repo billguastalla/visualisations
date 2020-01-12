@@ -15,9 +15,17 @@ extern "C"
 #include <string>
 #include <algorithm>
 
+struct MuxerSettings;
+
 class FFMPEG_Stream
 {
+public:
+	bool setupStream(AVFormatContext* oc);
+	bool initialiseCodecContext(const MuxerSettings& settings);
 protected:
+	virtual void setCodecContextParameters(const MuxerSettings & settings) = 0;
+
+
 	/* B.G TODO: Deal with errors.*/
 	void reportError(std::string error, int num = 0) {};
 public:
@@ -70,13 +78,12 @@ public:
 								Not explicitly de-allocated. */
 	AVCodecContext* m_avcodecEncoderContext;/* ALLOCATION: Allocated independently  */
 
-
 	/* pts of the next frame that will be generated */
 	int64_t m_nextFramePTS;
 	int samples_count;
 
-	AVFrame* m_streamFrame; /* ALLOCATION: Allocated independently  */
-	AVFrame* m_streamFrameTemp; /* ALLOCATION: Allocated independently  */
+	AVFrame* m_streamFrame;
+	AVFrame* m_streamFrameTemp;
 
 	/* Bill: New fields*/
 	AVCodec* p_codec = nullptr;

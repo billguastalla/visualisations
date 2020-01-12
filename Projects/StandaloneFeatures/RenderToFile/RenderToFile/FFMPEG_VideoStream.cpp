@@ -1,4 +1,5 @@
 #include "FFMPEG_VideoStream.h"
+#include "FFMPEG_Muxing.h"
 
 #define SCALE_FLAGS SWS_BICUBIC
 
@@ -47,10 +48,8 @@ void FFMPEG_VideoStream::open(AVFormatContext* oc, AVDictionary* opt_arg)
 bool FFMPEG_VideoStream::buildPacket(AVPacket& packet, AVFormatContext* oc)
 {
 	int ret{ 0 };
-	int got_packet = 0;
 	AVCodecContext* c{ m_avcodecEncoderContext };
-	AVPacket pkt = { 0 };
-	av_init_packet(&pkt);
+	av_init_packet(&packet);
 
 	/* encode the image */
 	//ret = avcodec_encode_video2(c, &pkt, frame, &got_packet);
@@ -77,25 +76,17 @@ bool FFMPEG_VideoStream::buildPacket(AVPacket& packet, AVFormatContext* oc)
 		}
 		else
 			return 1;
-		ret = avcodec_receive_packet(c, &pkt);
+		ret = avcodec_receive_packet(c, &packet);
 		if (ret == 0)
 			packetReceived = true;
 	}
 	/* According to line 105 of avcodec.h, we repeat receive packet until nothing to find. */
-	got_packet = 1;
 
 	if (ret < 0) {
-		reportError("Writing Video Frame: Error encoding video frame: ", ret);
-		return 1;
+		reportError("Building Video Packet: Error encoding video frame: ", ret);
+		return false;
 	}
-
-	if (got_packet) {
-		//ret = write_frame(oc, &c->time_base, m_avstream, &pkt);
-	}
-	if (ret < 0) {
-		reportError("Writing Video Frame: Error while writing video frame.", ret);
-	}
-	return (frame || got_packet);
+	return true;
 }
 
 AVFrame* FFMPEG_VideoStream::getFrame()
@@ -105,7 +96,10 @@ AVFrame* FFMPEG_VideoStream::getFrame()
 	/* when we pass a frame to the encoder, it may keep a reference to it
 	 * internally; make sure we do not overwrite it here */
 	if (int r = av_frame_make_writable(m_streamFrame) < 0)
+	{
 		reportError("Getting Video Frame: Could not make frame writable.", r);
+		return nullptr;
+	}
 
 	if (c->pix_fmt != AV_PIX_FMT_YUV420P) {
 		/* as we only generate a YUV420P picture, we must convert it
@@ -120,8 +114,7 @@ AVFrame* FFMPEG_VideoStream::getFrame()
 				reportError("Getting Video Frame: Could not initialize the conversion context.");
 			}
 		}
-		fill_yuv_image(
-			m_streamFrameTemp,
+		fill_yuv_image(m_streamFrameTemp,
 			(int)m_nextFramePTS,
 			c->width,
 			c->height);
@@ -134,7 +127,6 @@ AVFrame* FFMPEG_VideoStream::getFrame()
 	}
 
 	m_streamFrame->pts = m_nextFramePTS++;
-
 	return m_streamFrame;
 }
 
@@ -146,6 +138,44 @@ void FFMPEG_VideoStream::close()
 	sws_freeContext(sws_ctx);
 	//swr_free(&swr_ctx);
 	m_initialised = false;
+}
+
+void FFMPEG_VideoStream::setCodecContextParameters(const MuxerSettings& settings)
+{
+	/* B.G: WARNING: I ASSUME THAT CODEC ID IN P_CODEC IS THE SAME. */
+	m_avcodecEncoderContext->codec_id = p_codec->id;
+
+	m_avcodecEncoderContext->bit_rate = settings.m_videoBitRate;
+	/* Resolution must be a multiple of two. */
+	m_avcodecEncoderContext->width = settings.m_frameWidth;
+	m_avcodecEncoderContext->height = settings.m_frameHeight;
+	/* timebase: This is the fundamental unit of time (in seconds) in terms
+	 * of which frame timestamps are represented. For fixed-fps content,
+	 * timebase should be 1/framerate and timestamp increments should be
+	 * identical to 1. */
+
+	 /* B.G: Replaced initialisation with av_make_q, C++ doesn't support AVRational t = { int, int }*/
+
+	 /* B.G: QUESTION: Why is the codec context's timebase set to be
+						 equivalent to the stream's for video, but not for audio?
+						 Why is this also the case for the codec id in the stream?
+	 */
+	m_avstream->time_base = av_make_q(1, settings.m_framerate);
+	m_avcodecEncoderContext->time_base = m_avstream->time_base;
+
+	m_avcodecEncoderContext->gop_size = 12; /* emit one intra frame every twelve frames at most */
+	m_avcodecEncoderContext->pix_fmt = settings.m_pixelFormat;
+
+	if (m_avcodecEncoderContext->codec_id == AV_CODEC_ID_MPEG2VIDEO) {
+		/* just for testing, we also add B-frames */
+		m_avcodecEncoderContext->max_b_frames = 2;
+	}
+	if (m_avcodecEncoderContext->codec_id == AV_CODEC_ID_MPEG1VIDEO) {
+		/* Needed to avoid using macroblocks in which some coeffs overflow.
+		 * This does not happen with normal video, it just happens here as
+		 * the motion of the chroma plane does not match the luma plane. */
+		m_avcodecEncoderContext->mb_decision = 2;
+	}
 }
 
 void FFMPEG_VideoStream::fill_yuv_image(AVFrame* pict, int frame_index, int width, int height)

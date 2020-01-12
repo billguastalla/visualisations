@@ -1,5 +1,30 @@
 #include "FFMPEG_Stream.h"
 
+bool FFMPEG_Stream::setupStream(AVFormatContext* oc)
+{
+	m_avstream = avformat_new_stream(oc, nullptr);
+	if (!m_avstream) {
+		reportError("Adding Stream: Could not allocate stream.");
+		return false;
+	}
+	m_avstream->id = (oc->nb_streams - 1);
+	return true;
+}
+
+bool FFMPEG_Stream::initialiseCodecContext(const MuxerSettings & settings)
+{
+	AVCodecContext* codecContext{ nullptr };
+	codecContext = avcodec_alloc_context3(p_codec);
+	if (!codecContext)
+	{
+		reportError("Adding Stream: Could not allocate an encoding context");
+		deallocate();
+		return false;
+	}
+	m_avcodecEncoderContext = codecContext;
+	setCodecContextParameters(settings);
+}
+
 FFMPEG_Stream::FFMPEG_Stream()
 	:
 	m_avstream{ nullptr },

@@ -333,8 +333,9 @@ int main(int argc, char** argv)
 			"\n", argv[0]);
 		settings.m_fileName = std::string{ "out_no_passedname.mkv" };
 	}
-	else
-		settings.m_fileName = argv[1];
+	
+	
+	settings.m_fileName = "objectOriented.mkv";
 
 	// TODO: Set flags somewhere. 
 	//for (int i = 2; i + 1 < argc; i += 2) {
@@ -349,14 +350,14 @@ int main(int argc, char** argv)
 	mux.deinitialise();
 
 
-	settings.m_fileName = "secondRun.mkv";
-	settings.m_videoBitRate = 100000;
-	settings.m_audioBitRate = 1000;
-	settings.m_frameWidth = 320;
-	settings.m_frameHeight = 240;
-	mux.initialise(settings);
-	mux.run();
-	mux.deinitialise();
+	//settings.m_fileName = "secondRun.mkv";
+	//settings.m_videoBitRate = 100000;
+	//settings.m_audioBitRate = 1000;
+	//settings.m_frameWidth = 320;
+	//settings.m_frameHeight = 240;
+	//mux.initialise(settings);
+	//mux.run();
+	//mux.deinitialise();
 
 	return 0;
 }

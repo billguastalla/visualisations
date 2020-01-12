@@ -62,10 +62,6 @@
 
 #include <iostream>
 
- //#define STREAM_DURATION   10.0
- //#define STREAM_FRAME_RATE 60 /* 25 images/s */
- //#define STREAM_PIX_FMT    AV_PIX_FMT_YUV420P /* default pix_fmt */
-
 void FFMPEG_Muxer::log_packet(const AVFormatContext* fmt_ctx, const AVPacket* pkt)
 {
 	AVRational* time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
@@ -94,36 +90,36 @@ int FFMPEG_Muxer::write_frame(AVFormatContext* fmt_ctx, const AVRational* time_b
 	/* Write the compressed frame to the media file. */
 	log_packet(fmt_ctx, pkt);
 	return av_interleaved_write_frame(fmt_ctx, pkt);
+
+	//if (ret < 0) {
+	//	reportError("Writing Video Frame: Error while writing video frame.", ret);
+	//	return false;
+	//}
 }
 
-bool FFMPEG_Muxer::add_stream(FFMPEG_Stream* stream, AVFormatContext* oc, AVCodec** codec, enum AVCodecID codec_id)
+bool FFMPEG_Muxer::add_stream(FFMPEG_Stream* stream, AVFormatContext* oc, AVCodec* codec, enum AVCodecID codec_id)
+{
+	stream->p_codec = codec;
+
+	stream->setupStream(oc);
+
+	stream->initialiseCodecContext(m_settings);
+
+	/* Some formats want stream headers to be separate. */
+	if (oc->oformat->flags & AVFMT_GLOBALHEADER)
+		stream->m_avcodecEncoderContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+
+	/* B.G: If we added the stream it's initialised, and not finished (replacement for have_audio/encode_audio */
+	stream->m_initialised = true;
+	stream->m_finished = false;
+
+	return true;
+}
+
+bool FFMPEG_Muxer::setupCodecContext(FFMPEG_Stream* stream)
 {
 	AVCodecContext* c{ nullptr };
-
-	/* find the encoder */
-	*codec = avcodec_find_encoder(codec_id);
-	if (!(*codec)) {
-
-		std::string error{ "Adding Stream: Could not find encoder for " };
-		error = error.append(avcodec_get_name(codec_id));
-		reportError(error);
-		return false;
-	}
-	else /* B.G: Streams get to hold a pointer to their codec now. */
-		stream->p_codec = *codec;
-
-	stream->m_avstream = avformat_new_stream(oc, nullptr);
-
-	if (!stream->m_avstream) {
-		reportError("Adding Stream: Could not allocate stream.");
-		return false;
-	}
-	else
-		m_allocationStage = (AllocationStage)(m_allocationStage +
-			AllocationStage::OutputStream_Stream);
-
-	stream->m_avstream->id = (oc->nb_streams - 1);
-	c = avcodec_alloc_context3(*codec);
+	c = avcodec_alloc_context3(stream->p_codec);
 	if (!c)
 	{
 		reportError("Adding Stream: Could not allocate an encoding context");
@@ -133,83 +129,22 @@ bool FFMPEG_Muxer::add_stream(FFMPEG_Stream* stream, AVFormatContext* oc, AVCode
 	else
 		m_allocationStage = (AllocationStage)(m_allocationStage +
 			AllocationStage::OutputStream_CodecContext);
-
 	stream->m_avcodecEncoderContext = c;
-
-	switch ((*codec)->type)
-	{
-	case AVMEDIA_TYPE_AUDIO:
-	{
-		c->sample_fmt = (*codec)->sample_fmts ?
-			(*codec)->sample_fmts[0] : AV_SAMPLE_FMT_FLTP;
-		c->bit_rate = m_settings.m_audioBitRate;
-		c->sample_rate = m_settings.m_audioDefaultSampleRate;
-		if ((*codec)->supported_samplerates) {
-			c->sample_rate = (*codec)->supported_samplerates[0];
-			for (int i = 0; (*codec)->supported_samplerates[i]; i++) {
-				if ((*codec)->supported_samplerates[i] == 44100)
-					c->sample_rate = 44100;
-			}
-		}
-		c->channels = av_get_channel_layout_nb_channels(c->channel_layout);
-		c->channel_layout = AV_CH_LAYOUT_STEREO;
-		if ((*codec)->channel_layouts) {
-			c->channel_layout = (*codec)->channel_layouts[0];
-			for (int i = 0; (*codec)->channel_layouts[i]; i++) {
-				if ((*codec)->channel_layouts[i] == AV_CH_LAYOUT_STEREO)
-					c->channel_layout = AV_CH_LAYOUT_STEREO;
-			}
-		}
-		c->channels = av_get_channel_layout_nb_channels(c->channel_layout);
-
-		/* B.G: Non-standard type-conversion. */
-		// AVRational = { .num = 1,.den = c->sample_rate }; (one day we can use designated initialisers, C++20)
-		stream->m_avstream->time_base = av_make_q(1, c->sample_rate);
-		break;
-	}
-	case AVMEDIA_TYPE_VIDEO:
-	{
-		c->codec_id = codec_id;
-
-		c->bit_rate = m_settings.m_videoBitRate;
-		/* Resolution must be a multiple of two. */
-		c->width = m_settings.m_frameWidth;
-		c->height = m_settings.m_frameHeight;
-		/* timebase: This is the fundamental unit of time (in seconds) in terms
-		 * of which frame timestamps are represented. For fixed-fps content,
-		 * timebase should be 1/framerate and timestamp increments should be
-		 * identical to 1. */
-
-		 /* B.G: Replaced initialisation with av_make_q, C++ doesn't support AVRational t = { int, int }*/
-		stream->m_avstream->time_base = av_make_q(1, m_settings.m_framerate);
-		c->time_base = stream->m_avstream->time_base;
-
-		c->gop_size = 12; /* emit one intra frame every twelve frames at most */
-		c->pix_fmt = m_settings.m_pixelFormat;
-		if (c->codec_id == AV_CODEC_ID_MPEG2VIDEO) {
-			/* just for testing, we also add B-frames */
-			c->max_b_frames = 2;
-		}
-		if (c->codec_id == AV_CODEC_ID_MPEG1VIDEO) {
-			/* Needed to avoid using macroblocks in which some coeffs overflow.
-			 * This does not happen with normal video, it just happens here as
-			 * the motion of the chroma plane does not match the luma plane. */
-			c->mb_decision = 2;
-		}
-	}
-	break;
-	default:
-		break;
-	}
-	/* Some formats want stream headers to be separate. */
-	if (oc->oformat->flags & AVFMT_GLOBALHEADER)
-		c->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
-
-	/* B.G: If we added the stream it's initialised, and not finished (replacement for have_audio/encode_audio */
-	stream->m_initialised = true;
-	stream->m_finished = false;
-
 	return true;
+}
+
+AVCodec* FFMPEG_Muxer::getCodec(const AVCodecID& id)
+{
+	/* find the encoder */
+	AVCodec* result{ nullptr };
+	result = avcodec_find_encoder(id);
+	if (result == nullptr)
+	{
+		std::string error{ "Finding Encoder: Could not find encoder for " };
+		error = error.append(avcodec_get_name(id));
+		reportError(error);
+	}
+	return result;
 }
 
 bool FFMPEG_Muxer::deallocate()
@@ -244,18 +179,22 @@ bool FFMPEG_Muxer::initialise(MuxerSettings settings)
 	/* Add the audio and video streams using the default format codecs
 	 * and initialize the codecs. */
 	if (fmt->video_codec != AV_CODEC_ID_NONE) { /* <- B.G TODO: Check if this means that only audio/video can be encoded here.*/
-		for (int i = 0; i < 10; ++i)
+
+		AVCodec* videoCodec{ getCodec(fmt->video_codec) };
+		for (int i = 0; i < 2; ++i)
 		{
-			FFMPEG_Stream * videoStream{new FFMPEG_VideoStream{}};
-			add_stream(videoStream, oc, &video_codec, fmt->video_codec);
+			FFMPEG_Stream* videoStream{ new FFMPEG_VideoStream{} };
+			add_stream(videoStream, oc, videoCodec, fmt->video_codec);
 			m_streams.push_back(videoStream);
 		}
 	}
 	if (fmt->audio_codec != AV_CODEC_ID_NONE) {
-		for (int i = 0; i < 10; ++i)
+
+		AVCodec* audioCodec{ getCodec(fmt->audio_codec) };
+		for (int i = 0; i < 2; ++i)
 		{
 			FFMPEG_Stream* audioStream{ new FFMPEG_AudioStream{} };
-			add_stream(audioStream, oc, &audio_codec, fmt->audio_codec);
+			add_stream(audioStream, oc, audioCodec, fmt->audio_codec);
 			m_streams.push_back(audioStream);
 		}
 	}
@@ -303,7 +242,7 @@ void FFMPEG_Muxer::run()
 	while (FFMPEG_Stream::streamsUnfinished(m_streams, m_settings.m_streamDuration))
 	{
 		/* B.G: select the stream to encode */
-		FFMPEG_Stream * stream{ FFMPEG_Stream::nextStream(m_streams) };
+		FFMPEG_Stream* stream{ FFMPEG_Stream::nextStream(m_streams) };
 		/* B.G: One alternative here would be polymorphism. */
 
 		AVPacket packet{};

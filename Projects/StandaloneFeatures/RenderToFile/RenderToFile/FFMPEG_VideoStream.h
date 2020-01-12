@@ -4,6 +4,13 @@
 class FFMPEG_VideoStream : public FFMPEG_Stream
 {
 public:
+	FFMPEG_VideoStream()
+		:
+		FFMPEG_Stream{},
+		sws_ctx{nullptr}
+	{
+	}
+
 	void open(AVFormatContext* oc, AVDictionary* opt_arg) override;
 
 	bool buildPacket(AVPacket& packet, AVFormatContext* oc);
@@ -12,13 +19,12 @@ public:
 
 	void close() override;
 
+protected:
+	void setCodecContextParameters(const MuxerSettings & settings);
+
 private:
 	void fill_yuv_image(AVFrame* pict, int frame_index, int width, int height);
 	AVFrame* alloc_picture(enum AVPixelFormat pix_fmt, int width, int height);
-
-
-
-
 
 	struct SwsContext* sws_ctx; /* ALLOCATION: Allocated independently:
 								Only for video streams, and

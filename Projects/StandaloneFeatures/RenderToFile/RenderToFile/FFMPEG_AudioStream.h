@@ -19,6 +19,9 @@ public:
 protected:
 	AVFrame* getFrame() override;
 
+	void setCodecContextParameters(const MuxerSettings & settings) override;
+
+
 private:
 	AVFrame* alloc_audio_frame(enum AVSampleFormat sample_fmt, uint64_t channel_layout, int sample_rate, int nb_samples);
 
