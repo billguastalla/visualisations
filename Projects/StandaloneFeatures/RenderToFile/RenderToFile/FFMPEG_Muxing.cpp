@@ -29,13 +29,13 @@
 			-> Need the muxer to be the caller to gl rendering and audio acquisition,
 				since it must coordinate picking up of AVFrames.
 				-> Need to decide the policy on what stops the render:
-					
+
 */
 /*
 	Bill Guastalla 2020: MUXING:
-		This is a port from C -> C++11 for a code example found in the FFMPEG
+		This is a port, refactored from C to C++11, for a code example found in the FFMPEG
 		documentation. The original work is by Fabrice Bellard, and the corresponding
-		MIT copyright notice can be found, and should remain, just below.
+		copyright notice can be found, and should remain, just below.
 */
 /*
  * Copyright (c) 2003 Fabrice Bellard
@@ -109,6 +109,8 @@ bool FFMPEG_Muxer::add_stream(OutputStream* ost, AVFormatContext* oc, AVCodec** 
 		reportError(error);
 		return false;
 	}
+	else /* B.G: Streams get to hold a pointer to their codec now. */
+		ost->p_codec = *codec;
 
 	ost->st = avformat_new_stream(oc, nullptr);
 
@@ -122,7 +124,8 @@ bool FFMPEG_Muxer::add_stream(OutputStream* ost, AVFormatContext* oc, AVCodec** 
 
 	ost->st->id = (oc->nb_streams - 1);
 	c = avcodec_alloc_context3(*codec);
-	if (!c) {
+	if (!c)
+	{
 		reportError("Adding Stream: Could not allocate an encoding context");
 		deallocate();
 		return false;
@@ -194,13 +197,17 @@ bool FFMPEG_Muxer::add_stream(OutputStream* ost, AVFormatContext* oc, AVCodec** 
 		}
 	}
 	break;
-
 	default:
 		break;
 	}
 	/* Some formats want stream headers to be separate. */
 	if (oc->oformat->flags & AVFMT_GLOBALHEADER)
 		c->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+
+
+	/* B.G: If we added the stream it's initialised, and not finished (replacement for have_audio/encode_audio */
+	ost->m_initialised = true;
+	ost->m_finished = false;
 
 	return true;
 }
@@ -252,9 +259,9 @@ void FFMPEG_Muxer::open_audio(AVFormatContext* oc, AVCodec* codec, OutputStream*
 
 	/* init signal generator */
 	ost->t = 0;
-	ost->tincr = 2 * M_PI * 110.0 / c->sample_rate;
+	ost->tincr = (float)(2.0 * M_PI * 110.0 / c->sample_rate);
 	/* increment frequency by 110 Hz per second */
-	ost->tincr2 = 2 * M_PI * 110.0 / c->sample_rate / c->sample_rate;
+	ost->tincr2 = (float)(2.0 * M_PI * 110.0 / c->sample_rate / c->sample_rate);
 
 	/* B.G: If we can send large frames then do it. */
 	if (c->codec->capabilities & AV_CODEC_CAP_VARIABLE_FRAME_SIZE)
@@ -323,11 +330,6 @@ int FFMPEG_Muxer::write_audio_frame(AVFormatContext* oc, OutputStream* ost)
 	av_init_packet(&pkt);
 	c = ost->enc;
 
-	/* B.G: 1. used av_make_q(). 2. Moved this out from get_audio_frame().*/
-	/* check if we want to generate more frames */
-	if (av_compare_ts(ost->next_pts, ost->enc->time_base,
-		m_settings.m_streamDuration, av_make_q(1, 1)) >= 0)
-		return 1;
 
 	/* B.G ISSUE: The pts of the next frame is updated without knowing if it was muxed in. */
 	frame = get_audio_frame(ost);
@@ -335,8 +337,11 @@ int FFMPEG_Muxer::write_audio_frame(AVFormatContext* oc, OutputStream* ost)
 	if (frame) {
 		/* convert samples from native format to destination codec format, using the resampler */
 			/* compute destination number of samples */
-		dst_nb_samples = av_rescale_rnd(swr_get_delay(ost->swr_ctx, c->sample_rate) + frame->nb_samples,
-			c->sample_rate, c->sample_rate, AV_ROUND_UP);
+		dst_nb_samples = (int)av_rescale_rnd(
+			swr_get_delay(ost->swr_ctx, c->sample_rate) + (int64_t)frame->nb_samples,
+			(int64_t)c->sample_rate,
+			(int64_t)c->sample_rate,
+			AV_ROUND_UP);
 		av_assert0(dst_nb_samples == frame->nb_samples);
 
 		/* when we pass a frame to the encoder, it may keep a reference to it
@@ -358,7 +363,7 @@ int FFMPEG_Muxer::write_audio_frame(AVFormatContext* oc, OutputStream* ost)
 		}
 		frame = ost->frame;
 
-		/* B.G: Replaced Initialiser */
+		/* B.G: Inserted av_make_q().  */
 		frame->pts = av_rescale_q(ost->samples_count, av_make_q(1, c->sample_rate), c->time_base);
 		ost->samples_count += dst_nb_samples;
 	}
@@ -456,8 +461,7 @@ void FFMPEG_Muxer::open_video(AVFormatContext* oc, AVCodec* codec, OutputStream*
 void FFMPEG_Muxer::fill_yuv_image(AVFrame* pict, int frame_index,
 	int width, int height)
 {
-	int x, y, i;
-
+	int x{ 0 }, y{ 0 }, i{ 0 };
 	i = frame_index;
 
 	/* Y */
@@ -478,12 +482,6 @@ AVFrame* FFMPEG_Muxer::get_video_frame(OutputStream* ost)
 {
 	AVCodecContext* c{ ost->enc };
 
-	/* check if we want to generate more frames */
-	/* B.G: Replaced Initialiser */
-	if (av_compare_ts(ost->next_pts, c->time_base,
-		m_settings.m_streamDuration, av_make_q(1, 1)) >= 0)
-		return nullptr;
-
 	/* when we pass a frame to the encoder, it may keep a reference to it
 	 * internally; make sure we do not overwrite it here */
 	if (int r = av_frame_make_writable(ost->frame) < 0)
@@ -502,7 +500,11 @@ AVFrame* FFMPEG_Muxer::get_video_frame(OutputStream* ost)
 				reportError("Getting Video Frame: Could not initialize the conversion context.");
 			}
 		}
-		fill_yuv_image(ost->tmp_frame, ost->next_pts, c->width, c->height);
+		fill_yuv_image(
+			ost->tmp_frame,
+			(int)ost->next_pts,
+			c->width,
+			c->height);
 		sws_scale(ost->sws_ctx, (const uint8_t * const*)ost->tmp_frame->data,
 			ost->tmp_frame->linesize, 0, c->height, ost->frame->data,
 			ost->frame->linesize);
@@ -521,38 +523,49 @@ int FFMPEG_Muxer::write_video_frame(AVFormatContext* oc, OutputStream* ost)
 	int ret{ 0 };
 	int got_packet = 0;
 	AVCodecContext* c{ ost->enc };
-	AVFrame* frame{ get_video_frame(ost) };
 	AVPacket pkt = { 0 };
 	av_init_packet(&pkt);
 
 	/* encode the image */
 	//ret = avcodec_encode_video2(c, &pkt, frame, &got_packet);
 	/* B.G avcodec_encode_video2 is deprecated! */
-	ret = avcodec_send_frame(c, frame);
 
-	int packetReceiving{ -1 };
-	if (frame != nullptr)
+	AVFrame* frame{ nullptr };
+
+	/* B.G:
+		We're getting an issue here:
+		"non-strictly-monotonic PTS". Implies that we have sent the same frame multiple times.
+		API says that we should send more frames. Need to check if this is okay in
+		terms of synchronising audio & video (i.e. comparison in each timebase is done
+		outside this function.)
+	*/
+	bool packetReceived{ false };
+
+	while (!packetReceived)
 	{
-		while (packetReceiving != 0) /* According to line 105 of avcodec.h, we repeat receive packet until nothing to find. */
+		/* B.G Relying on fact that get_video_frame() updates pts. */
+		frame = get_video_frame(ost);
+		if (frame != nullptr)
 		{
-			avcodec_send_frame(c, frame);
-			packetReceiving = avcodec_receive_packet(c, &pkt);
+			ret = avcodec_send_frame(c, frame);
 		}
-		got_packet = 1;
+		else
+			return 1;
+		ret = avcodec_receive_packet(c, &pkt);
+		if (ret == 0)
+			packetReceived = true;
 	}
-	else
-		return 1;
+	/* According to line 105 of avcodec.h, we repeat receive packet until nothing to find. */
+	got_packet = 1;
+
 	if (ret < 0) {
 		reportError("Writing Video Frame: Error encoding video frame: ", ret);
+		return 1;
 	}
 
 	if (got_packet) {
 		ret = write_frame(oc, &c->time_base, ost->st, &pkt);
 	}
-	else {
-		ret = 0;
-	}
-
 	if (ret < 0) {
 		reportError("Writing Video Frame: Error while writing video frame.", ret);
 	}
@@ -566,6 +579,7 @@ void FFMPEG_Muxer::close_stream(AVFormatContext* oc, OutputStream* ost)
 	av_frame_free(&ost->tmp_frame);
 	sws_freeContext(ost->sws_ctx);
 	swr_free(&ost->swr_ctx);
+	ost->m_initialised = false;
 }
 
 bool FFMPEG_Muxer::deallocate()
@@ -626,39 +640,36 @@ bool FFMPEG_Muxer::initialise(MuxerSettings settings)
 
 	fmt = oc->oformat;
 
+	/* B.G: TODO: This is */
+
 	/* Add the audio and video streams using the default format codecs
 	 * and initialize the codecs. */
 	if (fmt->video_codec != AV_CODEC_ID_NONE) { /* <- B.G TODO: Check if this means that only audio/video can be encoded here.*/
-		add_stream(&video_st, oc, &video_codec, fmt->video_codec);
-		have_video = 1;
-		encode_video = 1;
 
-		add_stream(&video_st2, oc, &video_codec2, fmt->video_codec);
-		have_video2 = 1;
-		encode_video2 = 1;
+		OutputStream videoStream{};
+		add_stream(&videoStream, oc, &video_codec, fmt->video_codec);
+		m_streams.push_back(videoStream);
+
 	}
 	if (fmt->audio_codec != AV_CODEC_ID_NONE) {
-		add_stream(&audio_st, oc, &audio_codec, fmt->audio_codec);
-		have_audio = 1;
-		encode_audio = 1;
-
-
-		add_stream(&audio_st2, oc, &audio_codec2, fmt->audio_codec);
-		have_audio2 = 1;
-		encode_audio2 = 1;
+		OutputStream audioStream{};
+		add_stream(&audioStream, oc, &audio_codec, fmt->audio_codec);
+		m_streams.push_back(audioStream);
 	}
 
 	/* Now that all the parameters are set, we can open the audio and
 	 * video codecs and allocate the necessary encode buffers. */
-	if (have_video)
-		open_video(oc, video_codec, &video_st, opt);
-	if (have_video2)
-		open_video(oc, video_codec2, &video_st2, opt);
-
-	if (have_audio) /* B.G: Initialises audio codec context for stream */
-		open_audio(oc, audio_codec, &audio_st, opt);
-	if (have_audio2)
-		open_audio(oc, audio_codec, &audio_st2, opt);
+	for (auto i = m_streams.begin(); i != m_streams.end(); ++i)
+	{
+		if (i->m_initialised)
+		{
+			/* B.G: Initialises codec context for stream */
+			if (i->p_codec->type == AVMediaType::AVMEDIA_TYPE_VIDEO)
+				open_video(oc, video_codec, &video_st, opt);
+			else if (i->p_codec->type == AVMediaType::AVMEDIA_TYPE_AUDIO)
+				open_audio(oc, audio_codec, &audio_st, opt);
+		}
+	}
 
 	/* B.G: Tells us about the output format. */
 	av_dump_format(oc, 0, settings.m_fileName.c_str(), 1);
@@ -691,17 +702,15 @@ void FFMPEG_Muxer::run()
 {
 	/* B.G : This compares the time elapsed in the encoded video and audio, to determine
 		 which stream to write to each time.*/
-	while (encode_video || encode_audio) {
-		/* select the stream to encode */
-		if (encode_video && (!encode_audio || av_compare_ts(video_st.next_pts, video_st.enc->time_base,
-			audio_st.next_pts, audio_st.enc->time_base) <= 0)) {
-			encode_video = !write_video_frame(oc, &video_st);
-			encode_video2 = !write_video_frame(oc, &video_st2);
-		}
-		else {
-			encode_audio = !write_audio_frame(oc, &audio_st);
-			encode_audio2 = !write_audio_frame(oc, &audio_st2);
-		}
+	while (OutputStream::streamsUnfinshed(m_streams, m_settings.m_streamDuration))
+	{
+		/* B.G: select the stream to encode */
+		std::vector<OutputStream>::iterator stream = OutputStream::nextStream(m_streams);
+		/* B.G: Alternative here would be polymorphism. */
+		if (stream->p_codec->type == AVMediaType::AVMEDIA_TYPE_AUDIO)
+			write_audio_frame(oc, &(*stream)); /* B.G:TODO: Ugly dereferencing, fix in function args, or iterator return type.*/
+		else if (stream->p_codec->type == AVMediaType::AVMEDIA_TYPE_VIDEO)
+			write_video_frame(oc, &(*stream));
 	}
 }
 
@@ -714,14 +723,9 @@ void FFMPEG_Muxer::deinitialise()
 	av_write_trailer(oc);
 
 	/* Close each codec. */
-	if (have_video)
-		close_stream(oc, &video_st);
-	if (have_video2)
-		close_stream(oc, &video_st2);
-	if (have_audio)
-		close_stream(oc, &audio_st);
-	if (have_audio2)
-		close_stream(oc, &audio_st2);
+	for (auto i = m_streams.begin(); i != m_streams.end(); ++i)
+		if (i->m_initialised)
+			close_stream(oc, &*i);
 
 	if (!(fmt->flags & AVFMT_NOFILE))
 		/* Close the output file. */
@@ -748,15 +752,15 @@ void FFMPEG_Muxer::reportError(std::string description, int errorNum)
 
 void OutputStream::deallocate()
 {
-	if (m_allocation & StreamAllocation::CodecContext)
-		avcodec_free_context(&enc);
-	if (m_allocation & StreamAllocation::Frame_Main)
-		av_frame_free(&frame);
-	if (m_allocation & StreamAllocation::Frame_Temp)
-		av_frame_free(&tmp_frame);
-	if (m_allocation & StreamAllocation::SWS_Context)
-		sws_freeContext(sws_ctx);
-	if (m_allocation & StreamAllocation::SWR_Context)
-		swr_free(&swr_ctx);
-	m_allocation = StreamAllocation::None;
+	//if (m_allocation & StreamAllocation::CodecContext)
+	//	avcodec_free_context(&enc);
+	//if (m_allocation & StreamAllocation::Frame_Main)
+	//	av_frame_free(&frame);
+	//if (m_allocation & StreamAllocation::Frame_Temp)
+	//	av_frame_free(&tmp_frame);
+	//if (m_allocation & StreamAllocation::SWS_Context)
+	//	sws_freeContext(sws_ctx);
+	//if (m_allocation & StreamAllocation::SWR_Context)
+	//	swr_free(&swr_ctx);
+	//m_allocation = StreamAllocation::None;
 }

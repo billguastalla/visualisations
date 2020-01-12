@@ -155,6 +155,7 @@
     <ClInclude Include="FFMPEG_EncoderCMD.h" />
     <ClInclude Include="FFMPEG_Help.h" />
     <ClInclude Include="FFMPEG_Muxing.h" />
+    <ClInclude Include="FFMPEG_AudioStream.h" />
     <ClInclude Include="LIBPNG_Capture.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>

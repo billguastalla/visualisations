@@ -22,6 +22,8 @@
  */
 
 #include <string>
+#include <vector>
+#include <algorithm>
 
 //#pragma warning(disable 4996)
 #define __STDC_CONSTANT_MACROS
@@ -53,10 +55,38 @@ struct MuxerSettings /* Building the needed configuration for muxing. */
 	int m_audioBitRate = 320000;
 	int m_audioDefaultSampleRate = 48000;
 	uint64_t m_audioChannels = AV_CH_LAYOUT_STEREO;
+
 };
 
 // a wrapper around a single output AVStream
 typedef struct OutputStream {
+
+	/* B.G: Comparator checks positions of streams against each other in their own timebases. */
+	bool operator<(const OutputStream & other)
+	{
+		return (av_compare_ts(next_pts, enc->time_base, other.next_pts, other.enc->time_base) >= 0);
+	}
+	/* B.G: Compare the timecodes of each stream to find which stream to encode the next frame from. */
+	static std::vector<OutputStream>::iterator & nextStream(std::vector<OutputStream> & streams)
+	{
+		return std::max_element(streams.begin(), streams.end());
+	}
+	/* B.G : TODO: Who is responsible for the time at which streams are finished?
+				I suspect that all frames of each stream need to be written up to a single end-time, to make videos look smooth.
+				Leave it this way for now.
+	*/
+	static bool streamsUnfinshed(std::vector<OutputStream>& streams, double endTime)
+	{
+		for (auto i = streams.begin(); i != streams.end(); ++i)
+		{
+			if (av_compare_ts(i->next_pts, i->enc->time_base, (int64_t)endTime, av_make_q(1, 1)) < 0)
+				return true;
+		}
+		return false;
+	}
+
+
+
 	AVStream* st; /* ALLOCATION: Allocated independently, but owned by an AVFormatContext (I think)
 								Not explicitly de-allocated. */
 	AVCodecContext* enc;/* ALLOCATION: Allocated independently  */
@@ -78,16 +108,23 @@ typedef struct OutputStream {
 	struct SwrContext* swr_ctx; /* ALLOCATION: Allocated independently:
 								Only for audio streams */
 
-	enum StreamAllocation
-	{
-		None = 0x00,
-		//Stream = 0x01,
-		CodecContext = 0x01,
-		Frame_Main = 0x02,
-		Frame_Temp = 0x04,
-		SWS_Context = 0x08,
-		SWR_Context = 0x10,
-	} m_allocation;
+
+	/* Bill: New fields*/
+	AVCodec* p_codec = nullptr;
+	bool m_initialised = false; // B.G: Replacement for have_audio/have_video
+	bool m_finished = false; // B.G: (inverted) replacement for encode_audio/encode_video
+
+	
+	//enum StreamAllocation
+	//{
+	//	None = 0x00,
+	//	//Stream = 0x01,
+	//	CodecContext = 0x01,
+	//	Frame_Main = 0x02,
+	//	Frame_Temp = 0x04,
+	//	SWS_Context = 0x08,
+	//	SWR_Context = 0x10,
+	//} m_allocation;
 
 	void deallocate();
 } OutputStream;
@@ -125,9 +162,10 @@ private:
 			-> Make an output stream hold this method.
 				-> ie. move it out of the muxer and into a StreamGenerator.
 			-> Unify this with get_video_frame() by:
-				-> 
+		IMPROVEMENTS:
+			-> 
 	*/
-	AVFrame* get_audio_frame(OutputStream* ost);
+	AVFrame * get_audio_frame(OutputStream* ost);
 
 	int write_audio_frame(AVFormatContext* oc, OutputStream* ost);
 
@@ -158,20 +196,11 @@ private:
 	AVFormatContext* oc{ nullptr };
 	AVCodec* audio_codec{ nullptr }, * video_codec{ nullptr };
 	int ret{ 0 };
-	int have_video{ 0 }, have_audio{ 0 };
-	int encode_video{ 0 }, encode_audio{ 0 };
 	AVDictionary* opt{ nullptr };
 
+	/* B.G: Vector of streams. */
+	std::vector<OutputStream> m_streams;
 
-	OutputStream audio_st2 = { 0 };
-	AVCodec* audio_codec2{ nullptr };
-	int have_audio2{ 0 };
-	int encode_audio2{ 0 };
-
-	OutputStream video_st2 = { 0 };
-	AVCodec* video_codec2{ nullptr };
-	int have_video2{ 0 };
-	int encode_video2{ 0 };
 
 
 	/* Keep track of what was allocated, so we can free what we need to,
@@ -187,5 +216,4 @@ private:
 
 	} m_allocationStage;
 	bool deallocate();
-
 };

@@ -77,5 +77,8 @@
     <ClInclude Include="FFMPEG_Muxing.h">
       <Filter>Header Files\DLL Implementation\Muxing</Filter>
     </ClInclude>
+    <ClInclude Include="FFMPEG_AudioStream.h">
+      <Filter>Header Files\DLL Implementation\Muxing</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
