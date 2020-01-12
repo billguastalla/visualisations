@@ -137,6 +137,7 @@ private:
 
 	void fill_yuv_image(AVFrame* pict, int frame_index, int width, int height);
 
+	/* B.G: This makes the video frame. */
 	AVFrame* get_video_frame(OutputStream* ost);
 
 	int write_video_frame(AVFormatContext* oc, OutputStream* ost);
@@ -160,6 +161,18 @@ private:
 	int have_video{ 0 }, have_audio{ 0 };
 	int encode_video{ 0 }, encode_audio{ 0 };
 	AVDictionary* opt{ nullptr };
+
+
+	OutputStream audio_st2 = { 0 };
+	AVCodec* audio_codec2{ nullptr };
+	int have_audio2{ 0 };
+	int encode_audio2{ 0 };
+
+	OutputStream video_st2 = { 0 };
+	AVCodec* video_codec2{ nullptr };
+	int have_video2{ 0 };
+	int encode_video2{ 0 };
+
 
 	/* Keep track of what was allocated, so we can free what we need to,
 		to minimise fatal exits. */

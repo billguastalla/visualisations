@@ -268,7 +268,7 @@ void FFMPEG_Muxer::open_audio(AVFormatContext* oc, AVCodec* codec, OutputStream*
 	/* create resampler context */
 	ost->swr_ctx = swr_alloc();
 	if (!ost->swr_ctx) {
-		reportError("Could not allocate resampler context\n");
+		reportError("Could not allocate the resampler context\n");
 	}
 
 	/* set options */
@@ -624,20 +624,33 @@ bool FFMPEG_Muxer::initialise(MuxerSettings settings)
 		add_stream(&video_st, oc, &video_codec, fmt->video_codec);
 		have_video = 1;
 		encode_video = 1;
+
+		add_stream(&video_st2, oc, &video_codec2, fmt->video_codec);
+		have_video2 = 1;
+		encode_video2 = 1;
 	}
 	if (fmt->audio_codec != AV_CODEC_ID_NONE) {
 		add_stream(&audio_st, oc, &audio_codec, fmt->audio_codec);
 		have_audio = 1;
 		encode_audio = 1;
+
+
+		add_stream(&audio_st2, oc, &audio_codec2, fmt->audio_codec);
+		have_audio2 = 1;
+		encode_audio2 = 1;
 	}
 
 	/* Now that all the parameters are set, we can open the audio and
 	 * video codecs and allocate the necessary encode buffers. */
 	if (have_video)
 		open_video(oc, video_codec, &video_st, opt);
+	if (have_video2)
+		open_video(oc, video_codec2, &video_st2, opt);
 
-	if (have_audio)
+	if (have_audio) /* B.G: Initialises audio codec context for stream */
 		open_audio(oc, audio_codec, &audio_st, opt);
+	if(have_audio2)
+		open_audio(oc, audio_codec, &audio_st2, opt);
 
 	/* B.G: Tells us about the output format. */
 	av_dump_format(oc, 0, settings.m_fileName.c_str(), 1);
@@ -675,9 +688,11 @@ void FFMPEG_Muxer::run()
 		if (encode_video && (!encode_audio || av_compare_ts(video_st.next_pts, video_st.enc->time_base,
 			audio_st.next_pts, audio_st.enc->time_base) <= 0)) {
 			encode_video = !write_video_frame(oc, &video_st);
+			encode_video2 = !write_video_frame(oc, &video_st2);
 		}
 		else {
 			encode_audio = !write_audio_frame(oc, &audio_st);
+			encode_audio2 = !write_audio_frame(oc, &audio_st2);
 		}
 	}
 }
@@ -695,6 +710,8 @@ void FFMPEG_Muxer::deinitialise()
 		close_stream(oc, &video_st);
 	if (have_audio)
 		close_stream(oc, &audio_st);
+	if (have_audio2)
+		close_stream(oc, &audio_st2);
 
 	if (!(fmt->flags & AVFMT_NOFILE))
 		/* Close the output file. */

@@ -25,6 +25,12 @@
     <Filter Include="Source Files\CMD Implementation">
       <UniqueIdentifier>{25160d6d-1978-4d4a-912d-b9812f2978e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\DLL Implementation\Muxing">
+      <UniqueIdentifier>{59dd0a20-e112-4719-afb8-282ce0dd44a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DLL Implementation\Muxing">
+      <UniqueIdentifier>{9cf9173a-a414-43aa-a0df-ba79e15867cf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Includes\glad\glad.c">
@@ -46,7 +52,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FFMPEG_Muxing.cpp">
-      <Filter>Source Files\DLL Implementation</Filter>
+      <Filter>Source Files\DLL Implementation\Muxing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -69,7 +75,7 @@
       <Filter>Header Files\DLL Implementation</Filter>
     </ClInclude>
     <ClInclude Include="FFMPEG_Muxing.h">
-      <Filter>Header Files\DLL Implementation</Filter>
+      <Filter>Header Files\DLL Implementation\Muxing</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
