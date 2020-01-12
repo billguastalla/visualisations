@@ -64,12 +64,19 @@ typedef struct OutputStream {
 	/* B.G: Comparator checks positions of streams against each other in their own timebases. */
 	bool operator<(const OutputStream & other)
 	{
-		return (av_compare_ts(next_pts, enc->time_base, other.next_pts, other.enc->time_base) >= 0);
+		int comp = (av_compare_ts(next_pts, enc->time_base, other.next_pts, other.enc->time_base));
+		return (comp > 0);
 	}
 	/* B.G: Compare the timecodes of each stream to find which stream to encode the next frame from. */
-	static std::vector<OutputStream>::iterator & nextStream(std::vector<OutputStream> & streams)
+	static OutputStream & nextStream(std::vector<OutputStream> & streams)
 	{
-		return std::max_element(streams.begin(), streams.end());
+		auto i = std::max_element(streams.begin(), streams.end());
+			//[](const OutputStream& x, const OutputStream& y)
+			//{
+			//	int comp = (av_compare_ts(x.next_pts, x.enc->time_base, y.next_pts, y.enc->time_base));
+			//	return (comp > 0);
+			//});
+		return *i;
 	}
 	/* B.G : TODO: Who is responsible for the time at which streams are finished?
 				I suspect that all frames of each stream need to be written up to a single end-time, to make videos look smooth.

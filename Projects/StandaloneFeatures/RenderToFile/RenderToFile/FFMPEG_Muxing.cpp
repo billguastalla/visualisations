@@ -645,16 +645,20 @@ bool FFMPEG_Muxer::initialise(MuxerSettings settings)
 	/* Add the audio and video streams using the default format codecs
 	 * and initialize the codecs. */
 	if (fmt->video_codec != AV_CODEC_ID_NONE) { /* <- B.G TODO: Check if this means that only audio/video can be encoded here.*/
-
-		OutputStream videoStream{};
-		add_stream(&videoStream, oc, &video_codec, fmt->video_codec);
-		m_streams.push_back(videoStream);
-
+		for (int i = 0; i < 10; ++i)
+		{
+			OutputStream videoStream{};
+			add_stream(&videoStream, oc, &video_codec, fmt->video_codec);
+			m_streams.push_back(videoStream);
+		}
 	}
 	if (fmt->audio_codec != AV_CODEC_ID_NONE) {
-		OutputStream audioStream{};
-		add_stream(&audioStream, oc, &audio_codec, fmt->audio_codec);
-		m_streams.push_back(audioStream);
+		for (int i = 0; i < 10; ++i)
+		{
+			OutputStream audioStream{};
+			add_stream(&audioStream, oc, &audio_codec, fmt->audio_codec);
+			m_streams.push_back(audioStream);
+		}
 	}
 
 	/* Now that all the parameters are set, we can open the audio and
@@ -665,9 +669,9 @@ bool FFMPEG_Muxer::initialise(MuxerSettings settings)
 		{
 			/* B.G: Initialises codec context for stream */
 			if (i->p_codec->type == AVMediaType::AVMEDIA_TYPE_VIDEO)
-				open_video(oc, video_codec, &video_st, opt);
+				open_video(oc, video_codec, &*i, opt);
 			else if (i->p_codec->type == AVMediaType::AVMEDIA_TYPE_AUDIO)
-				open_audio(oc, audio_codec, &audio_st, opt);
+				open_audio(oc, audio_codec, &*i, opt);
 		}
 	}
 
@@ -705,12 +709,12 @@ void FFMPEG_Muxer::run()
 	while (OutputStream::streamsUnfinshed(m_streams, m_settings.m_streamDuration))
 	{
 		/* B.G: select the stream to encode */
-		std::vector<OutputStream>::iterator stream = OutputStream::nextStream(m_streams);
+		OutputStream& stream{ OutputStream::nextStream(m_streams) };
 		/* B.G: Alternative here would be polymorphism. */
-		if (stream->p_codec->type == AVMediaType::AVMEDIA_TYPE_AUDIO)
-			write_audio_frame(oc, &(*stream)); /* B.G:TODO: Ugly dereferencing, fix in function args, or iterator return type.*/
-		else if (stream->p_codec->type == AVMediaType::AVMEDIA_TYPE_VIDEO)
-			write_video_frame(oc, &(*stream));
+		if (stream.p_codec->type == AVMediaType::AVMEDIA_TYPE_AUDIO)
+			write_audio_frame(oc, &(stream)); /* B.G:TODO: Ugly dereferencing, fix in function args, or iterator return type.*/
+		else if (stream.p_codec->type == AVMediaType::AVMEDIA_TYPE_VIDEO)
+			write_video_frame(oc, &(stream));
 	}
 }
 
