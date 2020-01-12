@@ -8,6 +8,11 @@ Features/Requirements & Design.docx
 *.wav
 *.mpg
 *.mp3
+*.flv
+*.mkv
+*.mov
+*.wmv
+*.gif
 ffmpeg.exe
 # Screenshots
 *.png
