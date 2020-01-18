@@ -356,7 +356,7 @@
     <ClInclude Include="VectorField.h">
       <Filter>Header Files\Graphics\Visualisations\Implementations\Tree</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectArray.h">
+    <ClInclude Include="Scene.h">
       <Filter>Header Files\Graphics\Visualisations\Implementations\Tree</Filter>
     </ClInclude>
   </ItemGroup>
