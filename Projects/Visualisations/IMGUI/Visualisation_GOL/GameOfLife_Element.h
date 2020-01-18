@@ -3,7 +3,13 @@
 
 struct Element
 {
-	Element(){active = true; alive = false;}
+	Element()
+		:
+		active{true},
+		alive{ false },
+		neighbours{nullptr},
+		index{0}
+	{}
 	/*
 		The deep copy may never need to be used, but is just a reminder of the actual functionality of the copy assignment operator.
 			-> The normal operator=() ignores the neighbours, and relies on them having been set by the grid that holds the elements. Hence also ignores indexing..

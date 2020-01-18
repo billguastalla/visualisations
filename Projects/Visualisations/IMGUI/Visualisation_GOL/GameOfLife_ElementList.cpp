@@ -1,11 +1,15 @@
 #include "GameOfLife_ElementList.h"
 
-ElementList::ElementList() : std::vector<Element>()
+ElementList::ElementList()
+	:
+	std::vector<Element>{},
+	m_aliveCount{0}
 {
-	m_aliveCount = 0;
 }
 
-ElementList::ElementList(int & count) : std::vector<Element>(count)
+ElementList::ElementList(int & count)
+	:
+	std::vector<Element>{count}
 {
 	// Note:	Relies on constructor of Element defaulting as alive = false.
 	m_aliveCount = 0;

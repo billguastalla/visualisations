@@ -217,6 +217,8 @@
     <ClInclude Include="AbstractRandomObject.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="ObjectArray.h" />
+    <ClInclude Include="Tree.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshGenerator.h" />
     <ClInclude Include="MetaDistribution.h" />
@@ -229,6 +231,7 @@
     <ClInclude Include="Settings_VideoRendering.h" />
     <ClInclude Include="Settings_Visualisation.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="VectorField.h" />
     <ClInclude Include="Visualisation_Fractal.h" />
     <ClInclude Include="Visualisation_GameOfLife.h" />
     <ClInclude Include="Visualisation_GOL\GameOfLife_Element.h" />
