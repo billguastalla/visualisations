@@ -1,30 +1,30 @@
 #include "Visualisation_PointClouds.h"
 
-#include <glad\glad.h>
-#include <GLFW\glfw3.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
 #include "Shader.h"
 #include "Buffer.h"
-
 #include "MetaDistribution.h"
 
-#include <iostream>
+#include <imgui/imgui.h>
+#include <GLFW\glfw3.h>
 #include <complex>
 #include <vector>
 
 Visualisation_PointClouds::Visualisation_PointClouds()
 	:
 	m_lightPos{ 0.0f,0.0f,0.0f },
-
 	m_objectShader{ nullptr },
 	m_lampShader{ nullptr },
-
 	m_cubeColours{},
-	m_cubePositions{}
+	m_cubePositions{},
+	m_cube{},
+
+	m_maxShapes{ 500 },
+	m_shapesPerFrame{ 5 },
+	m_shapeRes{ 5 },
+	m_rescaleShapeOverTime{ false },
+	m_shapeType{ false },
+	m_colourDeviation{ 0.1f,0.2f,0.4f },
+	m_distanceDeviation{ 1.0f }
 {
 }
 
@@ -33,89 +33,28 @@ void Visualisation_PointClouds::activate()
 	m_objectShader = new Shader{ "../Shaders/Cubes_Vertex.vs", "../Shaders/Cubes_ObjectFragment.fs" };
 	m_lampShader = new Shader{ "../Shaders/Cubes_Vertex.vs", "../Shaders/Cubes_LampFragment.fs" };
 
+	MeshGenerator::generateCube(m_cube);
+	/* gfxInit() isn't essential preparation as a user of Mesh, but it saves time on first draw. */
+	m_cube.gfxInit();
+
 	m_lightPos = { 0.0,0.0,-8.0 };
-	m_vertices = {
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-		0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-		0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-		0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-
-		0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-		0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-		0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-		0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-		0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
-	};
-	glGenVertexArrays(1, &m_cubeVAO);
-	glGenBuffers(1, &m_cubeVBO);
-	glBindVertexArray(m_cubeVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, m_cubeVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * m_vertices.size(), &m_vertices[0], GL_STATIC_DRAW);
-	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	glGenVertexArrays(1, &m_lightVAO);
-	glBindVertexArray(m_lightVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, m_cubeVBO);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
 	m_active = true;
 }
 
 void Visualisation_PointClouds::deactivate()
 {
-	glDeleteVertexArrays(1, &m_cubeVAO);
-	glDeleteVertexArrays(1, &m_lightVAO);
-	glDeleteBuffers(1, &m_cubeVBO);
+	m_cube.gfxDelete();
 
 	m_cubePositions.clear();
 	m_cubeColours.clear();
-	m_vertices.clear();
-
 	delete m_lampShader;
 	m_lampShader = nullptr;
 	delete m_objectShader;
 	m_objectShader = nullptr;
-
 	m_active = false;
 }
 
-void Visualisation_PointClouds::processSamples(const Buffer & buf, unsigned samples)
+void Visualisation_PointClouds::processSamples(const Buffer& buf, unsigned samples)
 {
 	MetaDistribution<double> dist{ 0.0f,0.01f,0.1f,0.01f };
 
@@ -129,28 +68,23 @@ void Visualisation_PointClouds::processSamples(const Buffer & buf, unsigned samp
 		for (int j = (size / 4); j < (size * 3.0 / 4.0); ++j)
 			reduced[i].push_back(res[i][j]);
 	}
-	//Buffer::normaliseFFT(reduced);
-	double maxIVal = 0.0f;
-	//std::vector<kiss_fft_cpx>::iterator maxI = std::find_if(reduced[0].begin(), reduced[0].end(),
-	//	[maxIVal](bool a, bool b) 
-	//{ return false; });
-
-	AbstractRandomObject a;
+	double maxIVal{ 0.0f };
 
 	std::normal_distribution<double> metaDistX{ dist.createDistribution() };
 	std::normal_distribution<double> metaDistY{ dist.createDistribution() };
 	std::normal_distribution<double> metaDistZ{ dist.createDistribution() };
+	AbstractRandomObject a{};
 	double metaOffsetX{ metaDistX(a.mersenneTwister()) }, metaOffsetY{ metaDistY(a.mersenneTwister()) }, metaOffsetZ{ metaDistZ(a.mersenneTwister()) };
 
+	std::map<int, std::deque<float>>& data{ buf.data() };
+	std::deque<float>& ch{ data.at(0) };
 
-	std::map<int, std::deque<float>> & data = buf.data();
-	std::deque<float> & ch = data.at(0);
-
-	for (int i = 0; i < 5; ++i)
+	for (int i = 0; i < m_shapesPerFrame; ++i)
 	{
-		int posX = i;
-		int posY = (reduced[0].size() / 2) + i;
-		int posZ = (reduced[0].size() - 1) - i;
+		int fftIt = (reduced[0].size() * i) / m_shapesPerFrame;
+		int posX = fftIt;
+		int posY = (reduced[0].size() / 2) + (fftIt / 2);
+		int posZ = (reduced[0].size() - 1) - fftIt;
 		double meanX = reduced[0][posX].r;
 		double meanY = reduced[0][posY].r;
 		double meanZ = reduced[0][posZ].r;
@@ -177,20 +111,41 @@ void Visualisation_PointClouds::processSamples(const Buffer & buf, unsigned samp
 		//colX = sin((3.141 / 2.0) * colX * colY);
 		//colY = sin((3.141 / 2.0) * colY * colZ);
 		//colZ = sin((3.141 / 2.0) * colZ * colX);
-		std::normal_distribution<double> xCol{ colX,0.1 };
-		std::normal_distribution<double> yCol{ colY,0.2 };
-		std::normal_distribution<double> zCol{ colZ,0.4 };
+		std::normal_distribution<double> xCol{ colX,m_colourDeviation.r };
+		std::normal_distribution<double> yCol{ colY,m_colourDeviation.b };
+		std::normal_distribution<double> zCol{ colZ,m_colourDeviation.g };
+		glm::vec3 cubeColour{
+			std::abs(xCol(a.mersenneTwister())),
+			std::abs(yCol(a.mersenneTwister())),
+			std::abs(zCol(a.mersenneTwister()))
+		};
 
-		glm::vec3 cubeColour{ std::abs(xCol(a.mersenneTwister())), std::abs(yCol(a.mersenneTwister())),  std::abs(zCol(a.mersenneTwister())) };
-
-		std::normal_distribution<double> xPos{ rotateX, 0.02f + std::abs(metaOffsetX) };
-		std::normal_distribution<double> yPos{ rotateY, 0.02f + std::abs(metaOffsetY) };
-		std::normal_distribution<double> zPos{ rotateZ, 0.02f + std::abs(metaOffsetZ) };
+		std::normal_distribution<double> xPos{ rotateX, m_distanceDeviation.x * std::abs(metaOffsetX) };
+		std::normal_distribution<double> yPos{ rotateY, m_distanceDeviation.y * std::abs(metaOffsetY) };
+		std::normal_distribution<double> zPos{ rotateZ, m_distanceDeviation.z * std::abs(metaOffsetZ) };
 		glm::vec3 cubePos{ xPos(a.mersenneTwister()),yPos(a.mersenneTwister()), zPos(a.mersenneTwister()) };
+
+
+		glm::vec3 cubeScale{ 1.0f,1.0f,1.0f };
+
 
 		m_cubePositions.insert(m_cubePositions.begin(), cubePos);
 		m_cubeColours.insert(m_cubeColours.begin(), cubeColour);
+		m_cubeScales.insert(m_cubeScales.begin(), cubeScale);
 	}
+
+	if (m_rescaleShapeOverTime)
+		for (int i = 0; i < m_cubeScales.size(); ++i)
+		{
+			// At the beginning, scale is 0.0, then scaled to 1.0 1/4 of the way through,
+				// then linearly scaled to zero.
+			float quarterPos = m_cubeScales.size() / 4;
+			float finalPos = m_cubeScales.size();
+			if ((float)i <= quarterPos)
+				m_cubeScales[i] = glm::vec3{ (float)i / (float)quarterPos };
+			else
+				m_cubeScales[i] = glm::vec3{ (1.0f - ((i - quarterPos) / (finalPos - quarterPos))) };
+		}
 
 	double signalPowerVal{ 0.0 };
 	for (int i = 0; i < ch.size(); ++i)
@@ -207,89 +162,29 @@ void Visualisation_PointClouds::processSamples(const Buffer & buf, unsigned samp
 
 	signalPowerAverage /= (double)m_signalPowerHistory.size();
 
-
-	/* TODO: Figure out a good relationship for the decay rate.. */
-	while (m_cubePositions.size() > 500)
+	while (m_cubePositions.size() > m_maxShapes)
 	{
 		m_cubePositions.pop_back();
 		m_cubeColours.pop_back();
+		m_cubeScales.pop_back();
 	}
 
 	if (m_cubeColours.size() != m_cubePositions.size())
 		m_cubeColours.resize(m_cubePositions.size(), glm::vec3{ 1.0f,0.0f,0.0f });
-
-	/*
-
-	//double radians = glm::radians(glfwGetTime());
-	//double xPos = sin(radians);
-	//double zPos = cos(radians);
-	*/
-	//m_camera.m_position.x = 3 * sin(glfwGetTime());
-	//m_camera.m_position.z = 3 * cos(glfwGetTime());
-	//double yawRadians = atan2(m_camera.m_position.x, m_camera.m_position.z);
-	//double yawDegrees = glm::degrees(yawRadians);
-
-	//glm::vec3 front;
-	//front.x = -m_camera.m_position.x;
-	//front.y = -m_camera.m_position.y;
-	//front.z = -m_camera.m_position.z;
-	//m_camera.m_front = glm::normalize(front);
-	//double yaw = glfwGetTime();
-	//m_camera.Yaw = 180.0 - yawDegrees;
-
-	//m_camera.updateCameraVectors();
-
-
-	//float bufPeak = buf.amplitude_peak();
-	//float bufAverage = buf.amplitude_average();
-	//float bufMinimum = buf.amplitude_minimum();
-	//
-	////m_camera.Yaw = (bufMinimum * 180.0f) - 90.0f;
-	//std::vector<std::vector<kiss_fft_cpx>> fftResults{ buf.fft() };
-
-	/* LHS is fractional position in fft, RHS is magnitude*/
-	//std::vector<std::pair<float, float>> peaks{ std::make_pair<float,float>(0.0f, 0.0f),std::make_pair<float,float>(0.0f, 0.0f) };
-	//for (int c = 0; c < fftResults.size(); ++c)
-	//{
-	//	for (int i = 0; i < fftResults[c].size(); ++i)
-	//		if (fftResults[c][i].r >= peaks[c].second)
-	//		{
-	//			peaks[c].first = ((float)i / fftResults[c].size());
-	//			peaks[c].second = fftResults[c][i].r;
-	//		}
-	//}
-	//m_objectShader->use();
-	//m_objectShader->setVec3("objectColour", glm::vec3{ peaks[0].first,peaks[1].first,1.0f });
-
-	//m_camera.Pitch = bufAverage;
-	//m_camera.m_zoom = -45.0f * bufMinimum;
-	//m_camera.m_zoom = bufMinimum;
-
-	//buf.maxChannelFrameCount();
-	//kiss_fft_cfg config;
-	//m_camera.updateCameraVectors();
+	if (m_cubeScales.size() != m_cubePositions.size())
+		m_cubeScales.resize(m_cubePositions.size(), glm::vec3{ 1.0f,1.0f,1.0f });
 }
 
 void Visualisation_PointClouds::renderFrame()
 {
-	float currentFrame = glfwGetTime();
-	m_deltaTime = currentFrame - m_lastFrame;
-	m_lastFrame = currentFrame;
-
-
-	// activate shader
 	m_objectShader->use();
 	m_objectShader->setVec3("lightColour", glm::vec3{ 1.0f,0.5f,0.31f });
 	m_objectShader->setVec3("objectColour", glm::vec3{ 1.0f,0.5f,0.31f });
 
-	// pass projection matrix to shader (note that in this case it could change every frame)
+	/* TODO: A scene should handle this! */
 	glm::mat4 projection = glm::perspective(glm::radians(m_camera.m_zoom), (float)1920 / (float)1080, 0.1f, 100.0f);
 	m_objectShader->setMat4("projection", projection);
-
-	// camera/view transformation
 	glm::mat4 view = m_camera.GetViewMatrix();
-
-
 	m_objectShader->setMat4("view", view);
 
 	glm::mat4 lightModel{ 1.0f };
@@ -299,14 +194,11 @@ void Visualisation_PointClouds::renderFrame()
 	m_objectShader->setVec3("lightPos", m_lightPos);
 	m_objectShader->setVec3("viewPos", m_camera.m_position);
 
-	// render boxes
-	glBindVertexArray(m_cubeVAO);
 	for (unsigned int i = 0; i < m_cubePositions.size(); i++)
 	{
-		// calculate the model matrix for each object and pass it to shader before drawing
 		glm::mat4 model{ 1.0f };
 		model = glm::translate(model, m_cubePositions[i]);
-		model = glm::scale(model, glm::vec3{ 0.05f,0.05f,0.05f });
+		model = glm::scale(model, m_cubeScales[i] * glm::vec3{ 0.05f,0.05f,0.05f });
 
 		//*m_cubeColours[i].r * m_cubeColours[i].g * m_cubeColours[i].g
 		float angle = 0.4f * (float)i;
@@ -314,12 +206,62 @@ void Visualisation_PointClouds::renderFrame()
 		m_objectShader->setMat4("model", model);
 
 		m_objectShader->setVec3("objectColour", m_cubeColours[i]);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		m_cube.draw(m_objectShader);
 	}
 	m_lampShader->use();
 	m_lampShader->setMat4("projection", projection);
 	m_lampShader->setMat4("view", view);
 	m_lampShader->setMat4("model", lightModel);
-	glBindVertexArray(m_lightVAO);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	m_cube.draw(m_objectShader);
+}
+
+void Visualisation_PointClouds::drawInterface()
+{
+	/* Possible settings: detail per object, shape type, number of shapes, number added per frame,
+							colour deviation, distance deviation. */
+							/* Another possiblity: Scale the shapes quickly as they appear, and scale them to zero as they
+													approach the end of their existence*/
+
+	enum ShapeType
+	{
+		Cube,
+		Sphere,
+		Torus,
+		Arrow
+	} shapeType = (ShapeType)m_shapeType;
+	int resolution = m_shapeRes;
+	ImGui::SliderInt("Max shapes", &m_maxShapes, 1, 20000);
+	ImGui::SliderInt("Shapes per frame", &m_shapesPerFrame, 1, m_maxShapes);
+	ImGui::Checkbox("Rescale", &m_rescaleShapeOverTime);
+	ImGui::Combo("Shape", (int*)&shapeType, "Cube\0Sphere\0Torus\0Arrow\0");
+	ImGui::SliderInt("Resolution", &resolution, 3, 30);
+	ImGui::SliderFloat3("Colour Deviation", (float*)& m_colourDeviation, 0.0f, 1.0f);
+	ImGui::SliderFloat3("Distance Deviation", (float*)& m_distanceDeviation, 0.0f, 10.0f);
+
+	if ((int)shapeType != m_shapeType || resolution != m_shapeRes)
+	{
+		switch (shapeType)
+		{
+		case Cube:
+			MeshGenerator::generateCube(m_cube);
+			break;
+		case Sphere:
+			MeshGenerator::generateSphere(resolution, m_cube);
+			break;
+		case Torus:
+			MeshGenerator::generateTorus(resolution,0.5,1.0,m_cube);
+			break;
+		case Arrow:
+			MeshGenerator::generateArrow(resolution,m_cube);
+			break;
+		default:
+			MeshGenerator::generateCube(m_cube);
+			break;
+		}
+		m_shapeType = (int)shapeType;
+		m_shapeRes = resolution;
+	}
+
+
+
 }
