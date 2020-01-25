@@ -28,6 +28,14 @@ using std::vector;
 
 struct MeshVertex
 {
+	MeshVertex()
+		:
+		Position{},
+		Normal{},
+		TexCoords{},
+		Tangent{},
+		Bitangent{}
+	{};
 	MeshVertex(glm::vec3 pos, glm::vec3 norm = glm::vec3{ 0.0,0.0,1.0 }, glm::vec2 tex = glm::vec2{ 0.0 }, glm::vec3 tan = glm::vec3{ 0.0 }, glm::vec3 bitan = glm::vec3{ 0.0 })
 		: Position{ pos }, Normal{ norm }, TexCoords{ tex }, Tangent{ tan }, Bitangent{ bitan }
 	{}
@@ -90,14 +98,46 @@ public:
 	void translate(const glm::vec3& pos);
 	void scale(const glm::vec3& mag);
 	void rotate(const glm::vec3& axis, float angle);
-	
+
 	void showNormals(bool y);
+
+
+	bool interpolate(const Mesh& m1, const Mesh& m2, float extent)
+	{
+		// assert(m1.m_vertices.size() == m2.m_vertices.si) {...}
+		if (m1.m_vertices.size() != m2.m_vertices.size())
+			return false;
+
+		m_indices = m1.m_indices;
+		m_textures = m1.m_textures;
+		m_vertices.resize(m1.m_vertices.size());
+
+		std::vector<MeshVertex>::const_iterator m1Vertex = m1.m_vertices.begin();
+		std::vector<MeshVertex>::const_iterator m2Vertex = m2.m_vertices.begin();
+		std::vector<MeshVertex>::iterator vertex = m_vertices.begin();
+		while (m1Vertex != m1.m_vertices.end() && m2Vertex != m2.m_vertices.end())
+		{
+			vertex->Normal = ((extent * m2Vertex->Normal) + ((1 - extent) * m1Vertex->Normal));
+			vertex->Bitangent = ((extent * m2Vertex->Bitangent) + ((1 - extent) * m1Vertex->Bitangent));
+			vertex->Position = ((extent * m2Vertex->Position) + ((1 - extent) * m1Vertex->Position));
+			vertex->Tangent = ((extent * m2Vertex->Tangent) + ((1 - extent) * m1Vertex->Tangent));
+			vertex->TexCoords = ((extent * m2Vertex->TexCoords) + ((1 - extent) * m1Vertex->TexCoords));
+			++m1Vertex;
+			++m2Vertex;
+			++vertex;
+		}
+		/* todo: only update mesh data */
+		gfxDelete();
+		return true;
+	}
+
+	/* These are safe to be publicm*/
+	void gfxInit();
+	void gfxDelete();
 private:
 	/* Normals */
 	std::unique_ptr<Mesh> m_normalArrows;
 
-	void gfxInit();
-	void gfxDelete();
 
 	/*  CPU Data  */
 	vector<MeshVertex> m_vertices;

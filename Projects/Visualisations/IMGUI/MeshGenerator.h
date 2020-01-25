@@ -15,6 +15,10 @@ namespace MeshGenerator
 	void generateArrow(unsigned int res, Mesh& m);
 
 
+	/* Connector for branches in tree */
+	void generateConnector(unsigned int res, float r1, float r2, float d1, float d2, Mesh& m);
+
+
 	enum MandelbulbVersion
 	{
 		Wikipedia,	// https://en.wikipedia.org/wiki/Mandelbulb

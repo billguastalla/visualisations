@@ -28,7 +28,12 @@ Visualisation_Sandbox::Visualisation_Sandbox()
 	m_meshTop{},
 	m_meshBottom{},
 	m_lightMesh{},
-	m_frameCounter{ 0 }
+	m_frameCounter{ 0 },
+
+	m_morph{},
+	m_templateCone{},
+	m_templateSphere{}
+
 {
 	MeshGenerator::generateGraph(32, 32, m_meshTop);
 	MeshGenerator::generateGraph(200, 200, m_meshBottom);
@@ -36,6 +41,17 @@ Visualisation_Sandbox::Visualisation_Sandbox()
 	//m_meshTop.showNormals(true);
 
 	MeshGenerator::generateCube(m_lightMesh);
+
+
+
+
+	MeshGenerator::generateCone(50, 1, 0.5, m_templateCone);
+	MeshGenerator::generateSphere(50,m_templateSphere);
+	m_morph.interpolate(m_templateCone, m_templateSphere, 0.0f);
+	
+
+
+
 
 	int iMax{ 1000 };
 	for (int i{2}; i < iMax; ++i)
@@ -170,7 +186,7 @@ void Visualisation_Sandbox::renderFrame()
 	auto j = m_sphereMats.begin();
 	int k = 0;
 	size_t kMax{ m_sphereMats.size() };
-	while(i != m_spheres.end() && j != m_sphereMats.end())
+	/*while(i != m_spheres.end() && j != m_sphereMats.end())
 	{
 		float thetSubcoil = 2.0f * 3.14159f * (float)k / 40.0f;
 		float thetCircle = 2.0f * 3.14159f * ((float)k / (float)kMax);
@@ -195,16 +211,27 @@ void Visualisation_Sandbox::renderFrame()
 		i->draw(m_objectShader);
 		++i,++j, ++k;
 	}
-
-	m_objectShader->setMat4("model", m_bottomModelMat);
-	m_objectShader->setVec3("objectColour", glm::vec3{ 0.5f,0.2f,0.11f });
-	m_meshBottom.draw(m_objectShader);
-	m_objectShader->setMat4("model", m_topModelMat);
-	m_objectShader->setVec3("objectColour", glm::vec3{ 0.2f,0.3f,0.61f });
-	m_meshTop.draw(m_objectShader);
+*/
+	//m_objectShader->setMat4("model", m_bottomModelMat);
+	//m_objectShader->setVec3("objectColour", glm::vec3{ 0.5f,0.2f,0.11f });
+	//m_meshBottom.draw(m_objectShader);
+	//m_objectShader->setMat4("model", m_topModelMat);
+	//m_objectShader->setVec3("objectColour", glm::vec3{ 0.2f,0.3f,0.61f });
+	//m_meshTop.draw(m_objectShader);
 
 
 	m_objectShader->setMat4("model", lightModel);
 	m_objectShader->setVec3("objectColour", glm::vec3{ 0.8f,0.6f,0.6f });
 	m_lightMesh.draw(m_objectShader);
+
+
+	m_morph.interpolate(m_templateCone, m_templateSphere, abs(sin(0.2 * glfwGetTime())));
+	m_objectShader->setVec3("objectColour", glm::vec3{ 0.5f,0.2f,0.8f });
+
+
+	glm::mat4 morphModel{ 1.0 };
+	glm::scale(morphModel, glm::vec3{ 2.0f });
+	m_objectShader->setMat4("model",morphModel);
+	m_morph.draw(m_objectShader);
+
 }
