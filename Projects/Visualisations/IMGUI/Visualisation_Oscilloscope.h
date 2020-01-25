@@ -27,7 +27,7 @@ public:
 
 	std::string titleString() override { return "Oscilloscope"; };
 private:
-	Shader * m_timeShader, * m_freqShader;
+	Shader *m_timeShader, *m_freqShader;
 
 	/* idx is channel*/
 	std::vector<unsigned int> m_frequencyVAO;

@@ -36,17 +36,17 @@ public:
 		StraightAxis,
 		DiagonalAxis
 	};
-	Grid(const std::vector<int> & dimensions, const NeighbourType gridNeighbourType = NeighbourType::Moore);
-	Grid(Grid * other);
+	Grid(const std::vector<int>& dimensions, const NeighbourType gridNeighbourType = NeighbourType::Moore);
+	Grid(Grid* other);
 
-	size_t totalElements(){ return m_grid.size(); }
-	size_t getNoOfDimensions(){ return m_dimensions.size(); }
-	const int getDimensionLength(int axis){ return m_dimensions[axis]; }
-	const int getNeighbourCount(){ return m_neighbourCount; }
+	size_t totalElements() { return m_grid.size(); }
+	size_t getNoOfDimensions() { return m_dimensions.size(); }
+	const int getDimensionLength(int axis) { return m_dimensions[axis]; }
+	const int getNeighbourCount() { return m_neighbourCount; }
 
-	Element * operator[](int index){return &m_grid[index];}
+	Element* operator[](int index) { return &m_grid[index]; }
 
-	const std::vector<int> & dimensions() { return m_dimensions; }
+	const std::vector<int>& dimensions() { return m_dimensions; }
 private:
 	// The actual list of elements
 	ElementList m_grid;
@@ -62,31 +62,25 @@ private:
 
 	void allocateNeighbours();
 
-
 	std::vector<Edges> m_gridEdges;
 
 	// TEMPORARILY PUBLIC (haha)
 public:
 	Edges getEdges(int index);
 
-
 	/* */
 	void insertPrimitive();
-
 
 	std::vector<Element*> getMooreNeighbours(int index, int dimensions);
 	std::vector<Element*> getPlusNeighbours(int index, int dimensions);
 	std::vector<Element*> getDiamondNeighbours(int index, int dimensions);
 
-	std::vector<Element*> getAllStraightAxisNeighbours(int index, int dimensions);
-		std::vector<Element*> getStraightAxisNeighbours(int index, int AXIS);
-	std::vector<Element*> getAllDiagonalAxisNeighbours(int index, int dimensions);
-		std::vector<Element*> getDiagonalAxisNeighbours(int index, int AXIS);
+	std::vector<Element*> getStraightAxisNeighbours(int index, int AXIS);
+	std::vector<Element*> getDiagonalAxisNeighbours(int index, int AXIS);
 
-	void modifyIndexAtEdge(int & index, const int & dimension, const bool topOrBottom);
+	void modifyIndexAtEdge(int& index, const int& dimension, const bool topOrBottom);
 
 private:
-
 	// This is the index difference between adjacent elements on a certain axis.
 	int indexDistance(int dimensions);
 

@@ -40,4 +40,11 @@ private:
 	Mesh m_lightMesh;
 
 	glm::mat4 m_mainModelMat, m_bottomModelMat, m_topModelMat;
+
+
+	/* Interpolation*/
+	Mesh m_morph;
+	Mesh m_templateCone;
+	Mesh m_templateSphere;
+
 };

@@ -194,35 +194,3 @@ void Buffer::normaliseFFT(std::vector<std::vector<kiss_fft_cpx>>& fftData)
 				fftData[c][s].r /= maxVals[c].r;
 	}
 }
-
-//
-//MultiBuffer::MultiBuffer(size_t bufferCount)
-//	: m_bufferCount{bufferCount}
-//{
-//}
-//
-//void MultiBuffer::pushBuffer(Buffer buf)
-//{
-//	std::lock_guard<std::mutex> lock{ m_multiBufferMutex };
-//	m_buffers.push_back(buf);
-//	if(m_buffers.size() > m_bufferCount)
-//		m_buffers.pop_front();
-//}
-//
-//std::vector<Buffer> MultiBuffer::getBuffers()
-//{
-//	std::lock_guard<std::mutex> lock{ m_multiBufferMutex };
-//	std::vector<Buffer> result{};
-//	for (std::deque<Buffer>::iterator i = m_buffers.begin(); i != m_buffers.end(); ++i)
-//		result.push_back(*i);
-//	return result;
-//}
-//
-//Buffer MultiBuffer::getConcatenatedBuffer()
-//{
-//	std::lock_guard<std::mutex> lock{ m_multiBufferMutex };
-//	Buffer result{ 0,PaStreamParameters{} };
-//	//for (size_t i = 0; i < m_buffers.size(); ++i)
-//	//	result.append(m_buffers[i]);
-//	return result;
-//}

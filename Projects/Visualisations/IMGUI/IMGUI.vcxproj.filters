@@ -97,6 +97,9 @@
     <Filter Include="Header Files\Graphics\Engine\Models">
       <UniqueIdentifier>{5cc7a0bf-2372-42b5-bff0-e83deae2a97d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Graphics\Visualisations\Implementations\Tree">
+      <UniqueIdentifier>{6ce35155-9c20-4c21-9b92-5b9c94fb56a6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Recorder.cpp">
@@ -346,6 +349,15 @@
     </ClInclude>
     <ClInclude Include="PostProcessing.h">
       <Filter>Header Files\Graphics\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Tree.h">
+      <Filter>Header Files\Graphics\Visualisations\Implementations\Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorField.h">
+      <Filter>Header Files\Graphics\Visualisations\Implementations\Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Header Files\Graphics\Visualisations\Implementations\Tree</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

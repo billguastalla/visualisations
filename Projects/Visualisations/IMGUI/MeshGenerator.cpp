@@ -1,6 +1,6 @@
 ﻿#include "MeshGenerator.h"
 
-auto buildMeshIndices = [](const unsigned int & width, const unsigned int & height)
+auto buildMeshIndices = [](const unsigned int& width, const unsigned int& height)
 {
 	std::vector<unsigned int> idxs;
 	for (unsigned int w = 0; w < width; ++w)
@@ -19,7 +19,7 @@ auto buildMeshIndices = [](const unsigned int & width, const unsigned int & heig
 	return idxs;
 };
 // WARNING: Set normals to zero before using. TODO: think about normals for primitives analytically, before jumping to this.
-auto buildSmoothNormals = [](std::vector<MeshVertex> & vxs, const std::vector<unsigned int>& idxs)
+auto buildSmoothNormals = [](std::vector<MeshVertex>& vxs, const std::vector<unsigned int>& idxs)
 {
 	for (int i = 0; i < idxs.size(); i += 3)
 	{
@@ -126,7 +126,7 @@ void MeshGenerator::generateGraph(unsigned int width, unsigned int height, Mesh&
 		}
 	}
 	/* Triangle indexes */
-	std::vector<unsigned int> idxs{buildMeshIndices(width,height)};
+	std::vector<unsigned int> idxs{ buildMeshIndices(width,height) };
 	/* Smooth normals */
 	buildSmoothNormals(vxs, idxs);
 
@@ -180,7 +180,7 @@ void MeshGenerator::generateCone(unsigned int res, float height, float radius, M
 	float radiusInterval = radius / ((float)res);
 	float heightInterval = height / ((float)res);
 	std::vector<MeshVertex> vxs{};
-	for (int i = 0; i <= res; ++i)
+	for (int i = res; i >= 0; --i)
 	{
 		for (int j = 0; j <= res; ++j)
 		{
@@ -228,6 +228,19 @@ void MeshGenerator::generateArrow(unsigned int res, Mesh& m)
 	m.appendMesh(mCone);
 }
 
+void MeshGenerator::generateConnector(unsigned int res,
+	float r1, float r2,
+	float d1, float d2,
+	Mesh& m)
+{
+	/* Can we use gaussian curvature to deal with this? */
+
+	// Start with cylinder, then move to two cylinders.
+	float theta{ 0 };
+	float x{ r1 * sin(theta) };
+}
+
+
 std::vector<glm::vec3> MeshGenerator::generateMandelbulb(unsigned int res, double n, glm::vec3 initialPos)
 {
 
@@ -255,7 +268,7 @@ std::vector<glm::vec3> MeshGenerator::generateMandelbulb(unsigned int res, doubl
 	};
 
 	auto yangTwinbee = [](double x, double y, double z) {
-		return std::atan2(sqrt((x * x) + (y * y)),z);
+		return std::atan2(sqrt((x * x) + (y * y)), z);
 	};
 	auto zangTwinbee = [](double x, double y) {
 		return std::atan(y / x);
@@ -286,7 +299,7 @@ std::vector<glm::vec3> MeshGenerator::generateMandelbulb(unsigned int res, doubl
 			//glm::dvec3 next = current + mandelBulbIter(current, n);
 			//set.push_back(next);
 			//current = next;
-			set.push_back(current = mandelBulbIter(current,n));
+			set.push_back(current = mandelBulbIter(current, n));
 		}
 		return set;
 	};
@@ -314,11 +327,11 @@ std::vector<glm::vec3> MeshGenerator::generateMandelbulb(unsigned int res, doubl
 		return o;
 	};
 
-	std::vector<glm::dvec3> seq = buildSequence(initialPos,n, res);
+	std::vector<glm::dvec3> seq = buildSequence(initialPos, n, res);
 	//normaliseSet(seq);
 	std::vector<glm::vec3> seqFP = doubleToFloat(seq);
 	return seqFP;
-	
+
 	//std::vector<MeshVertex> vxs{};
 	//for (auto i = seqFP.begin(); i != seqFP.end(); ++i)
 	//	vxs.push_back(*i);
