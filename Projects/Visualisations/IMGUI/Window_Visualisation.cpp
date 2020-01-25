@@ -44,6 +44,24 @@ void Window_Visualisation::draw()
 	ImGui::SliderFloat("", &exposure, 0.0, 1.0);
 	m_visualisation->postProcessing()->setExposure(exposure);
 
+	/* Strange post-processing */
+	glm::vec2 colBufPerc = m_visualisation->postProcessing()->colBufPerc();
+	glm::vec2 colBufSlide{ colBufPerc };
+	ImGui::SliderFloat2("Colour Buffer Offset", (float*)&colBufPerc, 0.9f, 1.0f);
+	glm::vec2 rbPerc = m_visualisation->postProcessing()->rbPerc();
+	glm::vec2 rbSlide{ rbPerc };
+	ImGui::SliderFloat2("Render Buffer Offset", (float*)& rbPerc, 0.9f, 1.0f);
+	glm::vec2 pingPongPerc = m_visualisation->postProcessing()->pingPongPerc();
+	glm::vec2 pingPongSlide{ pingPongPerc };
+	ImGui::SliderFloat2("Ping Pong Offset", (float*)& pingPongPerc, 0.9f, 1.0f);
+	if (colBufPerc != colBufSlide)
+		m_visualisation->postProcessing()->setColBufPerc(colBufPerc);
+	if (rbPerc != rbSlide)
+		m_visualisation->postProcessing()->setrbPerc(rbPerc);
+	if (pingPongPerc != pingPongSlide)
+		m_visualisation->postProcessing()->setpingpongPerc(pingPongPerc);
+
+
 
 
 	std::string s{ "Options: " };

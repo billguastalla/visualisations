@@ -33,7 +33,7 @@ private:
 	int m_shapesPerFrame; 
 	int m_shapeRes; 
 	bool m_rescaleShapeOverTime; 
-	bool m_shapeType; 
+	int m_shapeType; 
 	glm::vec3 m_colourDeviation; 
 	glm::vec3 m_distanceDeviation; 
 };

@@ -189,10 +189,11 @@ void MeshGenerator::generateCone(unsigned int res, float height, float radius, M
 			float h{ (float)i * heightInterval };
 			glm::vec3 coord{ r * cos(theta),r * sin(theta),h };
 			glm::vec2 texCoord{ cos(theta),h / height };
-			vxs.push_back(MeshVertex{ coord,coord,texCoord });
+			vxs.push_back(MeshVertex{ coord,glm::vec3{0.0f},texCoord });
 		}
 	}
 	std::vector<unsigned int> idxs{ buildMeshIndices(res, res) };
+	buildSmoothNormals(vxs, idxs);
 	m.regenerateMesh(vxs, idxs);
 }
 void MeshGenerator::generateTorus(unsigned int res, float innerRadius, float outerRadius, Mesh& m)
@@ -213,10 +214,11 @@ void MeshGenerator::generateTorus(unsigned int res, float innerRadius, float out
 				innerRadius * sin(thetaOuter),
 			};
 			glm::vec2 texCoord{ texInterval * (float)i, texInterval * (float)j };
-			vxs.push_back(MeshVertex{ coord,coord,texCoord });
+			vxs.push_back(MeshVertex{ coord,glm::vec3{0.0f},texCoord });
 		}
 	}
 	std::vector<unsigned int> idxs{ buildMeshIndices(res, res) };
+	buildSmoothNormals(vxs, idxs);
 	m.regenerateMesh(vxs, idxs);
 }
 void MeshGenerator::generateArrow(unsigned int res, Mesh& m)

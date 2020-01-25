@@ -16,7 +16,7 @@ void main()
 	vec3 norm = normalize(Normal);
 	vec3 lightDir = normalize(lightPos - FragPos);
 
-	float specularStrength = 0.5;
+	float specularStrength = 0.7;
 	vec3 viewDir = normalize(viewPos - FragPos);
 	vec3 reflectDir = reflect(-lightDir, norm);
 	float spec = pow(max(dot(viewDir,reflectDir),0.0),32);
@@ -25,14 +25,14 @@ void main()
 	float diff = max(dot(norm, lightDir),0.0);
 	vec3 diffuse = diff * lightColour;
 
-	float ambientStrength = 0.1;
+	float ambientStrength = 0.2;
 	vec3 ambient = ambientStrength * lightColour;
 	
 	vec3 result = (ambient + diffuse + specular) * objectColour;
     FragColour = vec4(result, 1.0);
 	
     // check whether result is higher than some threshold, if so, output as bloom threshold color
-    float brightness = dot(result, vec3(0.3126, 0.3152, 0.3722));
+    float brightness = dot(result.xyz, vec3(0.3426, 0.3452, 0.3722));
     if(brightness > 1.0)
         BrightColor = vec4(result, 1.0);
     else
