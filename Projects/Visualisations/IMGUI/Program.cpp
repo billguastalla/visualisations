@@ -140,6 +140,7 @@ void Program::interpretKeyboardInput()
 		int a = glfwGetKey(m_window, GLFW_KEY_A);
 		int s = glfwGetKey(m_window, GLFW_KEY_S);
 		int d = glfwGetKey(m_window, GLFW_KEY_D);
+		int space = glfwGetKey(m_window, GLFW_KEY_SPACE);
 		int rightBracket = glfwGetKey(m_window, GLFW_KEY_RIGHT_BRACKET);
 		int leftBracket = glfwGetKey(m_window, GLFW_KEY_LEFT_BRACKET);
 		int zero = glfwGetKey(m_window, GLFW_KEY_0);
@@ -151,6 +152,8 @@ void Program::interpretKeyboardInput()
 			cm += (int)Camera_Movement::BACKWARD;
 		if (d == GLFW_PRESS)
 			cm += (int)Camera_Movement::RIGHT;
+		if (space == GLFW_PRESS)
+			cm += (int)Camera_Movement::UP;
 		if (rightBracket == GLFW_PRESS)
 			cm += (int)Camera_Movement::INCREASE_MOVEMENT_SPEED;
 		if (leftBracket == GLFW_PRESS)
