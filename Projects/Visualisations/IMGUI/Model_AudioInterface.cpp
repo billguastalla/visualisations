@@ -20,27 +20,13 @@ Model_AudioInterface::Model_AudioInterface(std::shared_ptr<Settings_AudioInterfa
 
 	p_program{ prog },
 
-	m_recordMode{RecordMode::AudioStream},
-	m_recordState{RecordState::Stopped}
+	m_recordMode{RecordMode::AudioStream}
 {
-
 }
 
 Model_AudioInterface::~Model_AudioInterface()
 {
 
-}
-
-void Model_AudioInterface::startStream()
-{
-	m_realTime->startMonitoring();
-	m_recordState = RecordState::Started;
-}
-
-void Model_AudioInterface::stopStream()
-{
-	m_realTime->stopMonitoring();
-	m_recordState = RecordState::Stopped;
 }
 
 Buffer Model_AudioInterface::buffer()

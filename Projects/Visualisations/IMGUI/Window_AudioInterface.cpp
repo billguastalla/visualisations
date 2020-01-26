@@ -8,7 +8,8 @@
 #include "Settings_AudioInterface.h"
 
 Window_AudioInterface::Window_AudioInterface(std::shared_ptr<Model_AudioInterface> & audioInterface)
-	: m_audioInterface{ audioInterface }
+	: m_audioInterface{ audioInterface },
+	m_recorderUI{ new RecorderUI{audioInterface->recorder()} }
 {
 }
 
@@ -21,6 +22,10 @@ void Window_AudioInterface::draw()
 {
 	static float f = 0.0f;
 	ImGui::Begin("Audio Properties");
+
+	m_recorderUI->draw();
+
+
 	ImGui::Text("Audio Statistics:");
 	
 	//ImGui::Text("\tChannels: %i", audioBuffer.channelCount());
@@ -28,25 +33,6 @@ void Window_AudioInterface::draw()
 	//ImGui::Text("\tAmplitude Minimum: %.3f", audioBuffer.amplitude_minimum());
 	//ImGui::Text("\tAmplitude Peak: %.3f", audioBuffer.amplitude_peak());
 
-
-	bool startClicked{ false }, stopClicked{ false };
-	switch (m_audioInterface->state())
-	{
-	case Model_AudioInterface::RecordState::Started:
-		stopClicked = ImGui::Button("Stop");
-		break;
-	case Model_AudioInterface::RecordState::Paused:
-		break;
-	case Model_AudioInterface::RecordState::Stopped:
-		startClicked = ImGui::Button("Start");
-		break;
-	default:
-		break;
-	}
-	if (startClicked)
-		m_audioInterface->startStream();
-	else if (stopClicked)
-		m_audioInterface->stopStream();
 
 	ImGui::End();
 

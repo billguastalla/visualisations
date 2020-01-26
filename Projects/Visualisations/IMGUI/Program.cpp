@@ -79,7 +79,8 @@ void Program::run()
 		glfwPollEvents();
 
 		/* Later we can pass the interval in samples/ms per frame here*/
-		if (m_modelAudioInterface->state() == Model_AudioInterface::RecordState::Started)
+		/* Should the Program class care about the check for the record state? */
+		if (m_modelAudioInterface->streamRunning())
 		{
 			Buffer currentAudio = m_modelAudioInterface->buffer();
 			m_modelVisualisation->processAudio(currentAudio);
