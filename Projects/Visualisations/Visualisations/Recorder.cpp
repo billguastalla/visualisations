@@ -109,7 +109,12 @@ PaError Recorder::initialise()
 			m_inputParameters.device = Pa_GetDefaultInputDevice(); /* default input device */
 			m_inputParameters.channelCount = m_channelCount;                    /* stereo input */
 			m_inputParameters.sampleFormat = PA_SAMPLE_TYPE;
-			m_inputParameters.suggestedLatency = Pa_GetDeviceInfo(m_inputParameters.device)->defaultLowInputLatency;
+
+			const PaDeviceInfo* deviceInfo{ Pa_GetDeviceInfo(m_inputParameters.device) };
+			if (deviceInfo == nullptr)
+				return paDeviceUnavailable; /* <-- No sound device! */
+
+			m_inputParameters.suggestedLatency = deviceInfo->defaultLowInputLatency;
 			m_inputParameters.hostApiSpecificStreamInfo = nullptr;
 
 			Buffer buf{ (size_t)m_framesPerPacket * m_packetsPerBuffer,m_inputParameters };
@@ -137,8 +142,7 @@ PaError Recorder::deinitialise()
 
 PaError Recorder::startMonitoring()
 {
-	PaError result{ paNoError };
-	initialise();
+	PaError result{ initialise() };
 	if (m_state == RecorderState::Ready)
 	{
 		result = Pa_OpenStream(

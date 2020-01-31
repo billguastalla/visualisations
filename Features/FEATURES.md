@@ -6,10 +6,9 @@ outlines of features appear here to illustrate the direction of the project.
 
 # Issues
 
-- Crash: Audio: The implementation of the PortAudio interface crashes if no microphone is available.
-- Crash: VideoRendering: Framerate changes crash on video rendering.
+- Crash: Audio: The implementation of the PortAudio interface crashes if no microphone is available. [FIXED]
+- Crash: VideoRendering: Framerate changes crash on video rendering. []
 - Usability: Mesh: Normals are not rotated correctly.
-- 
 
 # Visualisations
 
