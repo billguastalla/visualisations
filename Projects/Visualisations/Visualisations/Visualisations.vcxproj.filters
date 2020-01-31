@@ -222,6 +222,9 @@
     <ClCompile Include="PostProcessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Visualisation_TreeField.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Buffer.h">
@@ -358,6 +361,9 @@
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>Header Files\Graphics\Visualisations\Implementations\Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_TreeField.h">
+      <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

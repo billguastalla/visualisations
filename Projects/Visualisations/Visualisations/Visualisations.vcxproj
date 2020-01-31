@@ -194,6 +194,7 @@
     <ClCompile Include="Visualisation_PointClouds.cpp" />
     <ClCompile Include="Visualisation_Sandbox.cpp" />
     <ClCompile Include="Visualisation_Splinters.cpp" />
+    <ClCompile Include="Visualisation_TreeField.cpp" />
     <ClCompile Include="Window_Abstract.cpp" />
     <ClCompile Include="Window_AudioInterface.cpp" />
     <ClCompile Include="Window_VideoRendering.cpp" />
@@ -241,6 +242,7 @@
     <ClInclude Include="Visualisation_PointClouds.h" />
     <ClInclude Include="Visualisation_Sandbox.h" />
     <ClInclude Include="Visualisation_Splinters.h" />
+    <ClInclude Include="Visualisation_TreeField.h" />
     <ClInclude Include="Window_Abstract.h" />
     <ClInclude Include="Window_AudioInterface.h" />
     <ClInclude Include="Window_VideoRendering.h" />
