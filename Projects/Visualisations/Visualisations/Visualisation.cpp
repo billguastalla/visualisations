@@ -37,5 +37,5 @@ void Visualisation::mouseMovement(float xPos, float yPos, bool mouseDown)
 
 void Visualisation::keyMovement(Camera_Movement cm)
 {
-	m_camera.ProcessKeyboard(cm, 0.01);
+	m_camera.ProcessKeyboard(cm, 0.01f);
 }

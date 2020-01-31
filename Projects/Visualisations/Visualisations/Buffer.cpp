@@ -38,7 +38,7 @@ void Buffer::clear(int totalFrameCount)
 {
 	m_channelData.clear();
 
-	int maxChannelFrames = m_maxTotalFrames / m_channelCount;
+	int maxChannelFrames = (int)m_maxTotalFrames / (int)m_channelCount;
 	for (int c = 0; c < m_channelCount; ++c)
 	{
 		std::deque<float> channelIdxFrames{};
@@ -115,7 +115,7 @@ float hanningWindow(size_t i, size_t s)
 std::vector<std::vector<kiss_fft_cpx>> Buffer::fft() const
 {
 	int nearestPower = 1;
-	int channelFrames = (m_maxTotalFrames / m_channelCount);
+	int channelFrames = ((int)m_maxTotalFrames / (int)m_channelCount);
 	while (pow(2, nearestPower) < channelFrames)
 		++nearestPower;
 	int fftFrames = pow(2, nearestPower);

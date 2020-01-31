@@ -224,9 +224,9 @@ void MeshGenerator::generateTorus(unsigned int res, float innerRadius, float out
 void MeshGenerator::generateArrow(unsigned int res, Mesh& m)
 {
 	Mesh mCone{};
-	generateCone(res, 2.0, 0.6, mCone);
+	generateCone(res, 2.0f, 0.6f, mCone);
 	mCone.translate(glm::vec3{ 0.0,0.0,5.0 });
-	generateCylinder(res, 5.0, 0.2, m);
+	generateCylinder(res, 5.0f, 0.2f, m);
 	m.appendMesh(mCone);
 }
 

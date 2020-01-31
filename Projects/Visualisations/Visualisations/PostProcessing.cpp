@@ -185,7 +185,10 @@ void PostProcessing::initBuffers()
 		/* Bind the colour buffer texture */
 		glBindTexture(GL_TEXTURE_2D, m_colourBuffers[i]);
 		/* Initialise an image on it, size of viewport */
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, colBufW, colBufH, 0, GL_RGB, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F,
+			m_lastFrameWidth - (i * (m_lastFrameWidth - colBufW)),
+			m_lastFrameHeight - (i * (m_lastFrameHeight - colBufH)),
+			0, GL_RGB, GL_FLOAT, NULL);
 		/* Usual interpolation parameters */
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -230,7 +233,10 @@ void PostProcessing::initBuffers()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_pingpongFBO[i]);
 		glBindTexture(GL_TEXTURE_2D, m_pingpongColorbuffers[i]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, pingPongW, pingPongH, 0, GL_RGB, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F,
+			m_lastFrameWidth - (i * (m_lastFrameWidth - pingPongW)),
+			m_lastFrameHeight - (i * (m_lastFrameHeight - pingPongH)),
+		0, GL_RGB, GL_FLOAT, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

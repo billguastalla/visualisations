@@ -5,7 +5,7 @@
 
 #include <GLFW/glfw3.h>
 
-Model_VideoRendering::Model_VideoRendering(std::shared_ptr<Settings_VideoRendering>& settings, GLFWwindow * window)
+Model_VideoRendering::Model_VideoRendering(std::shared_ptr<Settings_VideoRendering>& settings, GLFWwindow* window)
 	:
 	m_settings{ settings },
 	m_encoder{ new FFMPEG_Encoder{} },
@@ -16,7 +16,7 @@ Model_VideoRendering::Model_VideoRendering(std::shared_ptr<Settings_VideoRenderi
 	m_renderUI{ true },
 	m_recordAudio{ false },
 
-	m_window{window}
+	m_window{ window }
 {
 }
 
@@ -72,8 +72,7 @@ bool Model_VideoRendering::stop()
 			return true;
 		}
 	}
-	else
-		return false;
+	return false;
 }
 
 bool Model_VideoRendering::setFrameRate(int fr)

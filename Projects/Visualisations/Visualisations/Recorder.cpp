@@ -45,8 +45,6 @@ Recorder::~Recorder()
 	deinitialise();
 }
 
-
-
 bool Recorder::setSampleRate(const int& sRate)
 {
 	bool fail{ false };
@@ -117,8 +115,6 @@ PaError Recorder::initialise()
 			Buffer buf{ (size_t)m_framesPerPacket * m_packetsPerBuffer,m_inputParameters };
 			m_lockedBuffer = new LockableBuffer{ buf };
 
-			//if (m_inputParameters.device == paNoDevice)
-			//	;
 			m_state = RecorderState::Ready;
 		}
 	}

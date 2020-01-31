@@ -184,13 +184,13 @@ void Visualisation_Oscilloscope::renderFrame()
 		glBindBuffer(GL_ARRAY_BUFFER, m_timeVBO[c]);
 		glBindVertexArray(m_timeVAO[c]);
 		glEnableVertexAttribArray(0);
-		glDrawArrays(GL_POINTS, 0, m_timeElemCounts[c]);
+		glDrawArrays(GL_POINTS, 0, (GLsizei)m_timeElemCounts[c]);
 
 		m_freqShader->use();
 		glBindBuffer(GL_ARRAY_BUFFER, m_frequencyVBO[c]);
 		glBindVertexArray(m_frequencyVAO[c]);
 		glEnableVertexAttribArray(0);
-		glDrawArrays(GL_POINTS, 0, m_frequencyElemCounts[c]);
+		glDrawArrays(GL_POINTS, 0, (GLsizei)m_frequencyElemCounts[c]);
 	}
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -201,22 +201,22 @@ void Visualisation_Oscilloscope::activate()
 	m_timeShader = new Shader{ "../Shaders/Oscilloscope_TimeVertex.vs","../Shaders/Oscilloscope_TimeFragment.fs" };
 	m_freqShader = new Shader{ "../Shaders/Oscilloscope_FrequencyVertex.vs","../Shaders/Oscilloscope_FrequencyFragment.fs" };
 
-	glGenVertexArrays(m_frequencyVAO.size(), &m_frequencyVAO[0]);
-	glGenBuffers(m_frequencyVBO.size(), &m_frequencyVBO[0]);
+	glGenVertexArrays((GLsizei)m_frequencyVAO.size(), (GLuint*)&m_frequencyVAO[0]);
+	glGenBuffers((GLsizei)m_frequencyVBO.size(), (GLuint*)&m_frequencyVBO[0]);
 
-	glGenVertexArrays(m_timeVAO.size(), &m_timeVAO[0]);
-	glGenBuffers(m_timeVBO.size(), &m_timeVBO[0]);
+	glGenVertexArrays((GLsizei)m_timeVAO.size(), (GLuint*)&m_timeVAO[0]);
+	glGenBuffers((GLsizei)m_timeVBO.size(), (GLuint*)&m_timeVBO[0]);
 
 	m_active = true;
 }
 
 void Visualisation_Oscilloscope::deactivate()
 {
-	glDeleteVertexArrays(m_frequencyVAO.size(), &m_frequencyVAO[0]);
-	glDeleteBuffers(m_frequencyVBO.size(), &m_frequencyVBO[0]);
+	glDeleteVertexArrays((GLsizei)m_frequencyVAO.size(), (GLuint*)&m_frequencyVAO[0]);
+	glDeleteBuffers((GLsizei)m_frequencyVBO.size(), (GLuint*)&m_frequencyVBO[0]);
 
-	glDeleteVertexArrays(m_timeVAO.size(), &m_timeVAO[0]);
-	glDeleteBuffers(m_timeVBO.size(), &m_timeVBO[0]);
+	glDeleteVertexArrays((GLsizei)m_timeVAO.size(), (GLuint*)&m_timeVAO[0]);
+	glDeleteBuffers((GLsizei)m_timeVBO.size(), (GLuint*)&m_timeVBO[0]);
 
 	delete m_timeShader;
 	delete m_freqShader;

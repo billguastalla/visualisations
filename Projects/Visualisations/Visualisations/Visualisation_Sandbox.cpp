@@ -66,16 +66,16 @@ Visualisation_Sandbox::Visualisation_Sandbox()
 			MeshGenerator::generateSphere(20, m);
 			break;
 		case 1:
-			MeshGenerator::generateCylinder(20, 2.0, 0.3, m);
+			MeshGenerator::generateCylinder(20, 2.0f, 0.3f, m);
 			break;
 		case 2:
-			MeshGenerator::generateCone(20, 2.0, 0.5, m);
+			MeshGenerator::generateCone(20, 2.0f, 0.5f, m);
 			break;
 		case 3:
 			MeshGenerator::generateArrow(20,m);
 			break;
 		case 4:
-			MeshGenerator::generateTorus(20, 0.5, 2.0, m);
+			MeshGenerator::generateTorus(20, 0.5f, 2.0f, m);
 			break;
 		default:
 			break;

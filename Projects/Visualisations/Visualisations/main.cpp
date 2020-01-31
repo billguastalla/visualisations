@@ -36,6 +36,7 @@ static int mainInit(GLFWwindow * & window, int width, int height)
 		return -1;
 	}
 	glEnable(GL_MULTISAMPLE); /* MSAA */
+	return 0;
 }
 
 static void mainDeinit(GLFWwindow * window)
