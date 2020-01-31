@@ -128,8 +128,7 @@ PaError Recorder::initialise()
 
 PaError Recorder::deinitialise()
 {
-	PaError result{ paNoError };
-	result = stopMonitoring();
+	PaError result{ stopMonitoring() };
 	if (m_state == RecorderState::Ready)
 	{
 		result = Pa_Terminate();
