@@ -2,6 +2,14 @@
 #include "Mesh.h"
 #include "MeshGenerator.h"
 
+/* 
+	f: R^3 -> R^3
+	f(x,y,z) = ..
+
+	Problem is glm doesnt have function to rotate a matrix by a vector:
+						-> This is because matrices don't have the spherical symmetry of arrows.
+						-> need to calculate, 
+*/
 class VectorField
 {
 public:
@@ -43,10 +51,12 @@ public:
 			for (float y{ 0.0f }; y < m_drawDistance; y += m_cellSize)
 				for (float z{ 0.0f }; z < m_drawDistance; z += m_cellSize)
 				{
+
+					glm::mat4 m{ 1.0f };
 					m_orientations.push_back(
 						orientation{
 							glm::vec3{ x,y,z },
-							glm::mat4{ 1.0 }
+							m
 						}
 					);
 				}

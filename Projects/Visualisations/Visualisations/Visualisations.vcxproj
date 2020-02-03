@@ -216,6 +216,7 @@
     <ClInclude Include="..\Includes\imgui\stb_textedit.h" />
     <ClInclude Include="..\Includes\imgui\stb_truetype.h" />
     <ClInclude Include="AbstractRandomObject.h" />
+    <ClInclude Include="AudioReader.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Scene.h" />

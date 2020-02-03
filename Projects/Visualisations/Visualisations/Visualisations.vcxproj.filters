@@ -365,5 +365,8 @@
     <ClInclude Include="Visualisation_TreeField.h">
       <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
     </ClInclude>
+    <ClInclude Include="AudioReader.h">
+      <Filter>Header Files\Audio Modules</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

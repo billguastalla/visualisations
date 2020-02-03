@@ -11,6 +11,7 @@
 class Buffer
 {
 public:
+	Buffer(unsigned int channels, size_t frameCount);
 	Buffer(size_t totalFrames, PaStreamParameters params);
 
 	void insertFrames(int totalFrames, const void * inputBuffer, const PaStreamCallbackTimeInfo * timeInfo);

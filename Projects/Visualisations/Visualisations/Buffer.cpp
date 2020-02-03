@@ -2,6 +2,19 @@
 #include <math.h>
 #include <iostream>
 
+
+/* Float32, passed channels and frames.*/
+Buffer::Buffer(unsigned int channels, size_t frameCount)
+	:
+	m_channelCount{ channels},
+	m_format{ paFloat32 },
+	m_maxTotalFrames{ frameCount },
+	m_channelData{}
+{
+	clear(frameCount);
+}
+
+
 Buffer::Buffer(size_t totalFrames, PaStreamParameters params)
 	:
 	m_channelCount{ (unsigned)params.channelCount },
