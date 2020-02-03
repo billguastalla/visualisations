@@ -170,7 +170,7 @@ FFMPEG_Encoder::StartResult FFMPEG_Encoder::ffmpeg_encoder_start(const char* fil
 			fprintf(stderr, "Could not allocate video codec context\n");
 			return StartResult::ContextAllocationFailed; // No cleanup
 		}
-		m_AVCodecContext->bit_rate = 4000000;
+		m_AVCodecContext->bit_rate = 20000000;
 		m_AVCodecContext->width = width;
 		m_AVCodecContext->height = height;
 		m_AVCodecContext->time_base.num = 1;

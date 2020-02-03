@@ -21,7 +21,7 @@ Window_VideoRendering::~Window_VideoRendering()
 
 void Window_VideoRendering::draw()
 {
-	ImGui::Begin("Video Rendering");
+	ImGui::Begin(windowTitle().c_str());
 
 	/*	Should include:
 		-> Output file name.

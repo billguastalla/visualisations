@@ -7,21 +7,21 @@
 #include "Model_AudioInterface.h"
 #include "Settings_AudioInterface.h"
 
-Window_AudioInterface::Window_AudioInterface(std::shared_ptr<Model_AudioInterface> & audioInterface)
+Window_AVIO::Window_AVIO(std::shared_ptr<Model_AudioInterface> & audioInterface)
 	: m_audioInterface{ audioInterface },
 	m_recorderUI{ new RecorderUI{audioInterface->recorder()} }
 {
 }
 
-
-Window_AudioInterface::~Window_AudioInterface()
+Window_AVIO::~Window_AVIO()
 {
 }
 
-void Window_AudioInterface::draw()
+void Window_AVIO::draw()
 {
+	ImGui::Begin(windowTitle().c_str());
+
 	static float f = 0.0f;
-	ImGui::Begin("Audio Properties");
 
 	m_recorderUI->draw();
 

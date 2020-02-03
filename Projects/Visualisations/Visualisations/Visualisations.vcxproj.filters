@@ -100,6 +100,9 @@
     <Filter Include="Header Files\Graphics\Visualisations\Implementations\Tree">
       <UniqueIdentifier>{6ce35155-9c20-4c21-9b92-5b9c94fb56a6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Audio Modules\Input">
+      <UniqueIdentifier>{def283ac-4e7f-4a6f-9f39-14d27b0b3e42}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Recorder.cpp">
@@ -228,9 +231,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Buffer.h">
-      <Filter>Header Files\Audio Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="Recorder.h">
       <Filter>Header Files\Audio Modules</Filter>
     </ClInclude>
     <ClInclude Include="..\Includes\imgui\imgui.h">
@@ -366,7 +366,10 @@
       <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
     </ClInclude>
     <ClInclude Include="AudioReader.h">
-      <Filter>Header Files\Audio Modules</Filter>
+      <Filter>Header Files\Audio Modules\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Recorder.h">
+      <Filter>Header Files\Audio Modules\Input</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

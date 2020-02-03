@@ -46,7 +46,7 @@ void Program::initialise()
 
 	/* Set up window instances */
 	Window_Abstract* videoRenderWindow = new Window_VideoRendering{ m_modelVideoRendering };
-	Window_Abstract* audioInterfaceWindow = new Window_AudioInterface{ m_modelAudioInterface };
+	Window_Abstract* audioInterfaceWindow = new Window_AVIO{ m_modelAudioInterface };
 	Window_Abstract* visualisationWindow = new Window_Visualisation{ m_modelVisualisation };
 
 	m_interface.addWindow(videoRenderWindow);

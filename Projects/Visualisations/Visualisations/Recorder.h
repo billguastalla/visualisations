@@ -2,7 +2,6 @@
 #include "Buffer.h"
 
 #include <portaudio/portaudio.h>
-#include <GIST\Gist.h>
 
 class Recorder
 {
