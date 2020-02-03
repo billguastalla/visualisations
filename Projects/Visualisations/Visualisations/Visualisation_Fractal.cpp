@@ -29,24 +29,43 @@ Visualisation_Fractal::Visualisation_Fractal()
 	m_objectShader{ nullptr },
 	m_lampShader{ nullptr },
 
+	m_cubeVAO{ 0 },
+	m_lightVAO{ 0 },
+	m_cubeVBO{ 0 },
+	m_lineStripVAO{ 0 },
+	m_lineStripVBO{ 0 },
+	m_lineStripShader{ nullptr },
+
 	m_mandelbulb{},
 	m_mandelbulbRes{ 32 },
 	m_mandelbulbN{ 8 },
 	m_mandelbulbInitialVector{ 0.3,0.2,0.5 },
-	
-	m_sphere{}
+
+	m_sphere{},
+
+	m_graph{},
+	m_state{ FractalSet::Mandelbulb },
+	m_bifurDim{ 256 },
+	m_bifurX_n{ 1.0 },
+	m_bifurRbegin{ -2.0 },
+	m_bifurREnd{ 4.0 },
+	m_bifurInitialX{ 0.5 },
+
+	m_rotation{0.0,0.0,0.0,0.0}
 {
 }
 
 void Visualisation_Fractal::activate()
 {
-	m_objectShader = new Shader{ "../Shaders/Mesh_Vertex.vs", "../Shaders/Mesh_Fragment.fs" };
+	m_objectShader = new Shader{ "../Shaders/Cubes_Vertex.vs", "../Shaders/Cubes_ObjectFragment.fs" };
 	m_lineStripShader = new Shader{ "../Shaders/Fractal_Linestrip_Vertex.vs", "../Shaders/Fractal_Linestrip_Fragment.fs" };
 	m_lampShader = new Shader{ "../Shaders/Cubes_Vertex.vs", "../Shaders/Cubes_LampFragment.fs" };
 
 	m_mandelbulb = MeshGenerator::generateMandelbulb(m_mandelbulbRes, m_mandelbulbN, m_mandelbulbInitialVector);
 	MeshGenerator::generateSphere(4, m_sphere);
 	m_sphere.scale(glm::vec3{ 0.004, 0.004, 0.004 });
+
+	bifurcation();
 
 	m_active = true;
 }
@@ -80,26 +99,46 @@ void Visualisation_Fractal::renderFrame()
 
 	m_objectShader->use();
 	m_objectShader->setVec3("lightColour", glm::vec3{ 1.0f,0.5f,0.31f });
-	m_objectShader->setVec3("objectColour", glm::vec3{ 1.0f,0.5f,0.31f });
+	m_objectShader->setVec3("objectColour", glm::vec3{ 0.6f,0.3f,0.21f });
 	glm::mat4 projection = glm::perspective(glm::radians(m_camera.m_zoom), (float)1920 / (float)1080, 0.1f, 100.0f);
 	m_objectShader->setMat4("projection", projection);
 
 	glm::mat4 view = m_camera.GetViewMatrix();
 	m_objectShader->setMat4("view", view);
 	glm::mat4 lightModel{ 1.0f };
-	m_lightPos = glm::vec3(10 * sin(glfwGetTime()), 10 * cos(glfwGetTime()), 10 * sin(glfwGetTime()));
+	m_lightPos = glm::vec3(5 * sin(glfwGetTime()), 5 * cos(glfwGetTime()), 5 * sin(glfwGetTime()));
 	lightModel = glm::translate(lightModel, m_lightPos);
 	lightModel = glm::scale(lightModel, glm::vec3{ 0.2f });
 	m_objectShader->setVec3("lightPos", m_lightPos);
 	m_objectShader->setVec3("viewPos", m_camera.m_position);
 
-	for (auto i = m_mandelbulb.begin(); i != m_mandelbulb.end(); ++i)
+	switch (m_state)
 	{
-		glm::mat4 mod{ 1.0 };
-		mod = glm::translate(mod, *i);
-		m_objectShader->setMat4("model",mod);
-		m_sphere.draw(m_objectShader);
+	case FractalSet::BifurcationMap:
+	{
+		glm::mat4 mod{ m_rotation };
+		//mod = glm::rotate(mod, 3.141f, glm::vec3{ 0,1,0 });
+		//mod = glm::rotate(mod, 3.141f, glm::vec3{ 1,0,0 });
+		//mod = m_rotation * mod;
+		mod = glm::translate(mod, glm::vec3{ 0.0f,3.0f,0.0f });
+		m_objectShader->setMat4("model", mod);
+		m_graph.draw(m_objectShader);
+		break;
 	}
+	case FractalSet::Mandelbulb:
+	default:
+	{
+		for (auto i = m_mandelbulb.begin(); i != m_mandelbulb.end(); ++i)
+		{
+			glm::mat4 mod{ 1.0 };
+			mod = glm::translate(mod, *i);
+			m_objectShader->setMat4("model", mod);
+			m_sphere.draw(m_objectShader);
+		}
+		break;
+	}
+	}
+
 
 	m_lampShader->use();
 	m_lampShader->setMat4("projection", projection);
@@ -109,17 +148,86 @@ void Visualisation_Fractal::renderFrame()
 
 void Visualisation_Fractal::drawInterface()
 {
-	float n = m_mandelbulbN;
-	int res = m_mandelbulbRes;
-	glm::vec3 ini = m_mandelbulbInitialVector;
 
-	ImGui::SliderFloat("N", &m_mandelbulbN, 1.0, 16.0);
-	ImGui::SliderInt("Resolution", &m_mandelbulbRes, 1, 800000);
-	ImGui::SliderFloat3("Initial", (float*)& m_mandelbulbInitialVector, 0.0, 1.0);
+	int setState = (int)m_state;
+	bool s = (setState ==  (int)FractalSet::BifurcationMap);
+	ImGui::Checkbox("Bifur", &s);
+	if (s)
+		setState = (int)FractalSet::BifurcationMap;
+	else
+		setState = (int)FractalSet::Mandelbulb;
 
-	if(n != m_mandelbulbN || res !=  m_mandelbulbRes || ini != m_mandelbulbInitialVector)
-		m_mandelbulb = MeshGenerator::generateMandelbulb(m_mandelbulbRes, m_mandelbulbN, m_mandelbulbInitialVector);
+	switch ((FractalSet)setState)
+	{
+	case FractalSet::BifurcationMap:
+	{
+		int dim{ m_bifurDim };
+		float rBegin{ (float)m_bifurRbegin }, rEnd{ (float)m_bifurREnd }, initialX{ (float)m_bifurInitialX };
+		ImGui::SliderFloat("Initial X", &initialX, 0.0f, 5.0f);
+		ImGui::SliderFloat("R Begin", &rBegin, -30.0f, 5.0f);
+		ImGui::SliderFloat("R End", &rEnd, 0.0f, 30.0f);
+		ImGui::SliderInt("Width", &dim, 16, 512);
+
+		ImGui::SliderFloat3("Rotation Axis", &m_rotation[0], 0.0f, 1.0f);
+		ImGui::SliderFloat("Rotation Angle", &m_rotation[3], 0.0f, 360.0f);
+
+		if (
+			rBegin != (float)m_bifurRbegin ||
+			rEnd != (float)m_bifurREnd ||
+			initialX != (float)m_bifurInitialX ||
+			dim != m_bifurDim
+			)
+		{
+			m_bifurRbegin = (double)rBegin;
+			m_bifurREnd = (double)rEnd;
+			m_bifurInitialX = (double)initialX;
+			m_bifurDim = dim;
+			bifurcation();
+		}
+		break;
+	}
+	case FractalSet::Mandelbulb:
+	{
+		float n = m_mandelbulbN;
+		int res = m_mandelbulbRes;
+		glm::vec3 ini = m_mandelbulbInitialVector;
+
+		ImGui::SliderFloat("N", &m_mandelbulbN, 1.0, 16.0);
+		ImGui::SliderInt("Resolution", &m_mandelbulbRes, 1, 800000);
+		ImGui::SliderFloat3("Initial", (float*)&m_mandelbulbInitialVector, 0.0, 1.0);
+
+		if (n != m_mandelbulbN || res != m_mandelbulbRes || ini != m_mandelbulbInitialVector)
+			m_mandelbulb = MeshGenerator::generateMandelbulb(m_mandelbulbRes, m_mandelbulbN, m_mandelbulbInitialVector);
+		break;
+	}
+	default:
+		break;
+	}
+
+	m_state = (FractalSet)setState;
 }
+
+void Visualisation_Fractal::bifurcation()
+{
+	/* Bifurcation diagram: */
+	/* x_n = r * x_n-1 (1 - x_n-1) */
+	// Graph: x-axis: r, y-axis: x_n in lim n -> inf. 
+	/* R from -2 to 4 */
+	m_bifur.clear();
+	double bifurIncrement = (m_bifurREnd - m_bifurRbegin) / (double)m_bifurDim;
+	for (double r = m_bifurRbegin; r < m_bifurREnd; r += bifurIncrement)
+	{
+		m_bifurX_n = m_bifurInitialX;
+		for (int n= 0; n < m_bifurDim; ++n)
+			m_bifur.push_back((float)(m_bifurX_n = (r * m_bifurX_n * (1 - m_bifurX_n))));
+	}
+	MeshGenerator::generateGraph(m_bifurDim - 1, m_bifurDim - 1, m_graph, m_bifur);
+
+	m_graph.scale(glm::vec3{(m_bifurREnd - m_bifurRbegin),1.0f,1.0f});
+}
+
+
+
 //// Taken from: https://rosettacode.org/wiki/Julia_set#C.2B.2B
 //int Visualisation_Fractal::inSet(std::complex<long double> z, std::complex<long double> c)
 //{
