@@ -187,8 +187,6 @@
     <ClCompile Include="Visualisation.cpp" />
     <ClCompile Include="Visualisation_Fractal.cpp" />
     <ClCompile Include="Visualisation_GameOfLife.cpp" />
-    <ClCompile Include="Visualisation_GOL\GameOfLife_Element.cpp" />
-    <ClCompile Include="Visualisation_GOL\GameOfLife_ElementList.cpp" />
     <ClCompile Include="Visualisation_GOL\GameOfLife_Game.cpp" />
     <ClCompile Include="Visualisation_GOL\GameOfLife_Grid.cpp" />
     <ClCompile Include="Visualisation_PointClouds.cpp" />

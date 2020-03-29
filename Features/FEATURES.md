@@ -173,6 +173,20 @@ Load multiple audio files and map them to different buffers.
 This way visualisations can contain multiple audio streams so that visualisations can be affected
 in different ways by different tracks.
 
+## Audio Feature Identification
+
+Identify some mesoscopic features of audio, specific to audio files.
+- Search for changes in audio texture:
+	- Build a fingerprint by searching amplitude-time values and look for periodicity, over milliseconds.
+		- It should be possible to build a 'graph' of fingerprints this way, limiting the number of unique fingerprints on each length scale.
+		Over a given length scale, for each element of audio, could evaluate:
+			- The net amplitude. The number of times zero was crossed.
+		To determine periodicity, could perform auto-correlation on different length scales.
+			- minimum for correlation at a given scale would identify sub-branch. This might not hold for all the audio though.
+				- so a given node could have a start/end time.
+			- For noise however, the algorithm will not perform well. An FFT might be able to determine whether to explore the area in the first place.
+- Consider 'mipmapping' the audio samples to do this faster.
+
 # Video Rendering Features
 
 ## Export Codecs and Formats

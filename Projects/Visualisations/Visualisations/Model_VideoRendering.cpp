@@ -10,7 +10,7 @@ Model_VideoRendering::Model_VideoRendering(std::shared_ptr<Settings_VideoRenderi
 	m_settings{ settings },
 	m_encoder{ new FFMPEG_Encoder{} },
 	m_recordState{ RecordState::Stopped },
-	m_frameRate{ 30 },
+	m_frameRate{ 60 },
 	m_frameCount{ 0 },
 	m_fileName{ "VideoRenderModule.mpg" },
 	m_renderUI{ true },

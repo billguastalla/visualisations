@@ -192,12 +192,6 @@
     <ClCompile Include="Visualisation_Sandbox.cpp">
       <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
     </ClCompile>
-    <ClCompile Include="Visualisation_GOL\GameOfLife_Element.cpp">
-      <Filter>Source Files\Graphics\Engine\GameOfLife</Filter>
-    </ClCompile>
-    <ClCompile Include="Visualisation_GOL\GameOfLife_ElementList.cpp">
-      <Filter>Source Files\Graphics\Engine\GameOfLife</Filter>
-    </ClCompile>
     <ClCompile Include="Visualisation_GOL\GameOfLife_Game.cpp">
       <Filter>Source Files\Graphics\Engine\GameOfLife</Filter>
     </ClCompile>

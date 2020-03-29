@@ -25,9 +25,15 @@ class Game
 public:
 
 	Game(const std::vector<int> & dimensions);
-	Grid * currentGrid(){return m_current;}
+	Grid & currentGrid() {return m_current;}
 	std::vector<std::pair<bool,bool>> & getRules(){ return m_rules; }
-	void setRule(int row, std::pair<bool,bool> rule);
+
+
+	void setRule(int row, std::pair<bool, bool> rule);
+	void setRules(const std::vector<std::pair<bool, bool>>& rules);
+	
+	std::vector<int> dimensions() const { return m_current.dimensions(); }
+	void setDimensions(const std::vector<int>& dimensions);
 
 	void nextTurn();
 
@@ -36,8 +42,8 @@ public:
 private:
 	std::vector<int> m_activeElements;
 
-	Grid * m_original;
-	Grid * m_current;
+	Grid m_original;
+	Grid m_current;
 
 	std::vector<std::pair<bool,bool>> m_rules;
 };

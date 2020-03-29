@@ -9,41 +9,31 @@
 #include <thread>
 #include <random>
 
-Game::Game(const std::vector<int> & dimensions)
+Game::Game(const std::vector<int>& dimensions)
+	:
+	m_original{dimensions},
+	m_current{m_original}
 {
-	m_original = new Grid(dimensions);
-	m_current = new Grid(m_original);
-
 	m_rules = std::vector<std::pair<bool, bool>>();
-	for (int i = 0; i < m_current->getNeighbourCount(); ++i)
-	{
-		std::pair<bool, bool> rule;
-		rule.first = false;
-		rule.second = false;
-		m_rules.push_back(rule);
-	}
+	m_rules.resize(m_current.getNeighbourCount(), std::pair<bool, bool>{ false,false });
 
-	// Initially, all elements are active.
-	for (int index = 0; index < m_current->totalElements(); ++index)
-	{
+	for (int index = 0; index < m_current.totalElements(); ++index)
 		m_activeElements.push_back(index);
-	}
 }
 
 void Game::nextTurn()
 {
-	*m_original = *m_current;
+	m_original = m_current;
 
 	auto calcThread = [this](int start, int end) {
 		for (int index = start; index < end; ++index)
 		{
-			Element * currentElement = m_current->operator[](index);
-			Element * originalElement = m_original->operator[](index);
+			Element* currentElement = m_current[index];
+			Element* originalElement = m_original[index];
 			int aliveNeighbours = 0;
-			// Start at neighbour = 1 because neighbour 0 is the element at that index rather than its neighbours.
-			for (unsigned int neighbour = 1; neighbour < originalElement->neighbours->size(); ++neighbour)
+			for (unsigned int neighbour = 1; neighbour < originalElement->neighbours.size(); ++neighbour)
 			{
-				if (originalElement->neighbours->operator[](neighbour)->alive)
+				if (originalElement->neighbours[neighbour]->alive)
 				{
 					++aliveNeighbours;
 				}
@@ -54,7 +44,7 @@ void Game::nextTurn()
 				currentElement->alive = m_rules.at(aliveNeighbours).second;
 		}};
 
-	size_t total = currentGrid()->totalElements();
+	size_t total = currentGrid().totalElements();
 	int endOne = (int)std::floor((float)total / 4);
 	int endTwo = (int)std::floor((float)total * 2 / 4);
 	int endThree = (int)std::floor((float)total * 3 / 4);
@@ -69,17 +59,9 @@ void Game::nextTurn()
 	four.join();
 }
 
-// Need to think about this thoroughly (UNFINISHED)
-/*
-	1. Equality operator for element's neighbours.
-	2. Maintained list of active elements.
-	3. Highest efficiency ordered insertion operator into list..
-	4. Likewise for removeAt()..
-	5. If neighbours identical -> find & remove from list. If neighbours different.. add to list along with all neighbours..
-*/
 void Game::nextTurnOptimised()
 {
-	*m_original = *m_current;
+	m_original = m_current;
 }
 
 void Game::randomRuleset()
@@ -89,7 +71,7 @@ void Game::randomRuleset()
 	MetaDistribution<double> metaDistLeft{ startingDist(r),1.0,1.0,1.0 };
 	MetaDistribution<double> metaDistRight{ startingDist(r),1.0,1.0,1.0 };
 
-	double neighbours{ (double)m_current->getNeighbourCount() };
+	double neighbours{ (double)m_current.getNeighbourCount() };
 	double current{ 0.0 };
 
 	std::normal_distribution<double> distLeft{ metaDistLeft.createDistribution() };
@@ -107,4 +89,19 @@ void Game::randomRuleset()
 void Game::setRule(int row, std::pair<bool, bool> rule)
 {
 	m_rules[row] = rule;
+}
+
+void Game::setRules(const std::vector<std::pair<bool, bool>>& rules)
+{
+	m_rules = rules;
+}
+
+void Game::setDimensions(const std::vector<int>& dimensions)
+{
+	m_original = Grid{ dimensions };
+	m_current = Grid{ m_original };
+	m_activeElements.clear();
+	for (int index = 0; index < m_current.totalElements(); ++index)
+		m_activeElements.push_back(index);
+
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "Visualisation.h"
 #include "Camera.h"
+#include "Mesh.h"
 
 #include <deque>
 #include <memory>
@@ -20,17 +21,17 @@ public:
 	/* Free callbacks, shaders, vertex objects */
 	void deactivate() override;
 
-	void processSamples(const Buffer & buf, unsigned samples) override;
+	void processSamples(const Buffer& buf, unsigned samples) override;
 	void renderFrame() override;
 	std::string titleString() override { return "N-D Game of Life"; };
 
 
 	void drawInterface() override;
 private:
-	unsigned int m_cubeVAO, m_lightVAO, m_cubeVBO;
+	Mesh m_cube;
 
-	Shader * m_objectShader;
-	Shader * m_lampShader;
+	Shader* m_objectShader;
+	Shader* m_lampShader;
 
 	std::vector<float> m_vertices;
 	std::vector<glm::vec3> m_cubePositions;
@@ -43,4 +44,8 @@ private:
 
 	int m_frameLoop;
 	std::vector<std::vector<std::vector<int>>> m_coordsHistory;
+
+	float m_spacing;
+	int m_reinitExtent;
+	int m_frameUpdateRate;
 };

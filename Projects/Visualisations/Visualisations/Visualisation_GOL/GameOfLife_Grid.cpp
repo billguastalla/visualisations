@@ -1,24 +1,62 @@
 #include "GameOfLife_Grid.h"
+
 #include <iostream>
 #include <string>
 #include <functional>
+//
+//
+//struct elems /* multiples of 64 only */
+//{
+//	/*
+//		1. Build neighbourhood
+//	*/
+//	elems buildHeatmap()
+//	{
+//		std::vector<uint8_t> result;
+//		result.resize(m_elems.size() * 64u,0u);
+//		for (int i = 0; i < result.size(); ++i)
+//		{
+//			std::div_t forward{ i + 1,64 };
+//			std::div_t backward{ i - 1,64 };
+//			result[i] += m_elems[d.quot] << d.rem;
+//		}
+//
+//	}
+//	std::vector<int64_t> m_elems;
+//	std::vector<std::div_t> m_neighbours;
+//
+//
+//	std::vector<int> dimensions;
+//};
+//
+//struct gm
+//{
+//	elems m_cells;
+//	elems m_heatmap;
+//};
 
-Grid::Grid(const std::vector<int> & dimensions, NeighbourType neighbourType)
+
+
+
+Grid::Grid(const std::vector<int> & dimensions, Grid::NeighbourType neighbourType)
+	:
+	m_dimensions{dimensions},
+	m_neighbourType{neighbourType},
+
+	m_elementsToEvaluateNextTurn{},
+	m_grid{},
+	m_gridEdges{},
+	m_neighbourCount{},
+	m_timer{clock()}
 {
-	m_dimensions = dimensions;
-	m_neighbourType = neighbourType;
-
-	m_timer = clock();
 
 	int numberOfElements = indexDistance(dimensions.size());
-	m_grid = ElementList(numberOfElements);
+	m_grid.resize(numberOfElements);
 	for (int index = 0; index < numberOfElements; ++index)
 	{
-		// Random assignment of values
 		m_grid[index].active = true;
-		m_grid[index].alive = false;//((rand()%2)==1);
+		m_grid[index].alive = false;
 
-		// This is for debugging and is temporary:
 		m_grid[index].index = index;
 	}
 
@@ -26,13 +64,9 @@ Grid::Grid(const std::vector<int> & dimensions, NeighbourType neighbourType)
 	std::cout << "\tGrid - Making elements and setting them to alive/active took: " << (double)m_timer / (double)CLOCKS_PER_SEC << "s" << std::endl;
 	m_timer = clock();
 
-
-	// Here, we get the set of edges for each element.
-	m_gridEdges = std::vector<Edges>(numberOfElements);
+	m_gridEdges.resize(numberOfElements);
 	for (int index = 0; index < numberOfElements; ++index)
-	{
 		m_gridEdges[index] = getEdges(index);
-	}
 
 	m_timer = clock() - m_timer;
 	std::cout << "\tGrid - Calculating the edges for each element took: " << (double)m_timer / (double)CLOCKS_PER_SEC << "s" << std::endl;
@@ -49,8 +83,6 @@ Grid::Grid(const std::vector<int> & dimensions, NeighbourType neighbourType)
 	m_timer = clock() - m_timer;
 	std::cout << "\tGrid - Assigning neighbours for each element took: " << (double)m_timer / (double)CLOCKS_PER_SEC << "s" << std::endl;
 
-	// CLEAR edges for speed.
-	//m_gridEdges.clear();
 }
 
 Grid::Grid(Grid * other)
@@ -73,18 +105,18 @@ void Grid::allocateNeighbours()
 		// Warning: this is a neighbourhood system where neighbours include themselves..
 		m_neighbourCount = pow(3, getNoOfDimensions());
 		for (int index = 0; index < totalElements(); ++index)
-			m_grid[index].neighbours = new std::vector<Element*>(getMooreNeighbours(index, noOfDimensions));
+			m_grid[index].neighbours = getMooreNeighbours(index, noOfDimensions);
 		break;
 	case NeighbourType::Plus:
 		// Warning: this is a neighbourhood system where neighbours include themselves..
 		m_neighbourCount = (2 * getNoOfDimensions()) + 1;
 		for (int index = 0; index < totalElements(); ++index)
-			m_grid[index].neighbours = new std::vector<Element*>(getPlusNeighbours(index, noOfDimensions));
+			m_grid[index].neighbours = getPlusNeighbours(index, noOfDimensions);
 		break;
 	case NeighbourType::Diamond:
 		m_neighbourCount = pow(2, getNoOfDimensions());
 		for (int index = 0; index < totalElements(); ++index)
-			m_grid[index].neighbours = new std::vector<Element*>(getDiamondNeighbours(index, noOfDimensions));
+			m_grid[index].neighbours = getDiamondNeighbours(index, noOfDimensions);
 		break;
 	default:
 		break;
@@ -99,6 +131,7 @@ Edges Grid::getEdges(int index)
 	std::vector<std::div_t> edgeRemainders;
 	Edges edges;
 	int dividedIndex = index;
+
 	for (int axis = 0; axis < m_dimensions.size(); ++axis)
 	{
 		edgeRemainders.push_back(std::div(dividedIndex, m_dimensions[axis]));
@@ -129,7 +162,9 @@ Edges Grid::getEdges(int index)
 	return edges;
 }
 #include <random>
-void Grid::insertPrimitive()
+
+/* WARNING: This is O(N^N) */
+void Grid::insertPrimitive(int extent)
 {
 
 	/* General idea here is to walk along neighbourhoods of neighbourhoods of neighbourhoods etc, randomly enabling elements.
@@ -177,7 +212,6 @@ void Grid::insertPrimitive()
 
 	std::normal_distribution<double> dist{ -0.5,1.0 };
 	std::mt19937_64 mt;
-	int d = 2;
 
 	size_t s = m_grid.size();
 
@@ -187,7 +221,7 @@ void Grid::insertPrimitive()
 	int middleIdx{ index(middleCoords) };
 	Element * e =  (middleIdx >= 0 && middleIdx < m_grid.size()) ? &m_grid[middleIdx] : &m_grid[0];
 	std::vector<Element*> el{ e };
-	el = buildNeighbourSeq(d, el, dist, mt);
+	el = buildNeighbourSeq(extent, el, dist, mt);
 
 
 	//		std::vector<Element*> el = getMooreNeighbours(maxSize / 2u, m_dimensions.size());
@@ -196,7 +230,7 @@ void Grid::insertPrimitive()
 std::vector<Element*> Grid::getMooreNeighbours(int index, int dimensions)
 {
 	if (dimensions < 0)
-		return std::vector<Element*>();
+		return std::vector<Element*>{};
 
 	std::vector<Element*> neighbouringCells;
 	// Add the element at the current index
@@ -230,7 +264,7 @@ std::vector<Element*> Grid::getPlusNeighbours(int index, int dimensions)
 std::vector<Element*> Grid::getDiamondNeighbours(int index, int dimensions)
 {
 	if (dimensions < 0)
-		return std::vector<Element*>();
+		return std::vector<Element*>{};
 
 	std::vector<Element*> neighbouringCells;
 	// Add the element at the current index
@@ -247,18 +281,6 @@ std::vector<Element*> Grid::getDiamondNeighbours(int index, int dimensions)
 	return neighbouringCells;
 }
 
-std::vector<Element*> Grid::getStraightAxisNeighbours(int index, int axis)
-{
-	std::vector<Element*> neighbours;
-	return neighbours;
-}
-
-std::vector<Element*> Grid::getDiagonalAxisNeighbours(int index, int axis)
-{
-	std::vector<Element*> neighbours;
-	return neighbours;
-}
-
 // i.e. in 3d if you want the adjacent element that is +1 in the z direction, the number of elements away is length*width away.
 int Grid::indexDistance(int dimensions)
 {
@@ -272,34 +294,28 @@ int Grid::index(std::vector<int> coords)
 {
 	int index = 0;
 	for (int axis = 0; axis < coords.size(); ++axis)
-	{
-		//qDebug() << "Coordinate of axis: " << axis << "\t:\t" << coords[axis] << "\n";
 		index += coords[axis] * indexDistance(axis);
-	}
-	//qDebug() << "INDEX : " << index << "\n";
 	return index;
 }
 
-std::vector<int> Grid::coordinates(int index)
+std::vector<int> Grid::coordinates(int index) const
 {
 	std::vector<int> coordList;
 	std::div_t indexRemainder;
 	int divisionResult = index;
-	//qDebug() << "INDEX : " << index << "\n";
 	for (int axis = 0; axis < m_dimensions.size(); ++axis)
 	{
 		indexRemainder = std::div(divisionResult, m_dimensions[axis]);
 		divisionResult = indexRemainder.quot;
 		coordList.push_back(indexRemainder.rem);
-		//qDebug() << "Coordinate of axis: " << axis << "\t:\t" << indexRemainder.rem << "\n";
 	}
 	return coordList;
 }
 
-std::vector<std::vector<int>> Grid::aliveCoords()
+std::vector<std::vector<int>> Grid::aliveCoords() const
 {
 	std::vector<std::vector<int>> result{};
-	for (ElementList::iterator i = m_grid.begin(); i != m_grid.end(); ++i)
+	for (auto i = m_grid.begin(); i != m_grid.end(); ++i)
 		if (i->alive)
 			result.push_back(coordinates(i->index));
 	return result;
@@ -308,17 +324,13 @@ std::vector<std::vector<int>> Grid::aliveCoords()
 void Grid::clear()
 {
 	for (long int i = 0; i < totalElements(); ++i)
-	{
-		m_grid[i].alive = 0;
-	}
+		m_grid[i].alive = false;
 }
 
 void Grid::setRandAlive(int probablity)
 {
 	for (long int i = 0; i < totalElements(); ++i)
-	{
 		m_grid[i].alive = ((rand() % probablity) == 0);
-	}
 }
 
 void Grid::addCell(int type)

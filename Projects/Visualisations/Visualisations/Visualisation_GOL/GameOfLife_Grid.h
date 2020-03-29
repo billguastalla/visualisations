@@ -1,10 +1,7 @@
 #pragma once
-#include "GameOfLife_ElementList.h"
-
+#include "GameOfLife_Element.h"
 #include <vector>
 #include <ctime>
-
-struct Element;
 
 struct Edges
 {
@@ -28,7 +25,7 @@ struct Edges
 class Grid
 {
 public:
-	enum NeighbourType
+	enum class NeighbourType
 	{
 		Moore,
 		Plus,
@@ -46,10 +43,38 @@ public:
 
 	Element* operator[](int index) { return &m_grid[index]; }
 
-	const std::vector<int>& dimensions() { return m_dimensions; }
+	const std::vector<int>& dimensions() const { return m_dimensions; }
+
+
+	//std::vector<int> getMooreNeighbours(int index)
+	//{
+	//	int size = m_grid.size();
+	//	
+	//	std::vector<int> result{};
+
+	//	// Find if the current dimension we're working in is an axis that the current element is at the edge of.
+	//	for (int axis = 0; axis < dimensions; ++axis)
+	//	{
+	//		std::vector<int> topNeighbours = getMooreNeighbours(m_gridEdges[index].axisIndices[axis].sideIndex.top, m_gridEdges[index].axisIndices[axis].axis);
+	//		std::vector<int> bottomNeighbours = getMooreNeighbours(m_gridEdges[index].axisIndices[axis].sideIndex.bottom, m_gridEdges[index].axisIndices[axis].axis);
+	//		neighbouringCells.insert(neighbouringCells.end(), topNeighbours.begin(), topNeighbours.end());
+	//		neighbouringCells.insert(neighbouringCells.end(), bottomNeighbours.begin(), bottomNeighbours.end());
+	//	}
+
+	//}
+	Edges getEdges(int index);
+
+	/* */
+	void insertPrimitive(int extent = 2);
+
+	std::vector<Element*> getMooreNeighbours(int index, int dimensions);
+	std::vector<Element*> getPlusNeighbours(int index, int dimensions);
+	std::vector<Element*> getDiamondNeighbours(int index, int dimensions);
+
+
 private:
 	// The actual list of elements
-	ElementList m_grid;
+	std::vector<Element> m_grid;
 	// The array of lengths in each dimension
 	std::vector<int> m_dimensions;
 
@@ -64,22 +89,6 @@ private:
 
 	std::vector<Edges> m_gridEdges;
 
-	// TEMPORARILY PUBLIC (haha)
-public:
-	Edges getEdges(int index);
-
-	/* */
-	void insertPrimitive();
-
-	std::vector<Element*> getMooreNeighbours(int index, int dimensions);
-	std::vector<Element*> getPlusNeighbours(int index, int dimensions);
-	std::vector<Element*> getDiamondNeighbours(int index, int dimensions);
-
-	std::vector<Element*> getStraightAxisNeighbours(int index, int AXIS);
-	std::vector<Element*> getDiagonalAxisNeighbours(int index, int AXIS);
-
-	void modifyIndexAtEdge(int& index, const int& dimension, const bool topOrBottom);
-
 private:
 	// This is the index difference between adjacent elements on a certain axis.
 	int indexDistance(int dimensions);
@@ -87,8 +96,8 @@ private:
 public:
 	// Not sure how to use these yet but just deduced from general array formula, and may be useful to be able to move between them..
 	int index(std::vector<int> coords);
-	std::vector<int> coordinates(int index);
-	std::vector<std::vector<int>> aliveCoords();
+	std::vector<int> coordinates(int index) const;
+	std::vector<std::vector<int>> aliveCoords() const;
 
 	void clear();
 	void setRandAlive(int probability);

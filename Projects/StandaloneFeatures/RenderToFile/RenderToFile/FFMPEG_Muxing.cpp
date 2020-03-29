@@ -12,6 +12,7 @@
 		-> Top level interface:
 			-> Add audio stream
 			-> Add video stream
+				-> Each: Add audio/video data source.
 
 		Streams:
 			-> Allow external input of audio via interface.
@@ -284,8 +285,8 @@ void FFMPEG_Muxer::reportError(std::string description, int errorNum)
 	std::cout << "FFMPEG Muxing: " << description;
 	if (errorNum != 0)
 	{
-		char errorStr[255];
-		av_make_error_string(errorStr, 255, errorNum);
+		char errorStr[512];
+		av_make_error_string(errorStr, 512, errorNum);
 		std::string error{ errorStr };
 		std::cout
 			<< "\n\tAPI Says:\t" << error

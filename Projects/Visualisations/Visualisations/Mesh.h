@@ -131,9 +131,16 @@ public:
 		return true;
 	}
 
-	/* These are safe to be publicm*/
+	/* These are safe to be public */
 	void gfxInit();
 	void gfxDelete();
+
+	void clear() {
+		gfxDelete();
+		m_vertices.clear();
+		m_indices.clear();
+		m_textures.clear();
+	}
 private:
 	/* Normals */
 	std::unique_ptr<Mesh> m_normalArrows;
