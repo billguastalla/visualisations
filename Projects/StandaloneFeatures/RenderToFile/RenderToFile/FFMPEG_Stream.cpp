@@ -30,7 +30,6 @@ FFMPEG_Stream::FFMPEG_Stream()
 	m_avstream{ nullptr },
 	m_avcodecEncoderContext{ nullptr },
 	m_nextFramePTS{ 0 },
-	samples_count{ 0 },
 	m_streamFrame{ nullptr },
 	m_streamFrameTemp{ nullptr },
 	p_codec{ nullptr },

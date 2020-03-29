@@ -93,13 +93,9 @@ private:
 	4. Writes a bunch of settings into the stream's CodecContext, depending on its AVMediaType.
 	[]
 */
-
 	AVCodec* getCodec(const AVCodecID& id);
 	bool initialiseStream(FFMPEG_Stream* stream);
 	bool setupCodecContext(FFMPEG_Stream* stream);
-
-
-
 private:
 	MuxerSettings m_settings;
 	bool m_initialised;

@@ -80,7 +80,6 @@ public:
 
 	/* pts of the next frame that will be generated */
 	int64_t m_nextFramePTS;
-	int samples_count;
 
 	AVFrame* m_streamFrame;
 	AVFrame* m_streamFrameTemp;

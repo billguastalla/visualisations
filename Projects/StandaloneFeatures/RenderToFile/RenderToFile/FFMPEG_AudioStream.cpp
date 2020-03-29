@@ -1,6 +1,6 @@
 #include "FFMPEG_AudioStream.h"
 #include "FFMPEG_Muxing.h"
-void FFMPEG_AudioStream::setCodecContextParameters(const MuxerSettings & settings)
+void FFMPEG_AudioStream::setCodecContextParameters(const MuxerSettings& settings)
 {
 	m_avcodecEncoderContext->sample_fmt = p_codec->sample_fmts ? p_codec->sample_fmts[0] : AV_SAMPLE_FMT_FLTP;
 	m_avcodecEncoderContext->bit_rate = settings.m_audioBitRate;
@@ -27,9 +27,9 @@ void FFMPEG_AudioStream::setCodecContextParameters(const MuxerSettings & setting
 	m_avstream->time_base = av_make_q(1, m_avcodecEncoderContext->sample_rate);
 }
 
-bool FFMPEG_AudioStream::buildPacket(AVPacket & packet, AVFormatContext* oc)
+bool FFMPEG_AudioStream::buildPacket(AVPacket& packet, AVFormatContext* oc)
 {
-	AVCodecContext * c{ m_avcodecEncoderContext };
+	AVCodecContext* c{ m_avcodecEncoderContext };
 	//AVPacket pkt = { 0 }; // data and size must be 0;
 	AVFrame* frame{ nullptr };
 	int ret{ 0 };
@@ -65,15 +65,15 @@ bool FFMPEG_AudioStream::buildPacket(AVPacket & packet, AVFormatContext* oc)
 		/* convert to destination format */
 		ret = swr_convert(swr_ctx,
 			m_streamFrame->data, dst_nb_samples,
-			(const uint8_t * *)frame->data, frame->nb_samples);
+			(const uint8_t**)frame->data, frame->nb_samples);
 		if (ret < 0) {
 			reportError("Writing Audio Frame: Error while converting frame \n", ret);
 		}
 		frame = m_streamFrame;
 
 		/* B.G: Inserted av_make_q().  */
-		frame->pts = av_rescale_q(samples_count, av_make_q(1, c->sample_rate), c->time_base);
-		samples_count += dst_nb_samples;
+		frame->pts = av_rescale_q(m_sampleCount, av_make_q(1, c->sample_rate), c->time_base);
+		m_sampleCount += dst_nb_samples;
 	}
 
 	//ret = avcodec_encode_audio2(c, &pkt, frame, &got_packet);
@@ -88,19 +88,13 @@ bool FFMPEG_AudioStream::buildPacket(AVPacket & packet, AVFormatContext* oc)
 		/* No frame to encode. */
 		return 1;
 	}
-
 	if (ret < 0)
 	{
-		reportError("Writing Audio Frame: Error encoding audio frame: ", ret);
-	}
-
-	if (got_packet) {
-		//ret = write_frame(oc, &c->time_base, m_avstream, &packet);
-		if (ret < 0) {
+		if (got_packet)
 			reportError("Writing Audio Frame: Error while writing audio frame: ", ret);
-		}
+		else
+			reportError("Writing Audio Frame: Error encoding audio frame: ", ret);
 	}
-
 	return (got_packet);
 }
 
@@ -113,7 +107,7 @@ AVFrame* FFMPEG_AudioStream::getFrame()
 	for (j = 0; j < m_streamFrameTemp->nb_samples; j++) {
 		v = (int)(sin(t) * 10000);
 		for (i = 0; i < m_avcodecEncoderContext->channels; i++)
-			* q++ = v;
+			*q++ = v;
 		t += tincr;
 		tincr += tincr2;
 	}
