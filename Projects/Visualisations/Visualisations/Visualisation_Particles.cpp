@@ -1,4 +1,4 @@
-#include "Visualisation_ODE.h"
+#include "Visualisation_Particles.h"
 #pragma warning(disable:4996)
 #include <boost/numeric/odeint.hpp>
 #include "Texture.h"

@@ -12,20 +12,31 @@
 //                                                                                  //
 //////////////////////////////////////////////////////////////////////////////////////
 #include "Texture.h"
-
+#include "stbimage/stb_image.h"
 #include <glad/glad.h>
+Texture TextureGenerator::loadTexture(std::string filename)
+{
+	Texture result{};
+	std::vector<unsigned char> texData{}, int texWidth{ 0 }, int texHeight{ 0 }, int texColourChannels{ 0 };
+	unsigned char* data = stbi_load(filename.c_str(), &texWidth, &texHeight, &texColourChannels, 0);
+	if (data != nullptr)
+	{
+		result = loadTexture(texData, texWidth, texHeight, texColourChannels);
+		result.path = filename;
+		stbi_image_free(data);
+	}
+	return result;
+}
+
 Texture TextureGenerator::loadTexture(std::vector<unsigned char> d, int width, int height, int nChannels)
 {
 	Texture result{};
 	glGenTextures(1, &result.id);
 	glBindTexture(GL_TEXTURE_2D, result.id);
-
-	// set the texture wrapping/filtering options (on the currently bound texture object)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
 	unsigned char* data = &d[0];
 	if (data)
 	{
