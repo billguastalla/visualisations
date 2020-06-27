@@ -57,7 +57,7 @@ bool AudioFile::read()
 	std::ifstream t_stream{ m_fileName,std::ios::binary };
 	t_stream.read((char*)&m_header, sizeof(m_header));
 	/*  Then read size of samples right? */
-	while (true)
+	while (true)								// TODO: Fix this. It doesn't work.
 	{
 		t_stream.read((char*)&m_data, sizeof(m_data));
 		if (*(unsigned int *)&m_data.m_id == 0x61746164)
@@ -131,10 +131,13 @@ std::shared_ptr<AudioTrack> AudioIO::AudioFile::buildTrack()
 	//		for (auto i = flValues[c].begin(); i != flValues[c].end(); ++i)
 	//			*i /= max;
 	//}
+	float ratio = (float)m_raw.size() / (float)samples_count;
+
+
 	std::vector<float> values{};
 	values.resize(samples_count);
 	for (unsigned s = 0; s < samples_count; ++s)
-		values[s] = convert(&m_raw[s * 3]);
+		values[s] = convert(&m_raw[s * 3u]);
 	float max{ 0.0f };
 	for (auto i = values.begin(); i != values.end(); ++i)
 		if (*i > max)

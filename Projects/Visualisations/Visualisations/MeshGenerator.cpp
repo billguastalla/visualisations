@@ -1,4 +1,6 @@
 ﻿#include "MeshGenerator.h"
+#include "Constants.h"
+#include <GLM/gtc/quaternion.hpp>
 
 auto buildMeshIndices = [](const unsigned int& width, const unsigned int& height)
 {
@@ -18,6 +20,12 @@ auto buildMeshIndices = [](const unsigned int& width, const unsigned int& height
 		}
 	return idxs;
 };
+
+glm::quat axisAngleToQuat(double angle, glm::vec3 axis)
+{
+	return glm::quat{ cosf(angle / 2.0),axis.x * sinf(angle / 2.0),axis.y * sinf(angle / 2.0),axis.z * sinf(angle / 2.0) };
+};
+
 // WARNING: Set normals to zero before using. TODO: think about normals for primitives analytically, before jumping to this.
 auto buildSmoothNormals = [](std::vector<MeshVertex>& vxs, const std::vector<unsigned int>& idxs)
 {
@@ -34,6 +42,35 @@ auto buildSmoothNormals = [](std::vector<MeshVertex>& vxs, const std::vector<uns
 		vxs[i].Normal = glm::normalize(vxs[i].Normal);
 };
 
+
+void MeshGenerator::generateUnknownSurface(Mesh& m, float a, float b, float c)
+{
+	int res = 50;
+
+	float domainInterval = 2 * 3.14159265 / ((float)res);
+	float texInterval = 1.0 / ((float)res);
+	std::vector<MeshVertex> vxs{};
+	for (int u = 0; u <= res; ++u)
+	{
+		for (int v = 0; v <= res; ++v)
+		{
+			float uIter{ (float)u * domainInterval };
+			float vIter{ (float)v * domainInterval };
+			glm::vec3 coord{
+				(c + (a * cos(uIter)))* cos(vIter),
+				(c + (a * cos(uIter)))* sin(vIter),
+				b * sin(uIter)
+			};
+			glm::vec2 texCoord{ texInterval * (float)u, texInterval * (float)v };
+			vxs.push_back(MeshVertex{ coord,glm::vec3{0.0f},texCoord });
+		}
+	}
+	std::vector<unsigned int> idxs{ buildMeshIndices(res, res) };
+	buildSmoothNormals(vxs, idxs);
+	m.regenerateMesh(vxs, idxs);
+
+
+}
 
 void MeshGenerator::generateCube(Mesh& m)
 {
@@ -165,6 +202,47 @@ void MeshGenerator::generateCylinder(unsigned int res, float height, float radiu
 			float theta{ (float)j * thetaInterval };
 			float h{ (float)i * heightInterval };
 			glm::vec3 coord{ radius * cos(theta),radius * sin(theta),h };
+			glm::vec3 norm{ radius * cos(theta),radius * sin(theta),radius / height };
+			glm::vec2 texCoord{ cos(theta / 2.0), h };
+			vxs.push_back(MeshVertex{ coord,norm,texCoord });
+		}
+	}
+	std::vector<unsigned int> idxs{ buildMeshIndices(res, res) };
+	m.regenerateMesh(vxs, idxs);
+}
+void MeshGenerator::generateCylinder(Mesh& m, glm::vec3& start, glm::vec3& end, unsigned int res, float startRadius, float endRadius)
+{
+	assert(res >= 3);
+	std::vector<MeshVertex> vxs{};
+
+	glm::vec3 arrow = glm::normalize(end - start);
+	glm::vec3 rotationAxis{ 1.,0.,0. };
+	double angle{ PI / 4.0 };
+	glm::quat rotation{ axisAngleToQuat(angle,rotationAxis) };
+	rotation = glm::normalize(rotation);
+	glm::vec3 normalBasis1{ rotation * arrow * glm::conjugate(rotation) };
+	glm::vec3 normalBasis2{ glm::cross(arrow,normalBasis1) };
+
+
+	float height{ glm::length(end - start) };
+	float thetaInterval = 2 * PI / ((float)res);
+	float heightInterval = height / ((float)res);
+
+	for (int i = 0; i <= res; ++i)
+	{
+		float radius{ startRadius + (((float)i / (float)res)*(endRadius - startRadius))  };
+		float h{ (float)i * heightInterval };
+
+
+		for (int j = 0; j <= res; ++j)
+		{
+			float theta{ (float)j * thetaInterval };
+
+			glm::vec3 c1 = (radius * cos(theta)) * normalBasis1;
+			glm::vec3 c2 = (radius * sin(theta)) * normalBasis2;
+			glm::vec3 c3 = (h) * (arrow);
+
+			glm::vec3 coord{ c1 + c2 + c3 };
 			glm::vec3 norm{ radius * cos(theta),radius * sin(theta),radius / height };
 			glm::vec2 texCoord{ cos(theta / 2.0), h };
 			vxs.push_back(MeshVertex{ coord,norm,texCoord });

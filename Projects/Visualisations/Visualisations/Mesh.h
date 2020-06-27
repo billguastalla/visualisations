@@ -81,6 +81,18 @@ public:
 		m_normalArrows{ nullptr }
 	{
 	}
+	Mesh& operator=(const Mesh & other)
+	{
+		m_vertices = other.m_vertices;
+		m_indices = other.m_indices;
+		m_textures = other.m_textures;
+		m_gfxInitialised = false;
+		EBO = 0;
+		VBO = 0;
+		VAO = 0;
+		m_normalArrows = nullptr;
+		return *this;
+	}
 
 
 	void regenerateMesh(vector<MeshVertex> v, vector<unsigned int> i, vector<Texture> t = vector<Texture>{})

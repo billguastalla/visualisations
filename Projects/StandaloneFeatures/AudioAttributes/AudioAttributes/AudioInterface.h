@@ -17,6 +17,7 @@ namespace AudioIO
 	public:
 		AudioInterface();
 		bool addFile(const std::string & fileName = "");
+		bool addSine(const std::string& fileName = "", float freq = 440.f, float duration = 1.f);
 
 		size_t channelCount();
 		unsigned sampleRate() const { return m_sampleRate; }

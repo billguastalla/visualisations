@@ -147,7 +147,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level2</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -189,9 +189,11 @@
     <ClCompile Include="Visualisation_GameOfLife.cpp" />
     <ClCompile Include="Visualisation_GOL\GameOfLife_Game.cpp" />
     <ClCompile Include="Visualisation_GOL\GameOfLife_Grid.cpp" />
+    <ClCompile Include="Visualisation_ODE.cpp" />
     <ClCompile Include="Visualisation_PointClouds.cpp" />
     <ClCompile Include="Visualisation_Sandbox.cpp" />
     <ClCompile Include="Visualisation_Splinters.cpp" />
+    <ClCompile Include="Visualisation_Surfaces.cpp" />
     <ClCompile Include="Visualisation_TreeField.cpp" />
     <ClCompile Include="Window_Abstract.cpp" />
     <ClCompile Include="Window_AudioInterface.cpp" />
@@ -217,6 +219,7 @@
     <ClInclude Include="AudioReader.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="Mesh.h" />
@@ -238,9 +241,11 @@
     <ClInclude Include="Visualisation_GOL\GameOfLife_ElementList.h" />
     <ClInclude Include="Visualisation_GOL\GameOfLife_Game.h" />
     <ClInclude Include="Visualisation_GOL\GameOfLife_Grid.h" />
+    <ClInclude Include="Visualisation_ODE.h" />
     <ClInclude Include="Visualisation_PointClouds.h" />
     <ClInclude Include="Visualisation_Sandbox.h" />
     <ClInclude Include="Visualisation_Splinters.h" />
+    <ClInclude Include="Visualisation_Surfaces.h" />
     <ClInclude Include="Visualisation_TreeField.h" />
     <ClInclude Include="Window_Abstract.h" />
     <ClInclude Include="Window_AudioInterface.h" />

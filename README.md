@@ -90,7 +90,7 @@ Below are descriptions of each library used, and links to find their sources.
 
 ## Dependencies: Header-only
 
-### GLM (Last Used Version ?)
+### GLM (Last Used Version: 0.9)
 
 [GLM](https://glm.g-truc.net/0.9.9/index.html) is a mathematics and vector library for use with OpenGL.
 One of the reasons it is useful is because it aligns data types on the CPU closely with the native types of the GLSL shading language.
@@ -111,3 +111,19 @@ To add new unit tests, look at TestSuite.cpp.
 
 [Screen1]: https://billguastalla.com/visualisations/screens/Screen1.png "Mesh Surface Oscilloscope"
 [Screen2]: https://billguastalla.com/visualisations/screens/Screen2.png "Point Clouds"
+
+# Credits & Licensing
+
+The author expresses gratitude to the writers and contributors of each library that has been used by Visualisations.
+
+This project owes a huge amount to the [OpenGL tutorial](https://learnopengl.com/) provided by [Joey De Vries](https://twitter.com/JoeyDeVriez). There are several 
+A number of OpenGL-based components in this project are derived from these OpenGL tutorials. The author of this project is grateful to Joey's contributions to
+computer graphics.
+
+By default, files in Visualisations are licensed under GPL 3.0 (see LICENSE-GUASTALLA.md)
+In derived works please include my full name and my github profile.
+
+The components that are modified works from Joey De Vries, are licensed under Creative Commons 4.0 Non-commercial Attribution,
+and are labelled as such at the top of the file. (see LICENSE-DEVRIEZ.md)
+
+If you have any questions about licensing write me an email. My email is my github username @gmail.com
