@@ -5,7 +5,7 @@
 //#include "particle_generator.h"
 using namespace boost::numeric;
 
-Visualisation_ODE::Visualisation_ODE()
+Visualisation_Particles::Visualisation_ODE()
 	:
 	m_particleShader{nullptr}
 {
@@ -16,23 +16,23 @@ Visualisation_ODE::Visualisation_ODE()
 
 }
 
-void Visualisation_ODE::activate()
+void Visualisation_Particles::activate()
 {
 	m_particleShader = new Shader{ "../Shaders/Particles_Vertex.vs", "../Shaders/Particles_ObjectFragment.fs" };
 }
 
-void Visualisation_ODE::deactivate()
+void Visualisation_Particles::deactivate()
 {
 	delete m_particleShader;
 	m_particleShader = nullptr;
 }
 
-void Visualisation_ODE::processSamples(const Buffer& buf, unsigned samples)
+void Visualisation_Particles::processSamples(const Buffer& buf, unsigned samples)
 {
 }
 
 
-void Visualisation_ODE::renderFrame()
+void Visualisation_Particles::renderFrame()
 {
 
 
@@ -40,6 +40,6 @@ void Visualisation_ODE::renderFrame()
 
 }
 
-void Visualisation_ODE::drawInterface()
+void Visualisation_Particles::drawInterface()
 {
 }

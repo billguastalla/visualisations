@@ -12,12 +12,14 @@
 //                                                                                  //
 //////////////////////////////////////////////////////////////////////////////////////
 #include "Texture.h"
+#define STB_IMAGE_IMPLEMENTATION
 #include "stbimage/stb_image.h"
 #include <glad/glad.h>
 Texture TextureGenerator::loadTexture(std::string filename)
 {
 	Texture result{};
-	std::vector<unsigned char> texData{}, int texWidth{ 0 }, int texHeight{ 0 }, int texColourChannels{ 0 };
+	std::vector<unsigned char> texData{};
+	int texWidth{ 0 }, texHeight{ 0 }, texColourChannels{ 0 };
 	unsigned char* data = stbi_load(filename.c_str(), &texWidth, &texHeight, &texColourChannels, 0);
 	if (data != nullptr)
 	{
