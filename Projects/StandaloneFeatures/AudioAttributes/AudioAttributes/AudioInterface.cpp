@@ -5,7 +5,7 @@ using namespace AudioIO;
 AudioInterface::AudioInterface()
 	:
 	m_files{},
-	m_sampleRate{ 48000 } /* TODO: Set by adding file. */
+	m_sampleRate{ 0 } /* TODO: Set by adding file. */
 {
 }
 
@@ -16,12 +16,31 @@ bool AudioInterface::addFile(const std::string & fileName)
 		AudioFile file{ fileName };
 		if (file.read())
 		{
+			if (m_sampleRate == 0)
+				m_sampleRate = file.sampleRate();
+			else if (m_sampleRate != file.sampleRate())
+				return false; // <-- TODO: Think about how this is dealt with.
+
+
 			m_files.push_back(file);
 			/* Insert a track, built from the file. */
 			m_tracks.insert(std::pair<unsigned, std::shared_ptr<AudioTrack>>(m_tracks.size() != 0u ? m_tracks.rbegin()->first + 1u : 0u, file.buildTrack()));
 			return true;
 		}
 	}
+	return false;
+}
+
+bool AudioIO::AudioInterface::addSine(const std::string& fileName, float freq, float duration)
+{
+	std::vector<float> samples;
+	for (int i = 0; i < duration * 44100; ++i)
+	{
+		samples.push_back(sin(2.f * 3.14159f * (float)i * freq / (float)44100));
+		samples.push_back(sin(2.f * 3.14159f * (float)i * freq / (float)44100));
+	}
+	std::shared_ptr<AudioTrack> track{ new AudioTrack{44100,2,samples} };
+	m_tracks.insert(std::make_pair(m_tracks.size() != 0u ? m_tracks.rbegin()->first + 1u : 0u, track));
 	return false;
 }
 

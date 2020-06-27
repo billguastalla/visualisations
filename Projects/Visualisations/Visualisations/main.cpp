@@ -15,6 +15,7 @@ static int mainInit(GLFWwindow * & window, int width, int height)
 {
 	glfwSetErrorCallback(glfw_error_callback);
 
+	// true == 1, false == 0
 	if (!glfwInit())
 		return 1;
 

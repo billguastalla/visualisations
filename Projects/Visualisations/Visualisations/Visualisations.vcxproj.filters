@@ -222,6 +222,12 @@
     <ClCompile Include="Visualisation_TreeField.cpp">
       <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
     </ClCompile>
+    <ClCompile Include="Visualisation_Surfaces.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
+    </ClCompile>
+    <ClCompile Include="Visualisation_ODE.cpp">
+      <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Buffer.h">
@@ -364,6 +370,15 @@
     </ClInclude>
     <ClInclude Include="Recorder.h">
       <Filter>Header Files\Audio Modules\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_Surfaces.h">
+      <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualisation_ODE.h">
+      <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

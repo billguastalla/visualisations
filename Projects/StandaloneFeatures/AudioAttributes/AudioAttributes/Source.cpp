@@ -24,13 +24,17 @@ int main()
 	AudioIO::AudioInterface inter{};
 	/* 1b */
 	/* 1c */
-	inter.addFile("181021_0038.wav");
+	//inter.addFile("SAMPLE_44100_32FPCM.wav");
 	//inter.addFile("181030_0055.wav");
 	/* 2a */
+
+	inter.addSine("test",440,1.0);
+
+
 	AudioIO::AudioOutputMuxer muxer{ &inter };
 
 	FFMPEG_AudioEncoder encoder{};
-	encoder.ffmpeg_encoder_start("Output Take 3.mp3", 48000);
+	encoder.ffmpeg_encoder_start("testsine.mp3", 44100);
 	
 	int endSample = muxer.maximumSampleCount(), startSample = 0;
 	while(startSample < endSample)
