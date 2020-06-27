@@ -116,7 +116,7 @@ To add new unit tests, look at TestSuite.cpp.
 
 The author expresses gratitude to the writers and contributors of each library that has been used by Visualisations.
 
-This project owes a huge amount to the [OpenGL tutorial](https://learnopengl.com/) provided by [Joey De Vries](https://twitter.com/JoeyDeVriez). There are several 
+This project owes a huge amount to the [OpenGL tutorial](https://learnopengl.com/) provided by [Joey De Vries](https://twitter.com/JoeyDeVriez). 
 A number of OpenGL-based components in this project are derived from these OpenGL tutorials. The author of this project is grateful to Joey's contributions to
 computer graphics.
 
