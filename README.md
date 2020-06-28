@@ -6,6 +6,12 @@ Visualisations is a desktop application which can draw a number of visualisation
 Emphasis is placed on the interaction between 3D graphics and real-time audio, and visualisations are able to respond to real-time audio
 from a microphone. Individual visualisations can be encoded and written to file to mpg video files within the application.
 
+## Disclaimer
+
+This is a personal project for implementing audio-visual ideas. The development process, when it happens, is fast
+and loose: unlike for projects that are built as part of a team and relied on by a user base, here it is a secondary priority to organise the source 
+in the interest of clarity, stability, speed and security.
+
 ## Running
 
 Installers for releases are made available for Windows 10 x64,
