@@ -131,7 +131,7 @@ TEST_CASE("FFMPEG Encoder")
 		REQUIRE(startResult == FFMPEG_Encoder::StartResult::Success);
 		for (int i = 0; i < 300; ++i)
 		{
-			glClearColor(sin(glfwGetTime()), sin(0.2 * glfwGetTime()), cos(0.3 * glfwGetTime()), 1.0);
+			glClearColor(sinf(glfwGetTime()), sinf(0.2 * glfwGetTime()), cosf(0.3 * glfwGetTime()), 1.f);
 			glClear(GL_COLOR_BUFFER_BIT);
 			encoder.ffmpeg_encoder_render_frame();
 		}

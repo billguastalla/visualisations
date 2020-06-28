@@ -103,6 +103,9 @@
     <Filter Include="Header Files\Audio Modules\Input">
       <UniqueIdentifier>{def283ac-4e7f-4a6f-9f39-14d27b0b3e42}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Graphics\Engine\Particles">
+      <UniqueIdentifier>{7f831086-73a8-4fea-8b02-5553377ba404}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Recorder.cpp">
@@ -225,8 +228,14 @@
     <ClCompile Include="Visualisation_Surfaces.cpp">
       <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
     </ClCompile>
-    <ClCompile Include="Visualisation_ODE.cpp">
+    <ClCompile Include="Visualisation_Particles.cpp">
       <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSet.cpp">
+      <Filter>Source Files\Graphics\Engine\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryTools.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -377,8 +386,14 @@
     <ClInclude Include="Visualisation_Surfaces.h">
       <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
     </ClInclude>
-    <ClInclude Include="Visualisation_ODE.h">
+    <ClInclude Include="Visualisation_Particles.h">
       <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSet.h">
+      <Filter>Source Files\Graphics\Engine\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryTools.h">
+      <Filter>Header Files\Graphics\Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

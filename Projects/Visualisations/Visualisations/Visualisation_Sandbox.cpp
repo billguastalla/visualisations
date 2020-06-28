@@ -91,12 +91,12 @@ Visualisation_Sandbox::Visualisation_Sandbox()
 
 	int s = 64;
 	std::vector<unsigned char> n = TextureGenerator::noise(s, s, 3);
-	Texture tex = TextureGenerator::loadTexture(n, s, s, 3);
+	Texture tex = TextureGenerator::loadTexture(&n[0], s, s, 3);
 	tex.t = Texture::Type::Diffuse;
 	m_meshTop.addTexture(tex);
 
 	n = TextureGenerator::noise(s, s, 3);
-	Texture tex2 = TextureGenerator::loadTexture(n, s, s, 3);
+	Texture tex2 = TextureGenerator::loadTexture(&n[0], s, s, 3);
 	tex2.t = Texture::Type::Specular;
 	m_meshTop.addTexture(tex2);
 

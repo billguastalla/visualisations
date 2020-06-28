@@ -8,6 +8,7 @@
 #include "Visualisation_Sandbox.h"
 #include "Visualisation_TreeField.h"
 #include "Visualisation_Splinters.h"
+#include "Visualisation_Particles.h"
 
 #include "Buffer.h"
 
@@ -39,6 +40,7 @@ Model_Visualisation::Model_Visualisation(std::shared_ptr<Settings_Visualisation>
 	Visualisation_GameOfLife* visGameOfLife = new Visualisation_GameOfLife{};
 	Visualisation_TreeField * visTreeField = new Visualisation_TreeField{};
 	Visualisation_Splinters* visSplinters = new Visualisation_Splinters{};
+	Visualisation_Particles* visParticles = new Visualisation_Particles{};
 	/* This has now been delegated to visualisation switching, 
 		on account of the increased total memory demands of visualisations.
 		See: void Model_Visualisation::setVisualisation(int option)
@@ -59,6 +61,7 @@ Model_Visualisation::Model_Visualisation(std::shared_ptr<Settings_Visualisation>
 	m_visualisations.push_back(visSandbox);
 	m_visualisations.push_back(visTreeField);
 	m_visualisations.push_back(visSplinters);
+	m_visualisations.push_back(visParticles);
 }
 
 Model_Visualisation::~Model_Visualisation()

@@ -128,34 +128,6 @@ void Visualisation_Cubes::deactivate()
 
 void Visualisation_Cubes::processSamples(const Buffer & buf, unsigned samples)
 {
-	//float bufPeak = buf.amplitude_peak();
-	//float bufAverage = buf.amplitude_average();
-	//float bufMinimum = buf.amplitude_minimum();
-	//
-	////m_camera.Yaw = (bufMinimum * 180.0f) - 90.0f;
-	//std::vector<std::vector<kiss_fft_cpx>> fftResults{ buf.fft() };
-
-	/* LHS is fractional position in fft, RHS is magnitude*/
-	//std::vector<std::pair<float, float>> peaks{ std::make_pair<float,float>(0.0f, 0.0f),std::make_pair<float,float>(0.0f, 0.0f) };
-	//for (int c = 0; c < fftResults.size(); ++c)
-	//{
-	//	for (int i = 0; i < fftResults[c].size(); ++i)
-	//		if (fftResults[c][i].r >= peaks[c].second)
-	//		{
-	//			peaks[c].first = ((float)i / fftResults[c].size());
-	//			peaks[c].second = fftResults[c][i].r;
-	//		}
-	//}
-	//m_objectShader->use();
-	//m_objectShader->setVec3("objectColour", glm::vec3{ peaks[0].first,peaks[1].first,1.0f });
-
-	//m_camera.Pitch = bufAverage;
-	//m_camera.m_zoom = -45.0f * bufMinimum;
-	//m_camera.m_zoom = bufMinimum;
-
-	//buf.maxChannelFrameCount();
-	//kiss_fft_cfg config;
-	//m_camera.updateCameraVectors();
 }
 
 void Visualisation_Cubes::renderFrame()
