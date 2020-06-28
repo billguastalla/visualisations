@@ -173,12 +173,14 @@
     <ClCompile Include="..\Includes\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\Includes\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\Includes\kissfft\kiss_fft.c" />
+    <ClCompile Include="GeometryTools.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshGenerator.cpp" />
     <ClCompile Include="Model_AudioInterface.cpp" />
     <ClCompile Include="Model_VideoRendering.cpp" />
     <ClCompile Include="Model_Visualisation.cpp" />
     <ClCompile Include="FFMPEG_Encoder.cpp" />
+    <ClCompile Include="ParticleSet.cpp" />
     <ClCompile Include="PostProcessing.cpp" />
     <ClCompile Include="Settings_AudioInterface.cpp" />
     <ClCompile Include="Settings_VideoRendering.cpp" />
@@ -220,6 +222,8 @@
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="GeometryTools.h" />
+    <ClInclude Include="ParticleSet.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="Mesh.h" />

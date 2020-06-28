@@ -16,6 +16,6 @@ class TextureGenerator
 {
 public:
 	static Texture loadTexture(std::string filename);
-	static Texture loadTexture(std::vector<unsigned char> d, int w, int h, int c);
+	static Texture loadTexture(unsigned char* data, int w, int h, int c);
 	static std::vector<unsigned char> noise(int width, int height, int channels);
 };

@@ -18,19 +18,18 @@
 Texture TextureGenerator::loadTexture(std::string filename)
 {
 	Texture result{};
-	std::vector<unsigned char> texData{};
 	int texWidth{ 0 }, texHeight{ 0 }, texColourChannels{ 0 };
-	unsigned char* data = stbi_load(filename.c_str(), &texWidth, &texHeight, &texColourChannels, 0);
-	if (data != nullptr)
+	unsigned char* texData = stbi_load(filename.c_str(), &texWidth, &texHeight, &texColourChannels, 0);
+	if (texData != nullptr)
 	{
 		result = loadTexture(texData, texWidth, texHeight, texColourChannels);
 		result.path = filename;
-		stbi_image_free(data);
+		stbi_image_free(texData);
 	}
 	return result;
 }
 
-Texture TextureGenerator::loadTexture(std::vector<unsigned char> d, int width, int height, int nChannels)
+Texture TextureGenerator::loadTexture(unsigned char * data, int width, int height, int nChannels)
 {
 	Texture result{};
 	glGenTextures(1, &result.id);
@@ -39,10 +38,9 @@ Texture TextureGenerator::loadTexture(std::vector<unsigned char> d, int width, i
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	unsigned char* data = &d[0];
 	if (data)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, nChannels == 4 ? GL_RGBA : GL_RGB, width, height, 0, nChannels == 4 ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	return result;
