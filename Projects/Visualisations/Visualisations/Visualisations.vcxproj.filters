@@ -395,5 +395,8 @@
     <ClInclude Include="GeometryTools.h">
       <Filter>Header Files\Graphics\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Trajectory.h">
+      <Filter>Source Files\Graphics\Engine\Particles</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
