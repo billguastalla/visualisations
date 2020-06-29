@@ -2,9 +2,10 @@
 #include <vector>
 #include <GLM/glm.hpp>
 /*
-	Intended design limitations:
+	Design limitations currently intended:
 		-> Responsibility of trajectory is blurred with mesh generator.
-		-> 
+		-> Switch pattern on functions where inheritance could be placed.
+		-> TrajectorySettings holds redundant state
 */
 
 namespace Trajectory
@@ -53,15 +54,25 @@ namespace Trajectory
 		double t_0;		// initial time
 		double t_f;		// final time
 		double dt;		// timestep size
+		void drawUI();
 	};
 	std::vector<glm::vec3> generateSHO(const Settings_SHO& s);
 	struct Settings_Helix
 	{
+		Settings_Helix()
+			:
+			t_0{ 0.0 },
+			t_f{ 10.0 },
+			intervals{ 3u },
+			componentAmplitudes{1.f},
+			componentFrequencies{1.f}
+		{}
 		float t_0;
 		float t_f;
 		size_t intervals; // should be turned into dt !
 		glm::vec3 componentAmplitudes;		// prefactor for helix components
 		glm::vec3 componentFrequencies;		// turning rate for helix components
+		void drawUI();
 	};
 	std::vector<glm::vec3> generateHelix(const Settings_Helix& s);
 
@@ -69,7 +80,7 @@ namespace Trajectory
 	constexpr char trajectoryTypeOptions[] = "SHO\0Helix\0Mesh\0Tree\0LorentzAttractor\0HarmonicOscillator\0PlanetarySystem\0SphericalHarmonics";
 	struct Settings // temporary design, will switch to simpler one as common data/methods are found.
 	{
-		Settings() : sho{}, type{ Type::Helix } {}
+		Settings() : sho{}, helix{}, type{ Type::Helix } {}
 		enum class Type
 		{
 			SHO,
@@ -82,6 +93,7 @@ namespace Trajectory
 			SphericalHarmonics // tbc
 		} type;
 		void setTime(double t_0, double t_f, double dt);
+		void drawUI();
 		Settings_SHO sho;
 		Settings_Helix helix;
 	};

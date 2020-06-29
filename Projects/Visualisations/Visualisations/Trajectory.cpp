@@ -1,6 +1,7 @@
 #pragma warning(disable:4996) // ignore sprintf deprecation warnings
 #include "Trajectory.h"
 #include <boost/numeric/odeint.hpp>
+#include <imgui/imgui.h>
 using namespace Trajectory;
 using namespace boost::numeric;
 
@@ -77,4 +78,56 @@ void Trajectory::Settings::setTime(double t_0, double t_f, double dt)
 	default:
 		break;
 	}
+}
+
+void Trajectory::Settings::drawUI()
+{
+	switch (type)
+	{
+	case Trajectory::Settings::Type::SHO:
+		sho.drawUI();
+		break;
+	case Trajectory::Settings::Type::Helix:
+		helix.drawUI();
+		break;
+	case Trajectory::Settings::Type::Mesh:
+		break;
+	case Trajectory::Settings::Type::Tree:
+		break;
+	case Trajectory::Settings::Type::LorentzAttractor:
+		break;
+	case Trajectory::Settings::Type::HarmonicOscillator:
+		break;
+	case Trajectory::Settings::Type::PlanetarySystem:
+		break;
+	case Trajectory::Settings::Type::SphericalHarmonics:
+		break;
+	default:
+		break;
+	}
+}
+
+void Trajectory::Settings_SHO::drawUI()
+{
+	float fGamma{ (float)gamma };
+	float fX0{ (float)x_0 };
+	float fP0{ (float)p_0 };
+	float fDt{ (float)dt };
+	ImGui::SliderFloat("Gamma", &fGamma, 0.01f, 1.f);
+	ImGui::SliderFloat("X0", &fX0, 0.01f, 1.f);
+	ImGui::SliderFloat("P0", &fP0, 0.01f, 1.f);
+	ImGui::SliderFloat("timestep", &fDt, 0.01f, 0.2f);
+	if (fGamma != gamma || fX0 != x_0 || fP0 != p_0 || fDt != dt)
+	{
+		gamma = fGamma;
+		x_0 = fX0;
+		p_0 = fP0;
+		dt = fDt;
+	}
+}
+
+void Trajectory::Settings_Helix::drawUI()
+{
+	ImGui::SliderFloat3("Amplitudes", &componentAmplitudes[0], 0.1f, 10.0f);
+	ImGui::SliderFloat3("Frequencies", &componentFrequencies[0], 0.1f, 10.0f);
 }

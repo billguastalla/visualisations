@@ -48,6 +48,8 @@ struct ParticleEmissionSettings
 		m_globalVelocity{ 1.f }
 	{}
 
+	void drawUI();
+
 	enum class EmissionDirection
 	{
 		Track,				// emit particles in a track, in the direction of the sequence of coordinates

@@ -1,6 +1,7 @@
 #include "ParticleSet.h"
 #include "GeometryTools.h"
 #include "Constants.h"
+#include "imgui/imgui.h"
 #include <random>
 
 ParticleSet::ParticleSet(const Texture& t)
@@ -155,3 +156,12 @@ void ParticleSet::sortParticles(glm::vec3 cameraPos)
 	std::sort(m_particles.begin(), m_particles.end(), distSort);
 }
 
+void ParticleEmissionSettings::drawUI()
+{
+	ImGui::Text("Emission Settings:");
+	ImGui::SliderFloat("Travel Distance Mean", &m_meanTravelDist, 1.f, 10.0f);
+	ImGui::SliderFloat("Travel Distance Sigma", &m_sigmaTravelDist, 0.03f, 1.0f);
+	ImGui::SliderFloat("Velocity Decay Rate Base", &m_baseDecayRate, 0.1f, 5.f);
+	ImGui::SliderFloat("Global Particle Scale", &m_globalParticleScale, 0.1f, 1.f);
+	ImGui::SliderFloat("Global Velocity", &m_globalVelocity, 0.1f, 10.f);
+}

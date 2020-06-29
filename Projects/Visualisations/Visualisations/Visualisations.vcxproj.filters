@@ -106,6 +106,9 @@
     <Filter Include="Source Files\Graphics\Engine\Particles">
       <UniqueIdentifier>{7f831086-73a8-4fea-8b02-5553377ba404}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Graphics\Engine\Particles">
+      <UniqueIdentifier>{3796dedc-cdd9-4517-acaa-99cedd07b02d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Recorder.cpp">
@@ -213,9 +216,6 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MeshGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -237,11 +237,17 @@
     <ClCompile Include="GeometryTools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Trajectory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Tree.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files\Graphics\Engine\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="Trajectory.cpp">
+      <Filter>Source Files\Graphics\Engine\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>Source Files\Graphics\Engine\Particles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -395,14 +401,17 @@
     <ClInclude Include="Visualisation_Particles.h">
       <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
     </ClInclude>
-    <ClInclude Include="ParticleSet.h">
-      <Filter>Source Files\Graphics\Engine\Particles</Filter>
-    </ClInclude>
     <ClInclude Include="GeometryTools.h">
       <Filter>Header Files\Graphics\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="ParticleSet.h">
+      <Filter>Header Files\Graphics\Engine\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Header Files\Graphics\Engine\Particles</Filter>
+    </ClInclude>
     <ClInclude Include="Trajectory.h">
-      <Filter>Source Files\Graphics\Engine\Particles</Filter>
+      <Filter>Header Files\Graphics\Engine\Particles</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

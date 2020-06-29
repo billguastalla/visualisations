@@ -181,6 +181,7 @@
     <ClCompile Include="Model_Visualisation.cpp" />
     <ClCompile Include="FFMPEG_Encoder.cpp" />
     <ClCompile Include="ParticleSet.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="PostProcessing.cpp" />
     <ClCompile Include="Settings_AudioInterface.cpp" />
     <ClCompile Include="Settings_VideoRendering.cpp" />
@@ -225,6 +226,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="GeometryTools.h" />
+    <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Trajectory.h" />
     <ClInclude Include="ParticleSet.h" />
     <ClInclude Include="Scene.h" />

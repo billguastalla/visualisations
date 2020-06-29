@@ -25,8 +25,12 @@ void Window_Visualisation::draw()
 	std::string visOpts = m_visualisation->visualisationOptionsString();
 	ImGui::Combo("",&sel, &visOpts[0]);
 
+	glm::vec3 cPos = m_visualisation->currentVisualisation()->cameraPosition();
 	ImGui::Text("\tFramerate: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
+	ImGui::Text(std::string{"Camera Position = {" +
+		std::to_string(cPos.x).substr(0,5) + ", " +
+		std::to_string(cPos.y).substr(0,5) + ", " +
+		std::to_string(cPos.z).substr(0,5) + "} "}.c_str());
 
 	ImGui::Text("Post Processing:");
 	/* Post-processing details: */

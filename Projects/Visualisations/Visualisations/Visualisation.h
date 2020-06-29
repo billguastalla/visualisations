@@ -39,7 +39,7 @@ public:
 	void keyMovement(Camera_Movement cm);
 
 	void setCameraMode(const CameraMode & m) { m_cameraMode = m; };
-	
+	glm::vec3 cameraPosition() const { return m_camera.m_position; }
 protected:
 	// camera
 	Camera m_camera;

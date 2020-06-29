@@ -16,9 +16,7 @@ Visualisation_Particles::Visualisation_Particles()
 	m_lastTime{0.},
 
 	ui_globalSpeed{1.0f},
-	ui_hSamplesPerFrame{3},
-	ui_trajectorysinAmp{1.f},
-	ui_trajectorysinFreq{1.f}
+	ui_hSamplesPerFrame{3}
 {
 	m_camera.m_position = glm::vec3{ 0.0,0.0,3.0 };
 }
@@ -45,19 +43,10 @@ void Visualisation_Particles::renderFrame()
 {
 	double currentTime{ glfwGetTime() };
 
-	Trajectory::Settings_Helix s{};
-	s.t_0 = m_lastTime;
-	s.t_f = currentTime;
-	s.intervals = ui_hSamplesPerFrame;
-	s.componentAmplitudes = ui_trajectorysinAmp;
-	s.componentFrequencies = ui_trajectorysinFreq;
-	std::vector<glm::vec3> trajectory{ Trajectory::generateHelix(s) };
-
-	m_particleSet->generateParticles(
-		trajectory, m_emissionSettings);
+	for (auto ps : m_particleSystems)
+		ps.generate(*m_particleSet,m_lastTime,currentTime);
 	m_particleSet->clearParticles();
 	m_particleSet->moveParticles((currentTime - m_lastTime) * ui_globalSpeed);
-
 	m_particleSet->draw(m_camera);
 
 	m_lastTime = currentTime;
@@ -65,22 +54,35 @@ void Visualisation_Particles::renderFrame()
 
 void Visualisation_Particles::drawInterface()
 {
-	ImGui::Text(std::string{ "Camera Pos" + std::to_string(m_camera.m_position.x) + "," +
-	std::to_string(m_camera.m_position.y) + "," + std::to_string(m_camera.m_position.z) }.c_str());
+	unsigned i{ 1 };
+	ImGui::Text("Particle Systems");
+	if (ImGui::Button("+"))
+		m_particleSystems.push_back(ParticleSystem{});
+	std::vector<bool> remBtns{};
+	for (auto ps : m_particleSystems)
+	{
+		std::string name{ "S" + std::to_string(i++) };
+		ImGui::Text(name.c_str());
+		ImGui::SameLine();
+		remBtns.push_back(ImGui::Button(std::string{ "-" + name }.c_str()));
+	}
+	i = 1;
+	for (ParticleSystem & ps : m_particleSystems)
+	{
+		ps.drawUI("Particle System " + std::to_string(i++));
+	}
+	for (size_t j = 0; j < remBtns.size(); ++j)
+		if (remBtns[j] == true)
+			m_particleSystems.erase(m_particleSystems.begin() + j); // might not be safe if two buttons pressed at same time
 
-	ImGui::Text("Emission Settings:");
-	ImGui::SliderFloat("\tTravel Distance Mean", &m_emissionSettings.m_meanTravelDist, 1.f, 10.0f);
-	ImGui::SliderFloat("\tTravel Distance Sigma", &m_emissionSettings.m_sigmaTravelDist, 0.03f, 1.0f);
-	ImGui::SliderFloat("\tVelocity Decay Rate Base", &m_emissionSettings.m_baseDecayRate, 0.1f, 5.f);
-	ImGui::SliderFloat("\tGlobal Particle Scale", &m_emissionSettings.m_globalParticleScale, 0.1f, 1.f);
-	ImGui::SliderFloat("\tGlobal Velocity", &m_emissionSettings.m_globalVelocity, 0.1f, 10.f);
 
-	ImGui::Combo("Emission Direction", (int*)&m_emissionSettings.m_emissionDirection, &emissionOptions[0]);
-	ImGui::Combo("Trajectory Type", (int*)&m_trajectorySettings.type, &Trajectory::trajectoryTypeOptions[0]);
+
+	//m_emissionSettings.drawUI();
+
+	//ImGui::SliderFloat3("Trajectory Amps", &ui_trajectorysinAmp[0], 0.1f, 10.0f);
+	//ImGui::SliderFloat3("Trajectory Freqs", &ui_trajectorysinFreq[0], 0.1f, 10.0f);
+
 
 	ImGui::SliderFloat("Global Time Speed", &ui_globalSpeed, 0.1f, 5.f);
 	ImGui::SliderInt("Helix samples per frame", &ui_hSamplesPerFrame, 3, 100);
-
-	ImGui::SliderFloat3("Trajectory Amps", &ui_trajectorysinAmp[0], 0.1f, 10.0f);
-	ImGui::SliderFloat3("Trajectory Freqs", &ui_trajectorysinFreq[0], 0.1f, 10.0f);
 }
