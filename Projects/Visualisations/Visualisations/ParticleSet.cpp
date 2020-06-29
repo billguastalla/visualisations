@@ -3,19 +3,6 @@
 #include "Constants.h"
 #include <random>
 
-std::vector<glm::vec3> ParticleSet::sampleHelicalTrajectory(float tStart, float tEnd, size_t samples,
-	glm::vec3 sinAmp, glm::vec3 sinFreq)
-{
-	std::vector<glm::vec3> result{};
-	float increment{ (tEnd - tStart) / (float)samples };
-	for (size_t i{ 0 }; i < samples; ++i)
-	{
-		float t{ increment * (float)i };
-		result.push_back(glm::vec3{ (sinAmp.x * std::sin(sinFreq.x * t)), (sinAmp.y * std::sin(sinFreq.y * t)),(sinFreq.z * std::cos(sinFreq.z * t)) });
-	}
-	return result;
-}
-
 ParticleSet::ParticleSet(const Texture& t)
 	:
 	m_particles{},

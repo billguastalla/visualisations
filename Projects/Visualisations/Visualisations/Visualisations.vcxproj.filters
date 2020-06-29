@@ -237,6 +237,12 @@
     <ClCompile Include="GeometryTools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Trajectory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Buffer.h">

@@ -186,6 +186,8 @@
     <ClCompile Include="Settings_VideoRendering.cpp" />
     <ClCompile Include="Settings_Visualisation.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Trajectory.cpp" />
+    <ClCompile Include="Tree.cpp" />
     <ClCompile Include="Visualisation.cpp" />
     <ClCompile Include="Visualisation_Fractal.cpp" />
     <ClCompile Include="Visualisation_GameOfLife.cpp" />

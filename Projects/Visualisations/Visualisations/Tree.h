@@ -1,26 +1,12 @@
 #pragma once
+#include <GLM/glm.hpp>
 #include <vector>
 
 class Node;
 
-/*
-	-> Most poignant question here is how do we wind a tree with a continuous mesh?
-		\ /
-		 |
-		-> Two holes should appear in the splitting of a branch.
-		-> We need to change the way that indices are written, at the point of splitting.
-			-> There appears to need to be a connector model, which has one hole for the base,
-				and N holes for the branches. (upside down pants)
-				-> The connector needs to know the angles phi and theta of the branches.
-					(possibly also their radius)
-					-> there appear to be semi-circles joining opposite sides of the base
-						circle, which split the branches.
-					-> We want to control the resolution of the connector.
-					-> We want to pass an ellipsoid shape into a branch, so that the
-						branch mesh can smoothly wind the ellipsoid into a cylinder.
-*/
 class Tree
 {
+	Tree(unsigned depth = 0u, unsigned nodesPerLayer = 1u);
 
 private:
 	Node* m_rootItem;
@@ -28,10 +14,15 @@ private:
 
 class Node
 {
+public:
+	Node(Node* parent = nullptr);
+
+	void addChildren(unsigned depth = 0u, unsigned nodesPerLayer = 1u);
 private:
-	double m_length;
+	double m_distAlongParent; // Position of start of branch along parent takes values 0 to 1, where it branches off the parent from.
+	double m_length;		  // Length of branch
 	/* Orientation the tree makes with the plane that is normal
-		to the direction of the parent node, */
+		to the direction of the parent node, */ // This isn't enough information! Basis can be chosen arbitrarily!
 	double m_theta, m_phi;
 
 	Node* p_parent;

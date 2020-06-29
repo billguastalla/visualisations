@@ -71,7 +71,6 @@ public:
 	void draw(const Camera& camera);
 
 	void setTexture(const Texture& t);
-	static std::vector<glm::vec3> sampleHelicalTrajectory(float tStart, float tEnd, size_t samples, glm::vec3 sinAmp, glm::vec3 sinFreq);
 	void generateParticles(std::vector<glm::vec3> path, const ParticleEmissionSettings& settings); // add particles to the list
 	void moveParticles(float dt = .02f); // update the velocity of the particles
 	void clearParticles(); // 

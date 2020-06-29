@@ -1,6 +1,4 @@
 #include "Visualisation_Particles.h"
-#pragma warning(disable:4996)
-#include <boost/numeric/odeint.hpp>
 #include "Texture.h"
 #include <GLFW\glfw3.h>
 #include <imgui/imgui.h>
@@ -10,11 +8,8 @@
 		1. Lorenz attractor
 		2. Tree
 		3. Spherical Harmonics
+		4. Mesh/Plane
 */
-
-//#include "particle_generator.h"
-using namespace boost::numeric;
-
 Visualisation_Particles::Visualisation_Particles()
 	:
 	m_particleSet{nullptr},
@@ -26,21 +21,6 @@ Visualisation_Particles::Visualisation_Particles()
 	ui_trajectorysinFreq{1.f}
 {
 	m_camera.m_position = glm::vec3{ 0.0,0.0,3.0 };
-
-
-
-	//state_type x{};
-	//x.resize(2u);
-	//x[0] = 1.0;
-	//x[1] = 0.0;
-	//std::vector<state_type> x_vect;
-	//std::vector<double> times;
-	//ODE_State state{ x_vect,times };
-	//ODE_SHO sho{ 0.15 };
-	//size_t steps = odeint::integrate(sho, x, 0.0, 10.0, 0.1,state);
-	
-
-
 }
 
 void Visualisation_Particles::activate()
@@ -59,15 +39,20 @@ void Visualisation_Particles::deactivate()
 
 void Visualisation_Particles::processSamples(const Buffer& buf, unsigned samples)
 {
-
 }
 
 void Visualisation_Particles::renderFrame()
 {
 	double currentTime{ glfwGetTime() };
 
-	std::vector<glm::vec3> trajectory{ ParticleSet::sampleHelicalTrajectory(m_lastTime, currentTime, ui_hSamplesPerFrame,
-		ui_trajectorysinAmp,ui_trajectorysinFreq) };
+	Trajectory::Settings_Helix s{};
+	s.t_0 = m_lastTime;
+	s.t_f = currentTime;
+	s.intervals = ui_hSamplesPerFrame;
+	s.componentAmplitudes = ui_trajectorysinAmp;
+	s.componentFrequencies = ui_trajectorysinFreq;
+	std::vector<glm::vec3> trajectory{ Trajectory::generateHelix(s) };
+
 	m_particleSet->generateParticles(
 		trajectory, m_emissionSettings);
 	m_particleSet->clearParticles();
@@ -91,6 +76,7 @@ void Visualisation_Particles::drawInterface()
 	ImGui::SliderFloat("\tGlobal Velocity", &m_emissionSettings.m_globalVelocity, 0.1f, 10.f);
 
 	ImGui::Combo("Emission Direction", (int*)&m_emissionSettings.m_emissionDirection, &emissionOptions[0]);
+	ImGui::Combo("Trajectory Type", (int*)&m_trajectorySettings.type, &Trajectory::trajectoryTypeOptions[0]);
 
 	ImGui::SliderFloat("Global Time Speed", &ui_globalSpeed, 0.1f, 5.f);
 	ImGui::SliderInt("Helix samples per frame", &ui_hSamplesPerFrame, 3, 100);

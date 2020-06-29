@@ -2,6 +2,7 @@
 #include "Visualisation.h"
 #include "Shader.h"
 #include "ParticleSet.h"
+#include "Trajectory.h"
 #include <memory>
 
 class Visualisation_Particles : public Visualisation
@@ -18,6 +19,7 @@ public:
 private:
 	std::unique_ptr<ParticleSet> m_particleSet;
 	ParticleEmissionSettings m_emissionSettings;
+	Trajectory::Settings m_trajectorySettings;
 
 	glm::vec3 ui_trajectorysinAmp;
 	glm::vec3 ui_trajectorysinFreq;
