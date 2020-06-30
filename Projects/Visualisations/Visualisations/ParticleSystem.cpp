@@ -16,7 +16,8 @@ void ParticleSystem::generate(ParticleSet& set, double t_last, double t_current)
 	//s.componentFrequencies = ui_trajectorysinFreq;
 	m_trajectorySettings.setTime(t_last, t_current, 0.1);
 	std::vector<glm::vec3> trajectory{ Trajectory::generate(m_trajectorySettings) };
-	set.generateParticles(trajectory, m_emissionSettings);
+	if(trajectory.size() > 2)
+		set.generateParticles(trajectory, m_emissionSettings);
 }
 
 void ParticleSystem::drawUI(const std::string& name)

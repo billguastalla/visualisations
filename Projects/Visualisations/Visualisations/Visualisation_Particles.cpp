@@ -14,9 +14,8 @@ Visualisation_Particles::Visualisation_Particles()
 	:
 	m_particleSet{nullptr},
 	m_lastTime{0.},
-
-	ui_globalSpeed{1.0f},
-	ui_hSamplesPerFrame{3}
+	ui_globalSpeed{1.0f}
+	//ui_hSamplesPerFrame{3}
 {
 	m_camera.m_position = glm::vec3{ 0.0,0.0,3.0 };
 }
@@ -75,14 +74,11 @@ void Visualisation_Particles::drawInterface()
 		if (remBtns[j] == true)
 			m_particleSystems.erase(m_particleSystems.begin() + j); // might not be safe if two buttons pressed at same time
 
-
-
 	//m_emissionSettings.drawUI();
-
 	//ImGui::SliderFloat3("Trajectory Amps", &ui_trajectorysinAmp[0], 0.1f, 10.0f);
 	//ImGui::SliderFloat3("Trajectory Freqs", &ui_trajectorysinFreq[0], 0.1f, 10.0f);
 
 
 	ImGui::SliderFloat("Global Time Speed", &ui_globalSpeed, 0.1f, 5.f);
-	ImGui::SliderInt("Helix samples per frame", &ui_hSamplesPerFrame, 3, 100);
+	//ImGui::SliderInt("Helix samples per frame", &ui_hSamplesPerFrame, 3, 100);
 }

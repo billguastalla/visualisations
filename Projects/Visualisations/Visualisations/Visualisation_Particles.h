@@ -26,6 +26,6 @@ private:
 	//glm::vec3 ui_trajectorysinFreq;
 
 	float  ui_globalSpeed;
-	int    ui_hSamplesPerFrame;
+	//int    ui_hSamplesPerFrame;
 	double m_lastTime;
 };

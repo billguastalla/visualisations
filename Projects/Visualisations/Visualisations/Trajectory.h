@@ -1,4 +1,5 @@
 #pragma once
+#include "Tree.h"
 #include <vector>
 #include <GLM/glm.hpp>
 /*
@@ -6,6 +7,10 @@
 		-> Responsibility of trajectory is blurred with mesh generator.
 		-> Switch pattern on functions where inheritance could be placed.
 		-> TrajectorySettings holds redundant state
+		-> Tree is actually persistent, whereas other trajectories vary.
+			-> Could be changed with oscillation of tree branches!?
+		-> When getting vertices from tree: issue of disjoint vertices from one branch to another.
+				-> How do we prevent incorrect velocities being calculated from start of new branch?
 */
 
 namespace Trajectory
@@ -46,7 +51,7 @@ namespace Trajectory
 			p_0{ 0.0 },
 			t_0{ 0.0 },
 			t_f{ 10.0 },
-			dt{ 0.1 }
+			dt{ 0.005 }
 		{}
 		double gamma;	// linear constant of SHO
 		double x_0;		// starting position
@@ -77,10 +82,23 @@ namespace Trajectory
 	std::vector<glm::vec3> generateHelix(const Settings_Helix& s);
 
 
+	struct Settings_Tree
+	{
+		Settings_Tree() : nodesPerLayer{ 2 }, depth{ 2 }, verticesPerBranch{ 5 }, tree{} {}
+
+		std::vector<glm::vec3> generateVertices() const;
+		void drawUI();
+		Tree tree;
+		int nodesPerLayer; // 1 to N
+		int depth; // 1 to N
+		int verticesPerBranch; // 1 to N
+	};
+
+
 	constexpr char trajectoryTypeOptions[] = "SHO\0Helix\0Mesh\0Tree\0LorentzAttractor\0HarmonicOscillator\0PlanetarySystem\0SphericalHarmonics";
 	struct Settings // temporary design, will switch to simpler one as common data/methods are found.
 	{
-		Settings() : sho{}, helix{}, type{ Type::Helix } {}
+		Settings() : sho{}, helix{}, tree{}, type{ Type::Helix } {}
 		enum class Type
 		{
 			SHO,
@@ -96,6 +114,7 @@ namespace Trajectory
 		void drawUI();
 		Settings_SHO sho;
 		Settings_Helix helix;
+		Settings_Tree tree;
 	};
 	std::vector<glm::vec3> generate(const Settings& s);
 

@@ -64,8 +64,8 @@ void Visualisation_PointClouds::processSamples(const Buffer& buf, unsigned sampl
 	for (int i = 0; i < res.size(); ++i)
 	{
 		// Take Middle
-		int size = res[i].size();
-		for (int j = (size / 4); j < (size * 3.0 / 4.0); ++j)
+		size_t size = res[i].size();
+		for (size_t j = (size / 4u); (float)j < ((float)size * (3./4.)); ++j)
 			reduced[i].push_back(res[i][j]);
 	}
 	double maxIVal{ 0.0f };
@@ -139,8 +139,8 @@ void Visualisation_PointClouds::processSamples(const Buffer& buf, unsigned sampl
 		{
 			// At the beginning, scale is 0.0, then scaled to 1.0 1/4 of the way through,
 				// then linearly scaled to zero.
-			float quarterPos = m_cubeScales.size() / 4;
-			float finalPos = m_cubeScales.size();
+			float quarterPos = (float)m_cubeScales.size() / 4.f;
+			float finalPos = (float)m_cubeScales.size();
 			if ((float)i <= quarterPos)
 				m_cubeScales[i] = glm::vec3{ (float)i / (float)quarterPos };
 			else
