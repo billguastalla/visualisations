@@ -173,6 +173,7 @@
     <ClCompile Include="..\Includes\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\Includes\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\Includes\kissfft\kiss_fft.c" />
+    <ClCompile Include="CameraSystem.cpp" />
     <ClCompile Include="GeometryTools.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshGenerator.cpp" />
@@ -224,6 +225,7 @@
     <ClInclude Include="AudioReader.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraSystem.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="GeometryTools.h" />
     <ClInclude Include="ParticleSystem.h" />

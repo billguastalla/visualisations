@@ -18,6 +18,7 @@ Model_VideoRendering::Model_VideoRendering(std::shared_ptr<Settings_VideoRenderi
 
 	m_window{ window }
 {
+
 }
 
 Model_VideoRendering::~Model_VideoRendering()
