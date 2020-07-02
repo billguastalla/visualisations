@@ -30,7 +30,8 @@ Visualisation_GameOfLife::Visualisation_GameOfLife()
 	m_frameLoop{ 0 },
 
 	m_frameUpdateRate{ 15 },
-	m_reinitExtent{ 5 }
+	m_reinitExtent{ 5 },
+	m_spacing{0.f}
 {
 }
 
@@ -163,39 +164,35 @@ void Visualisation_GameOfLife::processSamples(const Buffer& buf, unsigned sample
 	//m_camera.m_front = glm::normalize(front);
 }
 
-void Visualisation_GameOfLife::renderFrame()
+void Visualisation_GameOfLife::renderFrame(const Camera& camera, Timecode t)
 {
-	float currentFrame = glfwGetTime();
-	m_deltaTime = currentFrame - m_lastFrame;
-	m_lastFrame = currentFrame;
-
 	// activate shader
 	m_objectShader->use();
 	m_objectShader->setVec3("lightColour", glm::vec3{ 1.0f,0.5f,0.31f });
 	m_objectShader->setVec3("objectColour", glm::vec3{ 1.0f,0.5f,0.31f });
 
 	// pass projection matrix to shader (note that in this case it could change every frame)
-	glm::mat4 projection = glm::perspective(glm::radians(m_camera.m_zoom), (float)1920 / (float)1080, 0.1f, 100.0f);
+	glm::mat4 projection{ camera.projectionMatrix() };
 	m_objectShader->setMat4("projection", projection);
 
 	// camera/view transformation
-	glm::mat4 view = m_camera.GetViewMatrix();
+	glm::mat4 view = camera.GetViewMatrix();
 
 	m_objectShader->setMat4("view", view);
 
 	glm::mat4 lightModel{ 1.0f };
 
-	glm::vec3 upMod = m_camera.m_up;
+	glm::vec3 upMod = camera.m_up;
 	upMod *= sin((float)m_frameLoop / 600.0);
-	glm::vec3 rightMod = m_camera.m_up;
+	glm::vec3 rightMod = camera.m_up;
 	upMod *= cos((float)m_frameLoop / 600.0);
 
-	m_lightPos = m_camera.m_position + upMod + rightMod;
+	m_lightPos = camera.m_position + upMod + rightMod;
 
 	lightModel = glm::translate(lightModel, m_lightPos);
 	lightModel = glm::scale(lightModel, glm::vec3{ 0.2f });
 	m_objectShader->setVec3("lightPos", m_lightPos);
-	m_objectShader->setVec3("viewPos", m_camera.m_position);
+	m_objectShader->setVec3("viewPos", camera.m_position);
 
 	// render boxes
 	for (unsigned int i = 0; i < m_cubePositions.size(); i++)

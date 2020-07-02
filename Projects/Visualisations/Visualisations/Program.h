@@ -9,23 +9,30 @@ class Settings_Visualisation;
 class Model_VideoRendering;
 class Model_AudioInterface;
 class Model_Visualisation;
+class Model_ViewportSystem;
 
 struct GLFWwindow;
+
+typedef double Timecode;
 
 class Program
 {
 public:
-	Program(GLFWwindow * window, std::string glslVersion);
+	enum class ProgramMode { Sandbox, Scripted };
+
+	Program(GLFWwindow * window, std::string glslVersion, const ProgramMode & m = ProgramMode::Scripted);
 	~Program();
 
 	void initialise();
 	void deinitialise();
 
-	void run();
+	void run(const ProgramMode & m);
 
 	/* This one way to do it, not very thought through yet. */
 //	void updateGlobalAudioBuffer(std::shared_ptr<LockableBuffer> & buf);
 private:
+	ProgramMode m_mode;
+
 	void interpretMouseInput();
 	void interpretKeyboardInput();
 
@@ -34,12 +41,8 @@ private:
 
 	UserInterface m_interface;
 
-	/* Settings Instances */
-	std::shared_ptr<Settings_VideoRendering> m_settingsVideoRendering;
-	std::shared_ptr<Settings_AudioInterface> m_settingsAudioInterface;
-	std::shared_ptr<Settings_Visualisation> m_settingsVisualisation;
-
 	/* Model Instances */
+	std::shared_ptr<Model_ViewportSystem> m_modelViewportSystem;
 	std::shared_ptr<Model_VideoRendering> m_modelVideoRendering;
 	std::shared_ptr<Model_AudioInterface> m_modelAudioInterface;
 	std::shared_ptr<Model_Visualisation> m_modelVisualisation;

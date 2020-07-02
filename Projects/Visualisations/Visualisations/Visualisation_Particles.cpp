@@ -17,7 +17,6 @@ Visualisation_Particles::Visualisation_Particles()
 	ui_globalSpeed{1.0f}
 	//ui_hSamplesPerFrame{3}
 {
-	m_camera.m_position = glm::vec3{ 0.0,0.0,3.0 };
 }
 
 void Visualisation_Particles::activate()
@@ -38,7 +37,7 @@ void Visualisation_Particles::processSamples(const Buffer& buf, unsigned samples
 {
 }
 
-void Visualisation_Particles::renderFrame()
+void Visualisation_Particles::renderFrame(const Camera& camera, Timecode t)
 {
 	double currentTime{ glfwGetTime() };
 
@@ -46,7 +45,7 @@ void Visualisation_Particles::renderFrame()
 		ps.generate(*m_particleSet,m_lastTime,currentTime);
 	m_particleSet->clearParticles();
 	m_particleSet->moveParticles((currentTime - m_lastTime) * ui_globalSpeed);
-	m_particleSet->draw(m_camera);
+	m_particleSet->draw(camera);
 
 	m_lastTime = currentTime;
 }

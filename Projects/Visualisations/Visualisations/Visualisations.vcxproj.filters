@@ -109,6 +109,9 @@
     <Filter Include="Header Files\Graphics\Engine\Tree">
       <UniqueIdentifier>{6ce35155-9c20-4c21-9b92-5b9c94fb56a6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Graphics\Engine\MappableProperty">
+      <UniqueIdentifier>{1f1df8e0-bab0-49ce-b0b9-4c97a607ef72}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Recorder.cpp">
@@ -210,9 +213,6 @@
     <ClCompile Include="Visualisation_Splinters.cpp">
       <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
     </ClCompile>
-    <ClCompile Include="Visualisation.cpp">
-      <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
-    </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -251,6 +251,12 @@
     </ClCompile>
     <ClCompile Include="CameraSystem.cpp">
       <Filter>Source Files\Graphics\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_ViewportSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Window_ViewportSystem.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -418,6 +424,15 @@
     </ClInclude>
     <ClInclude Include="CameraSystem.h">
       <Filter>Header Files\Graphics\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="MappableProperty.h">
+      <Filter>Header Files\Graphics\Engine\MappableProperty</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_ViewportSystem.h">
+      <Filter>Header Files\Program\Controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="Window_ViewportSystem.h">
+      <Filter>Header Files\UI\Windows</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

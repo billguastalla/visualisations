@@ -1,10 +1,7 @@
 #include "Window_Visualisation.h"
-
 #include "Model_Visualisation.h"
 
-#include "imgui/imgui.h"
-#include "imgui/examples/imgui_impl_glfw.h"
-#include "imgui/examples/imgui_impl_opengl3.h"
+#include <imgui/imgui.h>
 
 Window_Visualisation::Window_Visualisation(std::shared_ptr<Model_Visualisation> & visualisation)
 	: m_visualisation{visualisation}
@@ -24,13 +21,6 @@ void Window_Visualisation::draw()
 	int sel = m_visualisation->currentVisualisationIndex();
 	std::string visOpts = m_visualisation->visualisationOptionsString();
 	ImGui::Combo("",&sel, &visOpts[0]);
-
-	glm::vec3 cPos = m_visualisation->currentVisualisation()->cameraPosition();
-	ImGui::Text("\tFramerate: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	ImGui::Text(std::string{"Camera Position = {" +
-		std::to_string(cPos.x).substr(0,5) + ", " +
-		std::to_string(cPos.y).substr(0,5) + ", " +
-		std::to_string(cPos.z).substr(0,5) + "} "}.c_str());
 
 	ImGui::Text("Post Processing:");
 	/* Post-processing details: */

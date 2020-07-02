@@ -45,7 +45,7 @@ public:
 			-> Handle the width/height of the framebuffer, and permit/forbid modification of
 				width & height during recording
 	*/
-	Model_VideoRendering(std::shared_ptr<Settings_VideoRendering> & settings, GLFWwindow * window);
+	Model_VideoRendering(GLFWwindow * window);
 	~Model_VideoRendering();
 
 	void renderFrame();
@@ -76,7 +76,6 @@ public:
 	const int combo_OPTToFR(int opt) const;
 
 private:
-	std::shared_ptr<Settings_VideoRendering> m_settings;
 	std::shared_ptr<FFMPEG_Encoder> m_encoder;
 
 	/* UI Values */

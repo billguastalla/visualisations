@@ -179,6 +179,7 @@
     <ClCompile Include="MeshGenerator.cpp" />
     <ClCompile Include="Model_AudioInterface.cpp" />
     <ClCompile Include="Model_VideoRendering.cpp" />
+    <ClCompile Include="Model_ViewportSystem.cpp" />
     <ClCompile Include="Model_Visualisation.cpp" />
     <ClCompile Include="FFMPEG_Encoder.cpp" />
     <ClCompile Include="ParticleSet.cpp" />
@@ -190,7 +191,6 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Trajectory.cpp" />
     <ClCompile Include="Tree.cpp" />
-    <ClCompile Include="Visualisation.cpp" />
     <ClCompile Include="Visualisation_Fractal.cpp" />
     <ClCompile Include="Visualisation_GameOfLife.cpp" />
     <ClCompile Include="Visualisation_GOL\GameOfLife_Game.cpp" />
@@ -212,6 +212,7 @@
     <ClCompile Include="Recorder.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Window_ViewportSystem.cpp" />
     <ClCompile Include="Window_Visualisation.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -228,6 +229,8 @@
     <ClInclude Include="CameraSystem.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="GeometryTools.h" />
+    <ClInclude Include="MappableProperty.h" />
+    <ClInclude Include="Model_ViewportSystem.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Trajectory.h" />
     <ClInclude Include="ParticleSet.h" />
@@ -269,6 +272,7 @@
     <ClInclude Include="Visualisation_Oscilloscope.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Vertex.h" />
+    <ClInclude Include="Window_ViewportSystem.h" />
     <ClInclude Include="Window_Visualisation.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

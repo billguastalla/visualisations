@@ -22,7 +22,7 @@ public:
 	void deactivate() override;
 
 	void processSamples(const Buffer& buf, unsigned samples) override;
-	void renderFrame() override;
+	void renderFrame(const Camera& camera, Timecode t) override;
 	std::string titleString() override { return "N-D Game of Life"; };
 
 

@@ -21,7 +21,7 @@ struct CameraPos
 // NOTE: Unused, pending deletion.
 CameraPos interpolation(const CameraPos& p1, const CameraPos& p2, float f_t);
 
-struct Interpolation // TODO: Allow different coefficient sizes in UI
+struct Interpolation // TODO: Allow different coefficient sizes in UI. // NOTE: This is a misnomer, it's an R1->R1 function.
 {
 	enum class FunctionType { Polynomial, Exponential, Sinusoidal };
 	Interpolation() : m_functionType{ FunctionType::Polynomial }, m_coefficients{ {0.f,1.f,0.f,0.f} } {}
@@ -48,7 +48,7 @@ class CameraSystem
 {
 public:
 	CameraSystem() : m_positionEvents{}, m_rotationEvents{} {}
-	CameraPos cameraPos(const CameraPos & start, float t) const;
+	CameraPos cameraPos(float t) const;
 	glm::vec3 positionTransformation(float t) const;
 	glm::quat rotationTransformation(float t) const; // order of simultaneous rotations is made by start time.
 

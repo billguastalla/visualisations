@@ -81,20 +81,20 @@ void Visualisation_Splinters::processSamples(const Buffer& buf, unsigned samples
 
 }
 
-void Visualisation_Splinters::renderFrame()
+void Visualisation_Splinters::renderFrame(const Camera& camera, Timecode t)
 {
-	glm::mat4 projection = glm::perspective(glm::radians(m_camera.m_zoom), (float)1920 / (float)1080, 0.1f, 100.0f);
+	glm::mat4 projection{ camera.projectionMatrix() };
 	m_objectShader->setMat4("projection", projection);
 
 	// camera/view transformation
-	glm::mat4 view = m_camera.GetViewMatrix();
+	glm::mat4 view = camera.GetViewMatrix();
 	glm::mat4 model{ 1.0f };
 
 	m_objectShader->setVec3("lightColour", glm::vec3{ 1.0f,1.0f,1.0f });
 	m_objectShader->setVec3("objectColour", glm::vec3{ 0.1f,0.15f,0.31f });
 	m_objectShader->setMat4("view", view);
 	m_objectShader->setVec3("lightPos", glm::vec3{ 2.0,2.0,2.0 });
-	m_objectShader->setVec3("viewPos", m_camera.m_position);
+	m_objectShader->setVec3("viewPos", camera.m_position);
 	m_objectShader->setMat4("model", model);
 
 	m_objectShader->use();

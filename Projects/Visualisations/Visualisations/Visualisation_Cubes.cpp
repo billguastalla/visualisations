@@ -130,23 +130,19 @@ void Visualisation_Cubes::processSamples(const Buffer & buf, unsigned samples)
 {
 }
 
-void Visualisation_Cubes::renderFrame()
+void Visualisation_Cubes::renderFrame(const Camera& camera, Timecode t)
 {
-	float currentFrame = (float)glfwGetTime();
-	m_deltaTime = currentFrame - m_lastFrame;
-	m_lastFrame = currentFrame;
-
 	// activate shader
 	m_objectShader->use();
 	m_objectShader->setVec3("lightColour", glm::vec3{ 1.0f,0.5f,0.31f });
 	m_objectShader->setVec3("objectColour", glm::vec3{ 1.0f,0.5f,0.31f });
 
 	// pass projection matrix to shader (note that in this case it could change every frame)
-	glm::mat4 projection = glm::perspective(glm::radians(m_camera.m_zoom), (float)1920 / (float)1080, 0.1f, 100.0f);
+	glm::mat4 projection{ camera.projectionMatrix() };
 	m_objectShader->setMat4("projection", projection);
 
 	// camera/view transformation
-	glm::mat4 view = m_camera.GetViewMatrix();
+	glm::mat4 view = camera.GetViewMatrix();
 	m_objectShader->setMat4("view", view);
 
 	glm::mat4 lightModel{ 1.0f };
@@ -154,7 +150,7 @@ void Visualisation_Cubes::renderFrame()
 	lightModel = glm::translate(lightModel, m_lightPos);
 	lightModel = glm::scale(lightModel, glm::vec3{ 0.2f });
 	m_objectShader->setVec3("lightPos", m_lightPos);
-	m_objectShader->setVec3("viewPos", m_camera.m_position);
+	m_objectShader->setVec3("viewPos", camera.m_position);
 		   
 	// render boxes
 	glBindVertexArray(m_cubeVAO);

@@ -36,9 +36,4 @@ void Window_AVIO::draw()
 
 	ImGui::End();
 
-
-
-
-
-	std::shared_ptr<Settings_AudioInterface> settings =  m_audioInterface->settings();
 }

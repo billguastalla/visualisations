@@ -4,6 +4,7 @@
 #include "Settings_AudioInterface.h"
 #include "Settings_Visualisation.h"
 
+#include "Model_ViewportSystem.h"
 #include "Model_VideoRendering.h"
 #include "Model_AudioInterface.h"
 #include "Model_Visualisation.h"
@@ -11,16 +12,20 @@
 #include "Window_VideoRendering.h"
 #include "Window_AudioInterface.h"
 #include "Window_Visualisation.h"
+#include "Window_ViewportSystem.h"
 
 #include <glad\glad.h>
 #include <GLFW\glfw3.h>
 
 #include <imgui/imgui.h>
 
-Program::Program(GLFWwindow* window, std::string glslVersion)
+/* Try to ensure nothing below program level knows about GLFWwindow */
+
+Program::Program(GLFWwindow* window, std::string glslVersion, const ProgramMode & m)
 	: m_window{ window },
 	m_interface{},
-	m_glslVersion{ glslVersion }
+	m_glslVersion{ glslVersion },
+	m_mode{m}
 {
 
 }
@@ -34,24 +39,22 @@ void Program::initialise()
 {
 	m_interface.initialise(m_window, m_glslVersion.c_str());
 
-	/* Set up settings instances */
-	m_settingsVideoRendering = std::shared_ptr<Settings_VideoRendering>{ new Settings_VideoRendering{} };
-	m_settingsAudioInterface = std::shared_ptr<Settings_AudioInterface>{ new Settings_AudioInterface{} };
-	m_settingsVisualisation = std::shared_ptr<Settings_Visualisation>{ new Settings_Visualisation{} };
-
 	/* Set up Model instances */
-	m_modelVideoRendering = std::shared_ptr<Model_VideoRendering>{ new Model_VideoRendering{ m_settingsVideoRendering, m_window } };
-	m_modelAudioInterface = std::shared_ptr<Model_AudioInterface>{ new Model_AudioInterface{ m_settingsAudioInterface } };
-	m_modelVisualisation = std::shared_ptr<Model_Visualisation>{ new Model_Visualisation{ m_settingsVisualisation ,m_window} };
+	m_modelViewportSystem = std::shared_ptr<Model_ViewportSystem>{ new Model_ViewportSystem{m_window} };
+	m_modelVideoRendering = std::shared_ptr<Model_VideoRendering>{ new Model_VideoRendering{ m_window } };
+	m_modelAudioInterface = std::shared_ptr<Model_AudioInterface>{ new Model_AudioInterface{ } };
+	m_modelVisualisation = std::shared_ptr<Model_Visualisation>{ new Model_Visualisation{ m_window} };
 
 	/* Set up window instances */
 	Window_Abstract* videoRenderWindow = new Window_VideoRendering{ m_modelVideoRendering };
 	Window_Abstract* audioInterfaceWindow = new Window_AVIO{ m_modelAudioInterface };
 	Window_Abstract* visualisationWindow = new Window_Visualisation{ m_modelVisualisation };
+	Window_Abstract* viewportSystemWindow = new Window_ViewportSystem{ m_modelViewportSystem };
 
 	m_interface.addWindow(videoRenderWindow);
 	m_interface.addWindow(audioInterfaceWindow);
 	m_interface.addWindow(visualisationWindow);
+	m_interface.addWindow(viewportSystemWindow);
 
 
 	glEnable(GL_DEPTH_TEST);
@@ -63,11 +66,14 @@ void Program::deinitialise()
 	m_interface.deinitialise();
 }
 
-void Program::run()
+void Program::run(const ProgramMode& m)
 {
 	// Main loop
 	while (!glfwWindowShouldClose(m_window))
 	{
+		Timecode t{ glfwGetTime() };
+		Camera c{ m_modelViewportSystem->camera() };
+
 		//Gist<float> audioAnalysis{ buf.framecountPerChannel(),test.sampleRate() };
 		//audioAnalysis.processAudioFrame(buf.data(0));
 
@@ -90,7 +96,7 @@ void Program::run()
 		interpretKeyboardInput();
 
 		/* Draw the current visualisation. */
-		m_modelVisualisation->runVisualisation();
+		m_modelVisualisation->runVisualisation(c,t);
 		/* If user wants to see UI in the video output, draw the interface before rendering a video frame. */
 		if (m_modelVideoRendering->renderUI())
 		{
@@ -124,9 +130,7 @@ void Program::interpretMouseInput()
 		double xPos{ 0.0 }, yPos{ 0.0 };
 		glfwGetCursorPos(m_window, &xPos, &yPos);
 
-		m_modelVisualisation->currentVisualisation()->mouseMovement(xPos, yPos, leftMouse == 1);
-
-		//m_modelVisualisation->currentVisualisation()->camera().ProcessMouseMovement();
+		m_modelViewportSystem->mouseMovement(xPos, yPos, leftMouse == 1);
 	}
 }
 
@@ -161,11 +165,7 @@ void Program::interpretKeyboardInput()
 			cm += (int)Camera_Movement::DECREASE_MOVEMENT_SPEED;
 		if (zero == GLFW_PRESS)
 			cm += (int)Camera_Movement::RESET_POSITION;
-		m_modelVisualisation->currentVisualisation()->keyMovement((Camera_Movement)cm);
+		m_modelViewportSystem->keyMovement((Camera_Movement)cm);
 	}
 }
 
-//void Program::updateGlobalAudioBuffer(std::shared_ptr<LockableBuffer>& buf)
-//{
-//	m_modelVisualisation->setBuffer(buf);
-//}

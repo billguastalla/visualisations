@@ -23,7 +23,7 @@ public:
 			-> Render frame : draw the gl objects to the framebuffer
 	*/
 	void processSamples(const Buffer & buf, unsigned samples) override;
-	void renderFrame() override;
+	void renderFrame(const Camera& camera, Timecode t) override;
 
 	std::string titleString() override { return "Oscilloscope"; };
 private:

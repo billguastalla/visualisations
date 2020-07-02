@@ -66,9 +66,9 @@ float InterpolatedEvent::value(float t)
 		: 0.f;
 }
 
-CameraPos CameraSystem::cameraPos(const CameraPos& start, float t) const
+CameraPos CameraSystem::cameraPos(float t) const
 {
-	CameraPos result{ start };
+	CameraPos result{};
 	result.orientation *= rotationTransformation(t);
 	result.position += positionTransformation(t);
 	return result;
