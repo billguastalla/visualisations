@@ -313,8 +313,6 @@ void MeshGenerator::generateConnector(unsigned int res,
 
 std::vector<glm::vec3> MeshGenerator::generateMandelbulb(unsigned int res, double n, glm::vec3 initialPos)
 {
-
-
 	//// WIKIPEDIA
 	auto theta = [](double x, double y, double z) {
 		return std::atan(sqrt((x * x) + (y * y)) / z);

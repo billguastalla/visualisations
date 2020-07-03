@@ -128,7 +128,7 @@ void CameraSystem::drawUI()
 
 	ImGui::Text("Position Events");
 	ImGui::SameLine();
-	bool addPostition{ ImGui::Button("+") };
+	bool addPostition{ ImGui::Button("+p") };
 	for (PositionEvent& p : m_positionEvents)
 	{
 		p.first.drawUI();
@@ -137,7 +137,7 @@ void CameraSystem::drawUI()
 	}
 	ImGui::Text("Rotation Events");
 	ImGui::SameLine();
-	bool addRotation{ ImGui::Button("+") };
+	bool addRotation{ ImGui::Button("+r") };
 	for (RotationEvent& r : m_rotationEvents)
 	{
 		r.first.drawUI();
@@ -162,5 +162,8 @@ void CameraSystem::drawUI()
 	if (addPostition)
 		m_positionEvents.push_back(PositionEvent{});
 	if (addRotation)
+	{
 		m_rotationEvents.push_back(RotationEvent{});
+		m_rotationEvents.back().second.resize(1);
+	}
 }

@@ -3,7 +3,6 @@
 
 #include <glad\glad.h>
 #include <GLFW/glfw3.h>
-
 #include "imgui/imgui.h"
 #include "imgui/examples/imgui_impl_glfw.h"
 #include "imgui/examples/imgui_impl_opengl3.h"
@@ -14,7 +13,6 @@ UserInterface::UserInterface()
 	:
 	m_showMainWindow{ true },
 	m_windows{},
-
 	m_clearColour{ {0.11f,0.24f,0.35f,1.0f} }
 {
 }

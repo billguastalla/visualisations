@@ -178,6 +178,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshGenerator.cpp" />
     <ClCompile Include="Model_AudioInterface.cpp" />
+    <ClCompile Include="Model_Scene.cpp" />
     <ClCompile Include="Model_VideoRendering.cpp" />
     <ClCompile Include="Model_ViewportSystem.cpp" />
     <ClCompile Include="Model_Visualisation.cpp" />
@@ -185,6 +186,7 @@
     <ClCompile Include="ParticleSet.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="PostProcessing.cpp" />
+    <ClCompile Include="Session.cpp" />
     <ClCompile Include="Settings_AudioInterface.cpp" />
     <ClCompile Include="Settings_VideoRendering.cpp" />
     <ClCompile Include="Settings_Visualisation.cpp" />
@@ -203,6 +205,8 @@
     <ClCompile Include="Visualisation_TreeField.cpp" />
     <ClCompile Include="Window_Abstract.cpp" />
     <ClCompile Include="Window_AudioInterface.cpp" />
+    <ClCompile Include="Window_Transport.cpp" />
+    <ClCompile Include="Window_Transport.h" />
     <ClCompile Include="Window_VideoRendering.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="UserInterface.cpp" />
@@ -230,8 +234,11 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="GeometryTools.h" />
     <ClInclude Include="MappableProperty.h" />
+    <ClInclude Include="Model_Scene.h" />
+    <ClInclude Include="Model_Transport.h" />
     <ClInclude Include="Model_ViewportSystem.h" />
     <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="Session.h" />
     <ClInclude Include="Trajectory.h" />
     <ClInclude Include="ParticleSet.h" />
     <ClInclude Include="Scene.h" />

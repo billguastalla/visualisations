@@ -8,11 +8,13 @@
 #include "Model_VideoRendering.h"
 #include "Model_AudioInterface.h"
 #include "Model_Visualisation.h"
+#include "Model_Transport.h"
 
 #include "Window_VideoRendering.h"
 #include "Window_AudioInterface.h"
 #include "Window_Visualisation.h"
 #include "Window_ViewportSystem.h"
+#include "Window_Transport.h"
 
 #include <glad\glad.h>
 #include <GLFW\glfw3.h>
@@ -20,19 +22,16 @@
 #include <imgui/imgui.h>
 
 /* Try to ensure nothing below program level knows about GLFWwindow */
-
-Program::Program(GLFWwindow* window, std::string glslVersion, const ProgramMode & m)
+Program::Program(GLFWwindow* window, std::string glslVersion, const ProgramMode& m)
 	: m_window{ window },
 	m_interface{},
 	m_glslVersion{ glslVersion },
-	m_mode{m}
+	m_mode{ m }
 {
-
 }
 
 Program::~Program()
 {
-
 }
 
 void Program::initialise()
@@ -44,82 +43,101 @@ void Program::initialise()
 	m_modelVideoRendering = std::shared_ptr<Model_VideoRendering>{ new Model_VideoRendering{ m_window } };
 	m_modelAudioInterface = std::shared_ptr<Model_AudioInterface>{ new Model_AudioInterface{ } };
 	m_modelVisualisation = std::shared_ptr<Model_Visualisation>{ new Model_Visualisation{ m_window} };
+	m_modelTransport = std::shared_ptr<Model_Transport>{ new Model_Transport{} };
 
 	/* Set up window instances */
 	Window_Abstract* videoRenderWindow = new Window_VideoRendering{ m_modelVideoRendering };
 	Window_Abstract* audioInterfaceWindow = new Window_AVIO{ m_modelAudioInterface };
 	Window_Abstract* visualisationWindow = new Window_Visualisation{ m_modelVisualisation };
 	Window_Abstract* viewportSystemWindow = new Window_ViewportSystem{ m_modelViewportSystem };
+	Window_Abstract* transportWindow = new Window_Transport{ m_modelTransport };
 
 	m_interface.addWindow(videoRenderWindow);
 	m_interface.addWindow(audioInterfaceWindow);
 	m_interface.addWindow(visualisationWindow);
 	m_interface.addWindow(viewportSystemWindow);
-
+	m_interface.addWindow(transportWindow);
 
 	glEnable(GL_DEPTH_TEST);
 }
 
 void Program::deinitialise()
 {
-
 	m_interface.deinitialise();
 }
 
-void Program::run(const ProgramMode& m)
+void Program::run()
 {
 	// Main loop
 	while (!glfwWindowShouldClose(m_window))
 	{
-		Timecode t{ glfwGetTime() };
-		Camera c{ m_modelViewportSystem->camera() };
-
-		//Gist<float> audioAnalysis{ buf.framecountPerChannel(),test.sampleRate() };
-		//audioAnalysis.processAudioFrame(buf.data(0));
-
-		// Poll and handle events (inputs, window resize, etc.)
-		// You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
-		// - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
-		// - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
-		// Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
-		glfwPollEvents();
-
-		/* Later we can pass the interval in samples/ms per frame here*/
-		/* Should the Program class care about the check for the record state? */
-		if (m_modelAudioInterface->streamRunning())
-		{
-			Buffer currentAudio = m_modelAudioInterface->buffer();
-			m_modelVisualisation->processAudio(currentAudio);
-			//m_modelVideoRendering->processAudio();
-		}
-		interpretMouseInput();
-		interpretKeyboardInput();
-
-		/* Draw the current visualisation. */
-		m_modelVisualisation->runVisualisation(c,t);
-		/* If user wants to see UI in the video output, draw the interface before rendering a video frame. */
-		if (m_modelVideoRendering->renderUI())
-		{
-			m_interface.render();
-			m_modelVideoRendering->renderFrame();
-		}
-		else
-		{
-			m_modelVideoRendering->renderFrame();
-			m_interface.render();
-		}
-
-		glfwMakeContextCurrent(m_window);
-		glfwSwapBuffers(m_window);
-
-		std::vector<float> backgroundColour = m_interface.backgroundColour();
-		if (backgroundColour.size() >= 4)
-			glClearColor(backgroundColour[0], backgroundColour[1], backgroundColour[2], backgroundColour[3]);
-		else
-			glClearColor(0.3f, 0.4f, 0.1f, 1.0f);
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		while (m_mode == ProgramMode::Sandbox && !glfwWindowShouldClose(m_window))
+			runSandbox();
+		while (m_mode == ProgramMode::Scripted && !glfwWindowShouldClose(m_window))
+			runScripted();
 	}
+}
+
+void Program::runSandbox()
+{
+	Timecode t{ m_modelTransport->time() };
+
+	if (!m_modelViewportSystem->freeCamera())
+		m_modelViewportSystem->processCamera(t); // Update camerapos according to camera system if locked camera.
+
+	Camera c{ m_modelViewportSystem->camera() };
+
+	//Gist<float> audioAnalysis{ buf.framecountPerChannel(),test.sampleRate() };
+	//audioAnalysis.processAudioFrame(buf.data(0));
+
+	// Poll and handle events (inputs, window resize, etc.)
+	// You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
+	// - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
+	// - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
+	// Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
+	glfwPollEvents();
+
+	/* Later we can pass the interval in samples/ms per frame here*/
+	/* Should the Program class care about the check for the record state? */
+	if (m_modelAudioInterface->streamRunning())
+	{
+		Buffer currentAudio = m_modelAudioInterface->buffer();
+		m_modelVisualisation->processAudio(currentAudio);
+		//m_modelVideoRendering->processAudio();
+	}
+	interpretMouseInput();
+	interpretKeyboardInput();
+
+	/* Draw the current visualisation. */
+	m_modelVisualisation->runVisualisation(c, t);
+	/* If user wants to see UI in the video output, draw the interface before rendering a video frame. */
+	if (m_modelVideoRendering->renderUI())
+	{
+		m_interface.render();
+		m_modelVideoRendering->renderFrame();
+	}
+	else
+	{
+		m_modelVideoRendering->renderFrame();
+		m_interface.render();
+	}
+
+	glfwMakeContextCurrent(m_window);
+	glfwSwapBuffers(m_window);
+
+	std::vector<float> backgroundColour = m_interface.backgroundColour();
+	if (backgroundColour.size() >= 4)
+		glClearColor(backgroundColour[0], backgroundColour[1], backgroundColour[2], backgroundColour[3]);
+	else
+		glClearColor(0.3f, 0.4f, 0.1f, 1.0f);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	m_modelTransport->nextFrame();
+}
+
+void Program::runScripted()
+{
 }
 
 void Program::interpretMouseInput()

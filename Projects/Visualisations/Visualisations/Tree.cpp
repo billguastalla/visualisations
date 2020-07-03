@@ -2,10 +2,8 @@
 // stack overflow on using distributions in recursive functions.
 // lesson: only use recursion when necessary. can build properties in the tree
 // without packing up the stack.
-
 Tree::Tree()
-	:
-	m_nodes{}
+	: m_nodes{}
 {
 }
 
@@ -53,7 +51,7 @@ const std::vector<glm::vec3> & Tree::vertices() const
 {
 	if (m_vertexCache.empty())
 	{
-		for (Node* n : m_nodes)
+		for (Node * n : m_nodes)
 		{
 			glm::vec3 base{ n->base() };
 			glm::vec3 arrow{ n->m_branchArrow };

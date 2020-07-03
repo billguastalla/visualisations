@@ -1,7 +1,7 @@
 
 #include "Window_ViewportSystem.h"
 #include "Model_ViewportSystem.h"
-
+#include "CameraSystem.h"
 #include <imgui/imgui.h>
 
 Window_ViewportSystem::Window_ViewportSystem(std::shared_ptr<Model_ViewportSystem>& viewport)
@@ -15,12 +15,20 @@ Window_ViewportSystem::~Window_ViewportSystem()
 
 void Window_ViewportSystem::draw()
 {
-	glm::vec3 cPos = m_viewportSystem->cameraPosition();
+	ImGui::Begin(windowTitle().c_str());
+
+	bool f{ m_viewportSystem->freeCamera() };
+	ImGui::Checkbox("Free Camera", &f);
+	m_viewportSystem->setFreeCamera(f);
+
+	glm::vec3 cPos = m_viewportSystem->camera().m_position;
 	ImGui::Text("\tFramerate: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	ImGui::Text(std::string{ "Camera Position = {" +
 		std::to_string(cPos.x).substr(0,5) + ", " +
 		std::to_string(cPos.y).substr(0,5) + ", " +
 		std::to_string(cPos.z).substr(0,5) + "} " }.c_str());
+
+	m_viewportSystem->cameraSystem().drawUI();
 
 	//ImGui::Text("Post Processing:");
 	///* Post-processing details: */
@@ -64,9 +72,6 @@ void Window_ViewportSystem::draw()
 	//ImGui::Text(s.c_str());
 	//m_visualisation->currentVisualisation()->drawInterface();
 
-
-	//ImGui::End();
-
-
 	//m_visualisation->setVisualisation(sel);
+	ImGui::End();
 }

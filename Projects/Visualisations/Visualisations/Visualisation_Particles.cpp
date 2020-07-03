@@ -39,15 +39,14 @@ void Visualisation_Particles::processSamples(const Buffer& buf, unsigned samples
 
 void Visualisation_Particles::renderFrame(const Camera& camera, Timecode t)
 {
-	double currentTime{ glfwGetTime() };
 
 	for (auto ps : m_particleSystems)
-		ps.generate(*m_particleSet,m_lastTime,currentTime);
+		ps.generate(*m_particleSet,m_lastTime,t);
 	m_particleSet->clearParticles();
-	m_particleSet->moveParticles((currentTime - m_lastTime) * ui_globalSpeed);
+	m_particleSet->moveParticles((t - m_lastTime) * ui_globalSpeed);
 	m_particleSet->draw(camera);
 
-	m_lastTime = currentTime;
+	m_lastTime = t;
 }
 
 void Visualisation_Particles::drawInterface()

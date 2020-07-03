@@ -26,8 +26,7 @@ Model_Visualisation::Model_Visualisation(GLFWwindow* win)
 	glfwGetWindowSize(win, &w, &h);
 	m_postProcessing->initialise(w,h);
 
-	//m_vis_cubes.activate(); /* At some point you'll want to activate/deactivate on switching modes.*/
-	//m_vis_oscilloscope.activate();
+	/* At some point you'll want to activate/deactivate on switching modes.*/
 	Visualisation_Cubes * visCubes = new Visualisation_Cubes{};
 	Visualisation_Oscilloscope * visOscilloscope = new Visualisation_Oscilloscope{};
 	Visualisation_PointClouds * visPointClouds = new Visualisation_PointClouds{};
@@ -41,7 +40,6 @@ Model_Visualisation::Model_Visualisation(GLFWwindow* win)
 		on account of the increased total memory demands of visualisations.
 		See: void Model_Visualisation::setVisualisation(int option)
 	*/
-
 	visCubes->activate();
 
 	m_visualisations.push_back(visCubes);

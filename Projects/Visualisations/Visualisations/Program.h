@@ -10,41 +10,40 @@ class Model_VideoRendering;
 class Model_AudioInterface;
 class Model_Visualisation;
 class Model_ViewportSystem;
+class Model_Transport;
 
 struct GLFWwindow;
 
-typedef double Timecode;
 
 class Program
 {
 public:
 	enum class ProgramMode { Sandbox, Scripted };
 
-	Program(GLFWwindow * window, std::string glslVersion, const ProgramMode & m = ProgramMode::Scripted);
+	Program(GLFWwindow* window, std::string glslVersion, const ProgramMode& m = ProgramMode::Sandbox);
 	~Program();
 
 	void initialise();
 	void deinitialise();
 
-	void run(const ProgramMode & m);
-
-	/* This one way to do it, not very thought through yet. */
-//	void updateGlobalAudioBuffer(std::shared_ptr<LockableBuffer> & buf);
+	void run();
 private:
-	ProgramMode m_mode;
-
+	void runSandbox(); // I don't think this is a good method.
+	void runScripted();
 	void interpretMouseInput();
 	void interpretKeyboardInput();
 
-	GLFWwindow * m_window;
-	std::string m_glslVersion;
-
 	UserInterface m_interface;
 
-	/* Model Instances */
+	ProgramMode m_mode;
+	GLFWwindow* m_window;
+	std::string m_glslVersion;
+
+	// NOTE:	Model is a misnomer really. It's a top-level item large enough to have a separation of
+	//			concerns between its functionality and its gui.
 	std::shared_ptr<Model_ViewportSystem> m_modelViewportSystem;
 	std::shared_ptr<Model_VideoRendering> m_modelVideoRendering;
 	std::shared_ptr<Model_AudioInterface> m_modelAudioInterface;
 	std::shared_ptr<Model_Visualisation> m_modelVisualisation;
+	std::shared_ptr<Model_Transport> m_modelTransport;
 };
-

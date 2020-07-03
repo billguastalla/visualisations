@@ -14,7 +14,6 @@ static void glfw_error_callback(int error, const char* description)
 static int mainInit(GLFWwindow * & window, int width, int height)
 {
 	// TODO: Platform-specific get for window resolution, pass it into screen.
-
 	glfwSetErrorCallback(glfw_error_callback);
 
 	// true == 1, false == 0
@@ -64,7 +63,7 @@ int main(int, char**)
 	std::string glsl_version{ "#version 330" };
 	Program program{ window, glsl_version};
 	program.initialise();
-	program.run(Program::ProgramMode::Sandbox);
+	program.run();
 	program.deinitialise();
 
 	mainDeinit(window);

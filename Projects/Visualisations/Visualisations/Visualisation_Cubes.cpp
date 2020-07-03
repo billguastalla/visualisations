@@ -146,7 +146,7 @@ void Visualisation_Cubes::renderFrame(const Camera& camera, Timecode t)
 	m_objectShader->setMat4("view", view);
 
 	glm::mat4 lightModel{ 1.0f };
-	m_lightPos = glm::vec3(5 * sin(0.1 * glfwGetTime()), 10 * cos(glfwGetTime()), 10 * sin(glfwGetTime()));
+	m_lightPos = glm::vec3(5 * sin(0.1 * t), 10 * cos(t), 10 * sin(t));
 	lightModel = glm::translate(lightModel, m_lightPos);
 	lightModel = glm::scale(lightModel, glm::vec3{ 0.2f });
 	m_objectShader->setVec3("lightPos", m_lightPos);
