@@ -20,7 +20,6 @@ public:
 	bool create();
 	bool open(std::string file);
 	bool save();
-	bool saveas();
 	bool close();
 
 	const SessionState& state() { return m_state; };

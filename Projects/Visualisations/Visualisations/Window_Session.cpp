@@ -3,14 +3,18 @@
 #include <imgui/imgui.h>
 
 Window_Session::Window_Session(std::shared_ptr<Model_Session>& session)
-	: m_session{session}
+	: m_session{session},
+	ui_fileName{},
+	ui_filePath{},
+	ui_title{}
 {
 }
 
 void Window_Session::draw()
 {
 	auto strToCharArray = [](const std::string& str, char chr[256]) {
-		for (unsigned i = 0; i < 255u && i < str.size(); ++i)
+		size_t s{ str.size() };
+		for (unsigned i = 0; i < 255u && i < s; ++i)
 			chr[i] = str[i];
 	};
 	strToCharArray(m_session->filename(), ui_fileName);
@@ -30,10 +34,17 @@ void Window_Session::draw()
 	if (filePath != m_session->filepath())
 		m_session->setFilepath(filePath);
 
-	ImGui::Button("open");
+	if (ImGui::Button("new"))
+		m_session->create();
+	ImGui::SameLine();
+	if (ImGui::Button("open"))
+		m_session->open("");
 	ImGui::SameLine();
 	if (ImGui::Button("save"))
 		m_session->save();
+	ImGui::SameLine();
+	if (ImGui::Button("close"))
+		m_session->close();
 
 	ImGui::End();
 }

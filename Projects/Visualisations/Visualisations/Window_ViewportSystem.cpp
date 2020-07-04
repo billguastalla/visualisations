@@ -22,7 +22,7 @@ void Window_ViewportSystem::draw()
 	m_viewportSystem->setFreeCamera(f);
 
 	glm::vec3 cPos = m_viewportSystem->camera().m_position;
-	ImGui::Text("\tFramerate: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	ImGui::Text("\tFramerate: %.3f ms/frame (%.1f fps)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	ImGui::Text(std::string{ "Camera Position = {" +
 		std::to_string(cPos.x).substr(0,5) + ", " +
 		std::to_string(cPos.y).substr(0,5) + ", " +
