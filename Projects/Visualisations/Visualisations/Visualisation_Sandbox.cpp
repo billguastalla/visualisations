@@ -125,7 +125,7 @@ void Visualisation_Sandbox::processSamples(const Buffer & buf, unsigned samples)
 
 	if (m_frameCounter % 10 == 0)
 	{
-		int size = std::floor(std::sqrt((float)buf.maxChannelFrameCount()));
+		int size = (int)std::floor(std::sqrt((float)buf.maxChannelFrameCount()));
 		size--;
 
 		std::deque<float> lc = buf.data(0);
@@ -143,7 +143,7 @@ void Visualisation_Sandbox::processSamples(const Buffer & buf, unsigned samples)
 	//m_bottomModelMat = glm::scale(m_bottomModelMat, glm::vec3{ 1.0,1.0,1.0 + min });
 }
 
-void Visualisation_Sandbox::renderFrame()
+void Visualisation_Sandbox::renderFrame(const Camera& camera, Timecode t)
 {
 	++m_frameCounter;
 	if (m_frameCounter % 100 == 0)
@@ -157,10 +157,10 @@ void Visualisation_Sandbox::renderFrame()
 	m_objectShader->setVec3("lightColour", glm::vec3{ 0.9f,0.8f,0.81f });
 
 	// pass projection matrix to shader (note that in this case it could change every frame)
-	glm::mat4 projection = glm::perspective(glm::radians(m_camera.m_zoom), (float)1920 / (float)1080, 0.1f, 100.0f);
+	glm::mat4 projection{ camera.projectionMatrix() };
 
 	// camera/view transformation
-	glm::mat4 view = m_camera.GetViewMatrix();
+	glm::mat4 view = camera.GetViewMatrix();
 
 	m_objectShader->setMat4("projection", projection);
 	m_objectShader->setMat4("view", view);
@@ -168,11 +168,11 @@ void Visualisation_Sandbox::renderFrame()
 
 
 	glm::mat4 lightModel{ 1.0f };
-	m_lightPos = glm::vec3(20 * cos(0.4 * glfwGetTime()), 0, 20 * sin(0.4 * glfwGetTime()));
+	m_lightPos = glm::vec3(20 * cos(0.4 * t), 0, 20 * sin(0.4 * t));
 	lightModel = glm::translate(lightModel, m_lightPos);
 	lightModel = glm::scale(lightModel, glm::vec3{ 0.2f });
 	m_objectShader->setVec3("lightPos", m_lightPos);
-	m_objectShader->setVec3("viewPos", m_camera.m_position);
+	m_objectShader->setVec3("viewPos", camera.m_position);
 
 
 
@@ -225,7 +225,7 @@ void Visualisation_Sandbox::renderFrame()
 	m_lightMesh.draw(m_objectShader);
 
 
-	m_morph.interpolate(m_templateCone, m_templateSphere, abs(sin(0.2 * glfwGetTime())));
+	m_morph.interpolate(m_templateCone, m_templateSphere, abs(sin(0.2 * t)));
 	m_objectShader->setVec3("objectColour", glm::vec3{ 0.5f,0.2f,0.8f });
 
 

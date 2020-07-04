@@ -2,46 +2,46 @@
 #include "UserInterface.h"
 #include "Recorder.h"
 
-class Settings_VideoRendering;
-class Settings_AudioInterface;
-class Settings_Visualisation;
-
 class Model_VideoRendering;
 class Model_AudioInterface;
 class Model_Visualisation;
+class Model_ViewportSystem;
+class Model_Transport;
+class Model_Session;
 
 struct GLFWwindow;
 
 class Program
 {
 public:
-	Program(GLFWwindow * window, std::string glslVersion);
+	enum class ProgramMode { Sandbox, Scripted };
+
+	Program(GLFWwindow* window, std::string glslVersion, const ProgramMode& m = ProgramMode::Sandbox);
 	~Program();
 
 	void initialise();
 	void deinitialise();
 
 	void run();
-
-	/* This one way to do it, not very thought through yet. */
-//	void updateGlobalAudioBuffer(std::shared_ptr<LockableBuffer> & buf);
 private:
+	void runSandbox(); // I don't think this is a good method.
+	void runScripted();
 	void interpretMouseInput();
 	void interpretKeyboardInput();
 
-	GLFWwindow * m_window;
-	std::string m_glslVersion;
-
 	UserInterface m_interface;
 
-	/* Settings Instances */
-	std::shared_ptr<Settings_VideoRendering> m_settingsVideoRendering;
-	std::shared_ptr<Settings_AudioInterface> m_settingsAudioInterface;
-	std::shared_ptr<Settings_Visualisation> m_settingsVisualisation;
+	ProgramMode m_mode;
+	GLFWwindow* m_window;
+	std::string m_glslVersion;
 
-	/* Model Instances */
+	// NOTE:	Model is a misnomer really. It's a top-level item large enough to have a separation of
+	//			concerns between its functionality and its gui.
+	std::shared_ptr<Model_ViewportSystem> m_modelViewportSystem;
 	std::shared_ptr<Model_VideoRendering> m_modelVideoRendering;
 	std::shared_ptr<Model_AudioInterface> m_modelAudioInterface;
 	std::shared_ptr<Model_Visualisation> m_modelVisualisation;
-};
+	std::shared_ptr<Model_Transport> m_modelTransport;
+	std::shared_ptr<Model_Session> m_modelSession;
 
+};

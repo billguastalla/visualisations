@@ -15,10 +15,9 @@ public:
 		File
 	};
 
-	Model_AudioInterface(std::shared_ptr<Settings_AudioInterface> & settings, Program * prog = nullptr);
+	Model_AudioInterface(Program * prog = nullptr);
 	~Model_AudioInterface();
 
-	const std::shared_ptr<Settings_AudioInterface> settings() const { return m_settings; }
 	Buffer buffer();
 
 	bool streamRunning()
@@ -28,8 +27,6 @@ public:
 	}
 	std::shared_ptr<Recorder>& recorder() { return m_realTime; }
 private:
-	std::shared_ptr<Settings_AudioInterface> m_settings;
-
 	std::shared_ptr<Recorder> m_realTime;
 	//std::shared_ptr<AudioReader> m_audioReader;
 

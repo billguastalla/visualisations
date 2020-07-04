@@ -34,34 +34,59 @@ struct Particle
 	float scale; // Scale
 };
 
+constexpr char emissionOptions[] = "Track\0Orthogonal Plane\0Spherical\0";
+
+struct ParticleEmissionSettings
+{
+	ParticleEmissionSettings()
+		:
+		m_emissionDirection{ EmissionDirection::OrthogonalPlane },
+		m_meanTravelDist{ 1.f },
+		m_sigmaTravelDist{ 1.f },
+		m_baseDecayRate{ 1.f },
+		m_globalParticleScale{ 1.f },
+		m_globalVelocity{ 1.f }
+	{}
+
+	void drawUI();
+
+	enum class EmissionDirection
+	{
+		Track,				// emit particles in a track, in the direction of the sequence of coordinates
+		OrthogonalPlane,	// emit particles in an orthogonal plane to the direction of the sequence
+		Spherical			// emit particles spherically, 
+	} m_emissionDirection;
+	
+	float m_meanTravelDist;
+	float m_sigmaTravelDist;
+	float m_baseDecayRate;
+	float m_globalParticleScale;
+	float m_globalVelocity;
+};
+
+
 class ParticleSet
 {
 public:
 	ParticleSet(const Texture& t = Texture{});
-	void setTexture(const Texture & t);
 
-	static std::vector<glm::vec3> sampleHelicalTrajectory(float tStart, float tEnd, size_t samples,
-		glm::vec3 sinAmp, glm::vec3 sinFreq);
+	void draw(const Camera& camera);
 
-	void draw(const Camera & camera);
-
-
-	void generateParticles(std::vector<glm::vec3> path, float meanTravelDist = 1.f, float sigmaFractionTravelDist = 5.f, float baseDecayRate = 1.f, float globalParticleScale = 1.f);
-	void moveParticles(float dt = .02f);
-	void clearParticles();
+	void setTexture(const Texture& t);
+	void generateParticles(std::vector<glm::vec3> path, const ParticleEmissionSettings& settings); // add particles to the list
+	void moveParticles(float dt = .02f); // update the velocity of the particles
+	void clearParticles(); // 
 
 private:
-	void sortParticles(glm::vec3 cameraPos);
+	void sortParticles(glm::vec3 cameraPos); // reorder particles in order of distance from the camera, to allow alpha blending.
 
-
-	std::vector<Particle> m_particles;
 	Shader m_particleShader;
 	Texture m_particleTexture;
 	unsigned int m_particleVAO;
 
-	float m_particleLifetime;
-	unsigned int m_maxParticleCount;
-
-
-	long m_seed;
+	std::vector<Particle> m_particles;
+	float m_particleLifetime;			// in seconds, how long before particle should be deleted
+	unsigned int m_maxParticleCount;	// max number of particles in set
+	long m_seed;						// 
 };
+

@@ -1,40 +1,37 @@
 #pragma once
+#include <GLM/glm.hpp>
 #include <vector>
+#include <random>
 
-class Node;
-
-/*
-	-> Most poignant question here is how do we wind a tree with a continuous mesh?
-		\ /
-		 |
-		-> Two holes should appear in the splitting of a branch.
-		-> We need to change the way that indices are written, at the point of splitting.
-			-> There appears to need to be a connector model, which has one hole for the base,
-				and N holes for the branches. (upside down pants)
-				-> The connector needs to know the angles phi and theta of the branches.
-					(possibly also their radius)
-					-> there appear to be semi-circles joining opposite sides of the base
-						circle, which split the branches.
-					-> We want to control the resolution of the connector.
-					-> We want to pass an ellipsoid shape into a branch, so that the
-						branch mesh can smoothly wind the ellipsoid into a cylinder.
-*/
-class Tree
-{
-
-private:
-	Node* m_rootItem;
-};
+class Tree; 
 
 class Node
 {
-private:
-	double m_length;
-	/* Orientation the tree makes with the plane that is normal
-		to the direction of the parent node, */
-	double m_theta, m_phi;
+public:
+	Node(Node* parent = nullptr);
 
+	void addChildren(Tree* t, unsigned depth = 0u, unsigned nodesPerLayer = 1u, int seed = 0);
+	void clear();
+	glm::vec3 base() const;
+	glm::vec3 m_branchArrow; // work in cartesian coordinates
+	double m_branchPos; // position of start of branch along parent takes values 0 to 1, where it branches off the parent from.
+
+	std::vector<glm::vec3> vertices(glm::vec3 parentBase, glm::vec3 parentArrow = glm::vec3{0.f}); // top caller uses default argument & chooses position for base of tree.
 	Node* p_parent;
 	std::vector<Node*> m_children;
 };
 
+
+class Tree
+{
+public:
+	Tree();
+	void build(unsigned depth = 0u, unsigned nodesPerLayer = 1u);
+	void setPositions();
+
+	void clear();
+	const std::vector<glm::vec3>& vertices() const;
+	std::vector<Node*> m_nodes;
+private:
+	mutable std::vector<glm::vec3> m_vertexCache;
+};

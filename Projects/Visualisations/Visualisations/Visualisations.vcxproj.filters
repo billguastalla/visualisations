@@ -64,18 +64,6 @@
     <Filter Include="Header Files\UI\Windows">
       <UniqueIdentifier>{3b192587-ea67-4614-8f88-673ea24ba72e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Program\Controllers">
-      <UniqueIdentifier>{48b7b00f-570c-42d9-8e2f-ac7acef11973}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Program\Controllers\Settings">
-      <UniqueIdentifier>{3d1598c0-ac36-4c20-a90d-03d204fe4758}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Program\Controllers">
-      <UniqueIdentifier>{1427295d-3860-431d-a3ee-ccee575e8018}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Program\Controllers\Settings">
-      <UniqueIdentifier>{6b5c0090-fa5c-4412-b3f5-298576dd7735}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Audio Interface">
       <UniqueIdentifier>{2dbeffd9-2404-4644-8fc1-d594fad7c77b}</UniqueIdentifier>
     </Filter>
@@ -97,14 +85,32 @@
     <Filter Include="Header Files\Graphics\Engine\Models">
       <UniqueIdentifier>{5cc7a0bf-2372-42b5-bff0-e83deae2a97d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Graphics\Visualisations\Implementations\Tree">
-      <UniqueIdentifier>{6ce35155-9c20-4c21-9b92-5b9c94fb56a6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Audio Modules\Input">
       <UniqueIdentifier>{def283ac-4e7f-4a6f-9f39-14d27b0b3e42}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Graphics\Engine\Particles">
       <UniqueIdentifier>{7f831086-73a8-4fea-8b02-5553377ba404}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Engine\Particles">
+      <UniqueIdentifier>{3796dedc-cdd9-4517-acaa-99cedd07b02d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Engine\Tree">
+      <UniqueIdentifier>{6ce35155-9c20-4c21-9b92-5b9c94fb56a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Engine\MappableProperty">
+      <UniqueIdentifier>{1f1df8e0-bab0-49ce-b0b9-4c97a607ef72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Program\Model Systems">
+      <UniqueIdentifier>{48b7b00f-570c-42d9-8e2f-ac7acef11973}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Program\Model Systems\Settings">
+      <UniqueIdentifier>{3d1598c0-ac36-4c20-a90d-03d204fe4758}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Program\Model Systems">
+      <UniqueIdentifier>{1427295d-3860-431d-a3ee-ccee575e8018}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Program\Model Systems\Settings">
+      <UniqueIdentifier>{6b5c0090-fa5c-4412-b3f5-298576dd7735}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -157,13 +163,13 @@
       <Filter>Source Files\UI\Windows</Filter>
     </ClCompile>
     <ClCompile Include="Settings_VideoRendering.cpp">
-      <Filter>Source Files\Program\Controllers\Settings</Filter>
+      <Filter>Source Files\Program\Model Systems\Settings</Filter>
     </ClCompile>
     <ClCompile Include="Settings_AudioInterface.cpp">
-      <Filter>Source Files\Program\Controllers\Settings</Filter>
+      <Filter>Source Files\Program\Model Systems\Settings</Filter>
     </ClCompile>
     <ClCompile Include="Settings_Visualisation.cpp">
-      <Filter>Source Files\Program\Controllers\Settings</Filter>
+      <Filter>Source Files\Program\Model Systems\Settings</Filter>
     </ClCompile>
     <ClCompile Include="Window_Visualisation.cpp">
       <Filter>Source Files\UI\Windows</Filter>
@@ -175,13 +181,13 @@
       <Filter>Source Files\UI</Filter>
     </ClCompile>
     <ClCompile Include="Model_AudioInterface.cpp">
-      <Filter>Source Files\Program\Controllers</Filter>
+      <Filter>Source Files\Program\Model Systems</Filter>
     </ClCompile>
     <ClCompile Include="Model_VideoRendering.cpp">
-      <Filter>Source Files\Program\Controllers</Filter>
+      <Filter>Source Files\Program\Model Systems</Filter>
     </ClCompile>
     <ClCompile Include="Model_Visualisation.cpp">
-      <Filter>Source Files\Program\Controllers</Filter>
+      <Filter>Source Files\Program\Model Systems</Filter>
     </ClCompile>
     <ClCompile Include="..\Includes\kissfft\kiss_fft.c">
       <Filter>Source Files\Audio Interface</Filter>
@@ -207,13 +213,7 @@
     <ClCompile Include="Visualisation_Splinters.cpp">
       <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
     </ClCompile>
-    <ClCompile Include="Visualisation.cpp">
-      <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
-    </ClCompile>
     <ClCompile Include="Mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MeshGenerator.cpp">
@@ -236,6 +236,42 @@
     </ClCompile>
     <ClCompile Include="GeometryTools.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files\Graphics\Engine\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="Trajectory.cpp">
+      <Filter>Source Files\Graphics\Engine\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>Source Files\Graphics\Engine\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraSystem.cpp">
+      <Filter>Source Files\Graphics\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Window_ViewportSystem.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_ViewportSystem.cpp">
+      <Filter>Source Files\Program\Model Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_Scene.cpp">
+      <Filter>Source Files\Program\Model Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Window_Transport.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_Session.cpp">
+      <Filter>Source Files\Program\Model Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Window_Transport.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Window_Session.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -291,10 +327,10 @@
       <Filter>Header Files\UI\Windows</Filter>
     </ClInclude>
     <ClInclude Include="Settings_VideoRendering.h">
-      <Filter>Header Files\Program\Controllers\Settings</Filter>
+      <Filter>Header Files\Program\Model Systems\Settings</Filter>
     </ClInclude>
     <ClInclude Include="Settings_AudioInterface.h">
-      <Filter>Header Files\Program\Controllers\Settings</Filter>
+      <Filter>Header Files\Program\Model Systems\Settings</Filter>
     </ClInclude>
     <ClInclude Include="Window_Visualisation.h">
       <Filter>Header Files\UI\Windows</Filter>
@@ -303,19 +339,16 @@
       <Filter>Header Files\UI\Windows</Filter>
     </ClInclude>
     <ClInclude Include="Settings_Visualisation.h">
-      <Filter>Header Files\Program\Controllers\Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="Window_Abstract.h">
-      <Filter>Header Files\UI</Filter>
+      <Filter>Header Files\Program\Model Systems\Settings</Filter>
     </ClInclude>
     <ClInclude Include="Model_AudioInterface.h">
-      <Filter>Header Files\Program\Controllers</Filter>
+      <Filter>Header Files\Program\Model Systems</Filter>
     </ClInclude>
     <ClInclude Include="Model_VideoRendering.h">
-      <Filter>Header Files\Program\Controllers</Filter>
+      <Filter>Header Files\Program\Model Systems</Filter>
     </ClInclude>
     <ClInclude Include="Model_Visualisation.h">
-      <Filter>Header Files\Program\Controllers</Filter>
+      <Filter>Header Files\Program\Model Systems</Filter>
     </ClInclude>
     <ClInclude Include="Visualisation_PointClouds.h">
       <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
@@ -363,13 +396,13 @@
       <Filter>Header Files\Graphics\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Tree.h">
-      <Filter>Header Files\Graphics\Visualisations\Implementations\Tree</Filter>
+      <Filter>Header Files\Graphics\Engine\Tree</Filter>
     </ClInclude>
     <ClInclude Include="VectorField.h">
-      <Filter>Header Files\Graphics\Visualisations\Implementations\Tree</Filter>
+      <Filter>Header Files\Graphics\Engine\Tree</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
-      <Filter>Header Files\Graphics\Visualisations\Implementations\Tree</Filter>
+      <Filter>Header Files\Graphics\Engine\Tree</Filter>
     </ClInclude>
     <ClInclude Include="Visualisation_TreeField.h">
       <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
@@ -389,11 +422,44 @@
     <ClInclude Include="Visualisation_Particles.h">
       <Filter>Header Files\Graphics\Visualisations\Implementations</Filter>
     </ClInclude>
-    <ClInclude Include="ParticleSet.h">
-      <Filter>Source Files\Graphics\Engine\Particles</Filter>
-    </ClInclude>
     <ClInclude Include="GeometryTools.h">
       <Filter>Header Files\Graphics\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSet.h">
+      <Filter>Header Files\Graphics\Engine\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Header Files\Graphics\Engine\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="Trajectory.h">
+      <Filter>Header Files\Graphics\Engine\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraSystem.h">
+      <Filter>Header Files\Graphics\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="MappableProperty.h">
+      <Filter>Header Files\Graphics\Engine\MappableProperty</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_ViewportSystem.h">
+      <Filter>Header Files\Program\Model Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Window_ViewportSystem.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_Scene.h">
+      <Filter>Header Files\Program\Model Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_Transport.h">
+      <Filter>Header Files\Program\Model Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Window_Abstract.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_Session.h">
+      <Filter>Header Files\Program\Model Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Window_Session.h">
+      <Filter>Header Files\UI\Windows</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

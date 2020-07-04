@@ -13,6 +13,7 @@ static void glfw_error_callback(int error, const char* description)
 
 static int mainInit(GLFWwindow * & window, int width, int height)
 {
+	// TODO: Platform-specific get for window resolution, pass it into screen.
 	glfwSetErrorCallback(glfw_error_callback);
 
 	// true == 1, false == 0

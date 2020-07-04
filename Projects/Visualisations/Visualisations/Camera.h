@@ -37,7 +37,6 @@ const float SPEED = 2.5f;
 const float SENSITIVITY = 0.1f;
 const float ZOOM = 45.0f;
 
-// An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
 class Camera
 {
 public:
@@ -55,13 +54,20 @@ public:
 	float m_mouseSensitivity;
 	float m_zoom;
 
-	// Constructor with vectors
+	// values for perspective projection
+	float m_nearZ;
+	float m_farZ;
+	float m_aspectRatio;
+
 	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH)
-		: 
-		m_front(glm::vec3(0.0f, 0.0f, -1.0f)), 
-		m_movementSpeed(SPEED), 
-		m_mouseSensitivity(SENSITIVITY), 
-		m_zoom(ZOOM)
+		:
+		m_front(glm::vec3(0.0f, 0.0f, -1.0f)),
+		m_movementSpeed(SPEED),
+		m_mouseSensitivity(SENSITIVITY),
+		m_zoom(ZOOM),
+		m_aspectRatio{ 1920.f / 1080.f },
+		m_nearZ{ 0.1f },
+		m_farZ{ 100.f }
 	{
 		m_position = position;
 		m_worldup = up;
@@ -71,11 +77,14 @@ public:
 	}
 	// Constructor with scalar values
 	Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch)
-		: 
-		m_front(glm::vec3(0.0f, 0.0f, -1.0f)),
-		m_movementSpeed(SPEED), 
-		m_mouseSensitivity(SENSITIVITY), 
-		m_zoom(ZOOM)
+		:
+		m_front{ glm::vec3{0.0f, 0.0f, -1.0f} },
+		m_movementSpeed{ SPEED },
+		m_mouseSensitivity{SENSITIVITY},
+		m_zoom{ ZOOM },
+		m_aspectRatio{1920.f / 1080.f},
+		m_nearZ{ 0.1f },
+		m_farZ{ 100.f }
 	{
 		m_position = glm::vec3(posX, posY, posZ);
 		m_worldup = glm::vec3(upX, upY, upZ);
@@ -88,6 +97,10 @@ public:
 	glm::mat4 GetViewMatrix() const
 	{
 		return glm::lookAt(m_position, m_position + m_front, m_up);
+	}
+	glm::mat4 projectionMatrix() const
+	{
+		return glm::perspective(glm::radians(m_zoom), m_aspectRatio, m_nearZ, m_farZ);
 	}
 
 	// Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)

@@ -64,8 +64,8 @@ void Visualisation_PointClouds::processSamples(const Buffer& buf, unsigned sampl
 	for (int i = 0; i < res.size(); ++i)
 	{
 		// Take Middle
-		int size = res[i].size();
-		for (int j = (size / 4); j < (size * 3.0 / 4.0); ++j)
+		size_t size = res[i].size();
+		for (size_t j = (size / 4u); (float)j < ((float)size * (3./4.)); ++j)
 			reduced[i].push_back(res[i][j]);
 	}
 	double maxIVal{ 0.0f };
@@ -139,8 +139,8 @@ void Visualisation_PointClouds::processSamples(const Buffer& buf, unsigned sampl
 		{
 			// At the beginning, scale is 0.0, then scaled to 1.0 1/4 of the way through,
 				// then linearly scaled to zero.
-			float quarterPos = m_cubeScales.size() / 4;
-			float finalPos = m_cubeScales.size();
+			float quarterPos = (float)m_cubeScales.size() / 4.f;
+			float finalPos = (float)m_cubeScales.size();
 			if ((float)i <= quarterPos)
 				m_cubeScales[i] = glm::vec3{ (float)i / (float)quarterPos };
 			else
@@ -175,24 +175,24 @@ void Visualisation_PointClouds::processSamples(const Buffer& buf, unsigned sampl
 		m_cubeScales.resize(m_cubePositions.size(), glm::vec3{ 1.0f,1.0f,1.0f });
 }
 
-void Visualisation_PointClouds::renderFrame()
+void Visualisation_PointClouds::renderFrame(const Camera& camera, Timecode t)
 {
 	m_objectShader->use();
 	m_objectShader->setVec3("lightColour", glm::vec3{ 1.0f,0.5f,0.31f });
 	m_objectShader->setVec3("objectColour", glm::vec3{ 1.0f,0.5f,0.31f });
 
 	/* TODO: A scene should handle this! */
-	glm::mat4 projection = glm::perspective(glm::radians(m_camera.m_zoom), (float)1920 / (float)1080, 0.1f, 100.0f);
+	glm::mat4 projection{ camera.projectionMatrix() };
 	m_objectShader->setMat4("projection", projection);
-	glm::mat4 view = m_camera.GetViewMatrix();
+	glm::mat4 view = camera.GetViewMatrix();
 	m_objectShader->setMat4("view", view);
 
 	glm::mat4 lightModel{ 1.0f };
-	m_lightPos = glm::vec3(10 * sin(glfwGetTime()), 10 * cos(glfwGetTime()), 10 * sin(glfwGetTime()));
+	m_lightPos = glm::vec3(10 * sin(t), 10 * cos(t), 10 * sin(t));
 	lightModel = glm::translate(lightModel, m_lightPos);
 	lightModel = glm::scale(lightModel, glm::vec3{ 0.2f });
 	m_objectShader->setVec3("lightPos", m_lightPos);
-	m_objectShader->setVec3("viewPos", m_camera.m_position);
+	m_objectShader->setVec3("viewPos", camera.m_position);
 
 	for (unsigned int i = 0; i < m_cubePositions.size(); i++)
 	{

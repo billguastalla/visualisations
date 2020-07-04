@@ -12,14 +12,10 @@ PaStreamParameters defaultParams()
 	return params;
 }
 
-Model_AudioInterface::Model_AudioInterface(std::shared_ptr<Settings_AudioInterface> & settings, Program * prog)
+Model_AudioInterface::Model_AudioInterface(Program * prog)
 	:
-	m_settings{ settings },
-
-	m_realTime{ new Recorder{} },
-
 	p_program{ prog },
-
+	m_realTime{ new Recorder{} },
 	m_recordMode{RecordMode::AudioStream}
 {
 }
@@ -31,6 +27,5 @@ Model_AudioInterface::~Model_AudioInterface()
 
 Buffer Model_AudioInterface::buffer()
 {
-	//Buffer buf{ 512,defaultParams() };
 	return m_realTime->getBuffer();
 }

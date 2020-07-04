@@ -1,19 +1,8 @@
 #include "ParticleSet.h"
 #include "GeometryTools.h"
+#include "Constants.h"
+#include "imgui/imgui.h"
 #include <random>
-
-std::vector<glm::vec3> ParticleSet::sampleHelicalTrajectory(float tStart, float tEnd, size_t samples,
-	glm::vec3 sinAmp, glm::vec3 sinFreq)
-{
-	std::vector<glm::vec3> result{};
-	float increment{ (tEnd - tStart) / (float)samples };
-	for (size_t i{ 0 }; i < samples; ++i)
-	{
-		float t{ increment * (float)i };
-		result.push_back(glm::vec3{ (sinAmp.x * std::sin(sinFreq.x * t)), (sinAmp.y * std::sin(sinFreq.y * t)),(sinFreq.z * std::cos(sinFreq.z * t))});
-	}
-	return result;
-}
 
 ParticleSet::ParticleSet(const Texture& t)
 	:
@@ -23,22 +12,14 @@ ParticleSet::ParticleSet(const Texture& t)
 	m_particleVAO{ 0u },
 	m_particleLifetime{ 2.0f },
 	m_maxParticleCount{ 1000 },
-	m_seed{0u}
+	m_seed{ 0u }
 {
-	unsigned int VBO;
-	float particle_quad[] = {
-		0.0f, 1.0f,
-		1.0f, 0.0f,
-		0.0f, 0.0f,
-		0.0f, 1.0f,
-		1.0f, 1.0f,
-		1.0f, 0.0f,
-	};
+	unsigned int VBO{ 0u };
 	glGenVertexArrays(1, &m_particleVAO);
 	glGenBuffers(1, &VBO);
 	glBindVertexArray(m_particleVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(particle_quad), particle_quad, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(SQUARE_MESH), SQUARE_MESH, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 	glBindVertexArray(0);
@@ -97,10 +78,9 @@ void ParticleSet::draw(const Camera& camera)
 	glDisable(GL_BLEND);
 }
 
-void ParticleSet::generateParticles(std::vector<glm::vec3> path, float meanTravelDist, float sigmaTravelDist, float baseDecayRate, float globalParticleScale)
+void ParticleSet::generateParticles(std::vector<glm::vec3> path, const ParticleEmissionSettings& settings)
 {
 	assert(path.size() > 2);
-
 
 	std::uniform_real_distribution<float> distDirection{ -1.0, 1.0 }; // used to generate random direction in orthogonal plane to path
 
@@ -111,23 +91,37 @@ void ParticleSet::generateParticles(std::vector<glm::vec3> path, float meanTrave
 	// Distribution for random direction in plane orthogonal to path
 	for (size_t i = 0; i < path.size() - 1u; ++i)
 	{
-		glm::vec3& pNext = path[i+1];
+		glm::vec3& pNext = path[i + 1];
 		glm::vec3& pCurrent = path[i];
 		glm::vec3 pathDirection{ pNext - pCurrent };
 		std::pair<glm::vec3, glm::vec3> normalBasis{ Geometry::normalBasis(pathDirection) }; // build basis for normal plane to path
-		glm::vec3 particleDirection{ glm::normalize((normalBasis.first * distDirection(gen)) + (normalBasis.second * distDirection(gen))) }; // build random direction in plane
+		glm::vec3 particleDirection{}; // build random direction in plane
+		switch (settings.m_emissionDirection)
+		{	// TODO: Remove switch somehow
+		case ParticleEmissionSettings::EmissionDirection::OrthogonalPlane:
+			particleDirection = glm::normalize((normalBasis.first * distDirection(gen)) + (normalBasis.second * distDirection(gen)));
+			break;
+		case ParticleEmissionSettings::EmissionDirection::Track:
+			particleDirection = glm::normalize(pathDirection);
+			break;
+		case ParticleEmissionSettings::EmissionDirection::Spherical:
+			particleDirection = glm::normalize(glm::vec3{ distDirection(gen),distDirection(gen),distDirection(gen) });
+			break;
+		default:
+			break;
+		}
 
-		float meanLength{ meanTravelDist * glm::length(pathDirection) };
-		std::normal_distribution<float> distScale{ meanLength, meanLength * sigmaTravelDist }; // used to distribute velocity magnitude
+		float meanLength{ settings.m_meanTravelDist * glm::length(pathDirection) };
+		std::normal_distribution<float> distScale{ meanLength, meanLength * settings.m_sigmaTravelDist }; // used to distribute velocity magnitude
 
 		Particle part{};
 		part.pos = pCurrent;
 		part.duration = 0.f;
-		part.col = glm::normalize(glm::vec4{ distScale(gen),distScale(gen),distScale(gen),1.f});
+		part.col = glm::normalize(glm::vec4{ distScale(gen),distScale(gen),distScale(gen),1.f });
 		part.lifeScale = 1.f;
-		part.scale = globalParticleScale;
-		part.velocity = particleDirection * distScale(gen);// * distScale(gen); // direction of particle * gaussian scaling of velocity
-		part.velocityDecay = baseDecayRate *  distScale(gen); // particle velocity decays at gaussian-determined rate
+		part.scale = settings.m_globalParticleScale;
+		part.velocity = particleDirection * distScale(gen) * settings.m_globalVelocity;// * distScale(gen); // direction of particle * gaussian scaling of velocity
+		part.velocityDecay = settings.m_baseDecayRate * distScale(gen); // particle velocity decays at gaussian-determined rate
 
 		m_particles.push_back(std::move(part));
 	}
@@ -141,7 +135,7 @@ void ParticleSet::moveParticles(float dt)
 		float decay{ std::exp(-p.velocityDecay * dt) };
 		p.velocity *= decay;
 		p.duration += dt;
-		p.lifeScale = (m_particleLifetime - p.duration)/ m_particleLifetime;
+		p.lifeScale = (m_particleLifetime - p.duration) / m_particleLifetime;
 	}
 }
 
@@ -160,7 +154,14 @@ void ParticleSet::sortParticles(glm::vec3 cameraPos)
 		return glm::length(p1.pos - cameraPos) > glm::length(p2.pos - cameraPos);
 	};
 	std::sort(m_particles.begin(), m_particles.end(), distSort);
-	
-
 }
 
+void ParticleEmissionSettings::drawUI()
+{
+	ImGui::Text("Emission Settings:");
+	ImGui::SliderFloat("Travel Distance Mean", &m_meanTravelDist, 1.f, 10.0f);
+	ImGui::SliderFloat("Travel Distance Sigma", &m_sigmaTravelDist, 0.03f, 1.0f);
+	ImGui::SliderFloat("Velocity Decay Rate Base", &m_baseDecayRate, 0.1f, 5.f);
+	ImGui::SliderFloat("Global Particle Scale", &m_globalParticleScale, 0.1f, 1.f);
+	ImGui::SliderFloat("Global Velocity", &m_globalVelocity, 0.1f, 10.f);
+}

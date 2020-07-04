@@ -6,20 +6,8 @@
 
 #include <glad\glad.h>
 #include <GLFW\glfw3.h>
-
 #include <GLM\glm.hpp>
 #include <iostream>
-
-//void framebufferSizeCallback(GLFWwindow * window, int width, int height)
-//{
-//	glViewport(0, 0, width, height);
-//}
-//
-//void processInput(GLFWwindow * window)
-//{
-//	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-//		glfwSetWindowShouldClose(window, true);
-//}
 
 Visualisation_Oscilloscope::Visualisation_Oscilloscope() : Visualisation{},
 m_timeShader{ nullptr }, m_freqShader{ nullptr },
@@ -103,9 +91,6 @@ void Visualisation_Oscilloscope::processSamples(const Buffer & buf, unsigned sam
 		}
 		s = 0;
 	}
-
-
-
 	/*
 		-> Four Graphs: Top half is Time-domain, Bottom-half is Freq-domain, Left and Right are channels
 		-> Vertices for top are bound between y = 0.0f & y = 1.0f
@@ -117,36 +102,6 @@ void Visualisation_Oscilloscope::processSamples(const Buffer & buf, unsigned sam
 
 		-> All FFT data needs to be normalised.
 	*/
-
-	//std::vector<vertex> verticesLeft{};
-	//std::vector<vertex> verticesRight{};
-	///* x from -1 to 1*/
-	//float increment = ((float)2 / (float)leftData.size());
-
-	//for (int i = 0; i < leftData.size(); ++i)
-	//{
-	//	float x = -1.0f + (increment * (float)i);
-	//	verticesLeft.push_back(vertex{ x,leftData[i] + 0.2f,0.0f });
-	//}
-	//for (int i = 0; i < rightData.size(); ++i)
-	//{
-	//	float x = -1.0f + (increment * (float)i) + increment;
-	//	verticesRight.push_back(vertex{ x,rightData[i] - 0.2f,0.0f });
-	//}
-	//float max = buf.amplitude_peak();
-	//float average = buf.amplitude_average();
-	//float min = buf.amplitude_minimum();
-	//std::vector<vertex> maxVerts = std::vector<vertex>{ vertex{ -1.0f,max,0.0f },vertex{ 1.0f,max,0.0f } };
-	//std::vector<vertex> averageVerts = std::vector<vertex>{ vertex{ -1.0f,average,0.0f },vertex{ 1.0f,average,0.0f } };
-	//std::vector<vertex> minVerts = std::vector<vertex>{ vertex{ -1.0f,min,0.0f },vertex{ 1.0f,min,0.0f } };
-
-
-	//m_leftScopeElemCount = verticesLeft.size();
-	//m_rightScopeElemCount = verticesRight.size();
-	//m_maxLineElemCount = maxVerts.size();
-	//m_averageLineElemCount = averageVerts.size();
-	//m_minLineElemCount = minVerts.size();
-
 
 	m_timeElemCounts.resize(m_audioChannelCount);
 	m_frequencyElemCounts.resize(m_audioChannelCount);
@@ -176,7 +131,7 @@ void Visualisation_Oscilloscope::processSamples(const Buffer & buf, unsigned sam
 	}
 }
 
-void Visualisation_Oscilloscope::renderFrame()
+void Visualisation_Oscilloscope::renderFrame(const Camera& camera, Timecode t)
 {
 	for (size_t c = 0; c < m_audioChannelCount; ++c)
 	{

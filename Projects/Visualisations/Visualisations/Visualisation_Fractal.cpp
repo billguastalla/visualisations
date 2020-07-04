@@ -91,26 +91,22 @@ void Visualisation_Fractal::processSamples(const Buffer& buf, unsigned samples)
 {
 }
 
-void Visualisation_Fractal::renderFrame()
+void Visualisation_Fractal::renderFrame(const Camera& camera, Timecode t)
 {
-	float currentFrame = glfwGetTime();
-	m_deltaTime = currentFrame - m_lastFrame;
-	m_lastFrame = currentFrame;
-
 	m_objectShader->use();
 	m_objectShader->setVec3("lightColour", glm::vec3{ 1.0f,0.5f,0.31f });
 	m_objectShader->setVec3("objectColour", glm::vec3{ 0.6f,0.3f,0.21f });
-	glm::mat4 projection = glm::perspective(glm::radians(m_camera.m_zoom), (float)1920 / (float)1080, 0.1f, 100.0f);
+	glm::mat4 projection{ camera.projectionMatrix() };
 	m_objectShader->setMat4("projection", projection);
 
-	glm::mat4 view = m_camera.GetViewMatrix();
+	glm::mat4 view = camera.GetViewMatrix();
 	m_objectShader->setMat4("view", view);
 	glm::mat4 lightModel{ 1.0f };
-	m_lightPos = glm::vec3(5 * sin(glfwGetTime()), 5 * cos(glfwGetTime()), 5 * sin(glfwGetTime()));
+	m_lightPos = glm::vec3(5 * sin(t), 5 * cos(t), 5 * sin(t));
 	lightModel = glm::translate(lightModel, m_lightPos);
 	lightModel = glm::scale(lightModel, glm::vec3{ 0.2f });
 	m_objectShader->setVec3("lightPos", m_lightPos);
-	m_objectShader->setVec3("viewPos", m_camera.m_position);
+	m_objectShader->setVec3("viewPos", camera.m_position);
 
 	switch (m_state)
 	{

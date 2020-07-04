@@ -5,9 +5,8 @@
 
 #include <GLFW/glfw3.h>
 
-Model_VideoRendering::Model_VideoRendering(std::shared_ptr<Settings_VideoRendering>& settings, GLFWwindow* window)
+Model_VideoRendering::Model_VideoRendering(GLFWwindow* window)
 	:
-	m_settings{ settings },
 	m_encoder{ new FFMPEG_Encoder{} },
 	m_recordState{ RecordState::Stopped },
 	m_frameRate{ 60 },
@@ -18,6 +17,7 @@ Model_VideoRendering::Model_VideoRendering(std::shared_ptr<Settings_VideoRenderi
 
 	m_window{ window }
 {
+
 }
 
 Model_VideoRendering::~Model_VideoRendering()
