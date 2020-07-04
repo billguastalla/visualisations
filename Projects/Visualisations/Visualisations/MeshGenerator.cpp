@@ -43,8 +43,8 @@ void MeshGenerator::generateUnknownSurface(Mesh& m, float a, float b, float c)
 {
 	int res = 50;
 
-	float domainInterval = TWO_PI / ((float)res);
-	float texInterval = 1.0 / ((float)res);
+	float domainInterval = (float)TWO_PI / ((float)res);
+	float texInterval = 1.f / ((float)res);
 	std::vector<MeshVertex> vxs{};
 	for (int u = 0; u <= res; ++u)
 	{
@@ -140,10 +140,10 @@ void MeshGenerator::generateGraph(unsigned int width, unsigned int height, Mesh&
 	std::normal_distribution<double> xCol{ 0.0,0.02 };
 	AbstractRandomObject a;
 	if (zData.empty())
-		for (int i = 0; i < (width + 1) * (height + 1); ++i)
-			zData.push_back(xCol(a.mersenneTwister()));
-	double wInterval{ 1 / (double)width };
-	double hInterval{ 1 / (double)height };
+		for (unsigned i = 0u; i < ((width + 1u) * (height + 1u)); ++i)
+			zData.push_back((float)xCol(a.mersenneTwister()));
+	double wInterval{ 1. / (double)width };
+	double hInterval{ 1. / (double)height };
 	unsigned int counter{ 0 };
 	std::vector<MeshVertex> vxs{};
 	/* Vertex Positions */
@@ -168,12 +168,12 @@ void MeshGenerator::generateGraph(unsigned int width, unsigned int height, Mesh&
 void MeshGenerator::generateSphere(unsigned int res, Mesh& m)
 {
 	assert(res >= 3);
-	float thetaInterval = TWO_PI / ((float)res);
-	float phiInterval = 3.14159265 / ((float)res);
+	float thetaInterval = (float)TWO_PI / ((float)res);
+	float phiInterval = (float)PI / ((float)res);
 	std::vector<MeshVertex> vxs{};
-	for (int i = 0; i <= res; ++i)
+	for (unsigned i = 0u; i <= res; ++i)
 	{
-		for (int j = 0; j <= res; ++j)
+		for (unsigned j = 0u; j <= res; ++j)
 		{
 			float theta{ (float)j * thetaInterval };
 			float phi{ (float)i * phiInterval };
@@ -188,12 +188,12 @@ void MeshGenerator::generateSphere(unsigned int res, Mesh& m)
 void MeshGenerator::generateCylinder(unsigned int res, float height, float radius, Mesh& m)
 {
 	assert(res >= 3);
-	float thetaInterval = TWO_PI / ((float)res);
+	float thetaInterval = (float)TWO_PI / ((float)res);
 	float heightInterval = height / ((float)res);
 	std::vector<MeshVertex> vxs{};
-	for (int i = 0; i <= res; ++i)
+	for (unsigned i = 0u; i <= res; ++i)
 	{
-		for (int j = 0; j <= res; ++j)
+		for (unsigned j = 0u; j <= res; ++j)
 		{
 			float theta{ (float)j * thetaInterval };
 			float h{ (float)i * heightInterval };
@@ -215,16 +215,16 @@ void MeshGenerator::generateCylinder(Mesh& m, glm::vec3& start, glm::vec3& end, 
 	std::pair<glm::vec3, glm::vec3> normalBasis{ Geometry::normalBasis(arrow) };
 
 	float height{ glm::length(end - start) };
-	float thetaInterval = 2 * PI / ((float)res);
+	float thetaInterval = (float)TWO_PI / ((float)res);
 	float heightInterval = height / ((float)res);
 
-	for (int i = 0; i <= res; ++i)
+	for (unsigned i = 0u; i <= res; ++i)
 	{
 		float radius{ startRadius + (((float)i / (float)res)*(endRadius - startRadius))  };
 		float h{ (float)i * heightInterval };
 
 
-		for (int j = 0; j <= res; ++j)
+		for (unsigned j = 0u; j <= res; ++j)
 		{
 			float theta{ (float)j * thetaInterval };
 
@@ -244,13 +244,13 @@ void MeshGenerator::generateCylinder(Mesh& m, glm::vec3& start, glm::vec3& end, 
 void MeshGenerator::generateCone(unsigned int res, float height, float radius, Mesh& m)
 {
 	assert(res >= 3);
-	float thetaInterval = TWO_PI / ((float)res);
+	float thetaInterval = (float)TWO_PI / ((float)res);
 	float radiusInterval = radius / ((float)res);
 	float heightInterval = height / ((float)res);
 	std::vector<MeshVertex> vxs{};
-	for (int i = res; i >= 0; --i)
+	for (unsigned i = res; i >= 0u; --i)
 	{
-		for (int j = 0; j <= res; ++j)
+		for (unsigned j = 0u; j <= res; ++j)
 		{
 			float theta{ (float)j * thetaInterval };
 			float r{ (float)(res - i) * radiusInterval };
@@ -267,12 +267,12 @@ void MeshGenerator::generateCone(unsigned int res, float height, float radius, M
 void MeshGenerator::generateTorus(unsigned int res, float innerRadius, float outerRadius, Mesh& m)
 {
 	assert(res >= 3);
-	float thetaInterval = TWO_PI / ((float)res);
+	float thetaInterval = (float)TWO_PI / ((float)res);
 	float texInterval = 1.f / ((float)res);
 	std::vector<MeshVertex> vxs{};
-	for (int i = 0; i <= res; ++i)
+	for (unsigned i = 0u; i <= res; ++i)
 	{
-		for (int j = 0; j <= res; ++j)
+		for (unsigned j = 0u; j <= res; ++j)
 		{
 			float thetaInner{ (float)j * thetaInterval };
 			float thetaOuter{ (float)i * thetaInterval };
