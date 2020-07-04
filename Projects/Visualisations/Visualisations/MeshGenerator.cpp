@@ -38,7 +38,6 @@ auto buildSmoothNormals = [](std::vector<MeshVertex>& vxs, const std::vector<uns
 		vxs[i].Normal = glm::normalize(vxs[i].Normal);
 };
 
-
 void MeshGenerator::generateUnknownSurface(Mesh& m, float a, float b, float c)
 {
 	int res = 50;
@@ -248,7 +247,7 @@ void MeshGenerator::generateCone(unsigned int res, float height, float radius, M
 	float radiusInterval = radius / ((float)res);
 	float heightInterval = height / ((float)res);
 	std::vector<MeshVertex> vxs{};
-	for (unsigned i = res; i >= 0u; --i)
+	for (int i = res; i >= 0; --i)
 	{
 		for (unsigned j = 0u; j <= res; ++j)
 		{
