@@ -2,18 +2,14 @@
 #include "UserInterface.h"
 #include "Recorder.h"
 
-class Settings_VideoRendering;
-class Settings_AudioInterface;
-class Settings_Visualisation;
-
 class Model_VideoRendering;
 class Model_AudioInterface;
 class Model_Visualisation;
 class Model_ViewportSystem;
 class Model_Transport;
+class Model_Session;
 
 struct GLFWwindow;
-
 
 class Program
 {
@@ -46,4 +42,6 @@ private:
 	std::shared_ptr<Model_AudioInterface> m_modelAudioInterface;
 	std::shared_ptr<Model_Visualisation> m_modelVisualisation;
 	std::shared_ptr<Model_Transport> m_modelTransport;
+	std::shared_ptr<Model_Session> m_modelSession;
+
 };

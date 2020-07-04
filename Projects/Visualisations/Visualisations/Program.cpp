@@ -9,12 +9,14 @@
 #include "Model_AudioInterface.h"
 #include "Model_Visualisation.h"
 #include "Model_Transport.h"
+#include "Model_Session.h"
 
 #include "Window_VideoRendering.h"
 #include "Window_AudioInterface.h"
 #include "Window_Visualisation.h"
 #include "Window_ViewportSystem.h"
 #include "Window_Transport.h"
+#include "Window_Session.h"
 
 #include <glad\glad.h>
 #include <GLFW\glfw3.h>
@@ -44,6 +46,7 @@ void Program::initialise()
 	m_modelAudioInterface = std::shared_ptr<Model_AudioInterface>{ new Model_AudioInterface{ } };
 	m_modelVisualisation = std::shared_ptr<Model_Visualisation>{ new Model_Visualisation{ m_window} };
 	m_modelTransport = std::shared_ptr<Model_Transport>{ new Model_Transport{} };
+	m_modelSession = std::shared_ptr<Model_Session>{new Model_Session{}};
 
 	/* Set up window instances */
 	Window_Abstract* videoRenderWindow = new Window_VideoRendering{ m_modelVideoRendering };
@@ -51,12 +54,14 @@ void Program::initialise()
 	Window_Abstract* visualisationWindow = new Window_Visualisation{ m_modelVisualisation };
 	Window_Abstract* viewportSystemWindow = new Window_ViewportSystem{ m_modelViewportSystem };
 	Window_Abstract* transportWindow = new Window_Transport{ m_modelTransport };
+	Window_Abstract* sessionWindow = new Window_Session{ m_modelSession };
 
 	m_interface.addWindow(videoRenderWindow);
 	m_interface.addWindow(audioInterfaceWindow);
 	m_interface.addWindow(visualisationWindow);
 	m_interface.addWindow(viewportSystemWindow);
 	m_interface.addWindow(transportWindow);
+	m_interface.addWindow(sessionWindow);
 
 	glEnable(GL_DEPTH_TEST);
 }

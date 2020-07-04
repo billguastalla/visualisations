@@ -258,17 +258,20 @@
     <ClCompile Include="Model_ViewportSystem.cpp">
       <Filter>Source Files\Program\Model Systems</Filter>
     </ClCompile>
-    <ClCompile Include="Session.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Model_Scene.cpp">
       <Filter>Source Files\Program\Model Systems</Filter>
     </ClCompile>
-    <ClCompile Include="Window_Transport.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Window_Transport.h">
       <Filter>Header Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_Session.cpp">
+      <Filter>Source Files\Program\Model Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Window_Transport.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Window_Session.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -446,13 +449,16 @@
     <ClInclude Include="Model_Scene.h">
       <Filter>Header Files\Program\Model Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Session.h">
-      <Filter>Header Files\Program</Filter>
-    </ClInclude>
     <ClInclude Include="Model_Transport.h">
       <Filter>Header Files\Program\Model Systems</Filter>
     </ClInclude>
     <ClInclude Include="Window_Abstract.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_Session.h">
+      <Filter>Header Files\Program\Model Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Window_Session.h">
       <Filter>Header Files\UI\Windows</Filter>
     </ClInclude>
   </ItemGroup>
