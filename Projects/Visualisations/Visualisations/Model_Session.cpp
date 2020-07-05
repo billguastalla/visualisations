@@ -1,13 +1,23 @@
 #include "Model_Session.h"
-#include <boost/property_tree/ptree.hpp>
-#include <fstream>
 
+#include "Program.h"
+#include "Model_ViewportSystem.h"
+#include "Model_VideoRendering.h"
+#include "Model_AudioInterface.h"
+#include "Model_Visualisation.h"
+#include "Model_Transport.h"
+
+#include <fstream>
+#include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ini_parser.hpp>
 
 using namespace boost::property_tree;
 
-Model_Session::Model_Session()
+Model_Session::Model_Session(Program & p)
 	:
+	p_program{p},
 	m_state{SessionState::Closed},
 	m_filename{"test.xml"},
 	m_filepath{"C:\\Users\\_\\Desktop\\"},
@@ -40,10 +50,11 @@ bool Model_Session::create()
 	return false;
 }
 
-bool Model_Session::open(std::string file)
+bool Model_Session::open()
 {
 	// prompt to save in window before calling this
-	
+	m_fileTree->clear();
+	read_xml(m_filepath + m_filename, *m_fileTree);
 
 	m_state = SessionState::Open;
 	return false;
@@ -52,14 +63,21 @@ bool Model_Session::open(std::string file)
 bool Model_Session::save()
 {
 	// todo: check existence of filepath.
-
 	m_fileTree->clear();
 
-	m_fileTree->push_back(ptree::value_type("test", ptree{"123.456"}));
-	m_fileTree->put("test.<xmlattr>.id","hello");
+	//m_fileTree->push_back(ptree::value_type("test", ptree{"123.456"}));
+	//m_fileTree->put("test.<xmlattr>.id","hello");
+
+	p_program.modelAudioInterface()->saveFileTree(*m_fileTree);
+	p_program.modelTransport()->saveFileTree(*m_fileTree);
+	p_program.modelVideoRendering()->saveFileTree(*m_fileTree);
+	p_program.modelViewportSystem()->saveFileTree(*m_fileTree);
+	p_program.modelVisualisation()->saveFileTree(*m_fileTree);
 
 	// add all objects/events/mappings here
 	write_xml(m_filepath+m_filename,*m_fileTree);
+	write_json(m_filepath + m_filename + ".json", *m_fileTree);
+	write_ini(m_filepath + m_filename + ".ini", *m_fileTree);
 
 	m_state = SessionState::Open;
 	return true;

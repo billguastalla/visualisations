@@ -11,8 +11,18 @@
 #include "Visualisation_Particles.h"
 
 #include "Buffer.h"
-
 #include <GLFW/glfw3.h>
+
+bool Model_Visualisation::loadFileTree(const boost::property_tree::ptree& t)
+{
+	return false;
+}
+bool Model_Visualisation::saveFileTree(boost::property_tree::ptree& t) const
+{
+	return false;
+}
+
+
 Model_Visualisation::Model_Visualisation(GLFWwindow* win)
 	:
 	m_visualisations{},

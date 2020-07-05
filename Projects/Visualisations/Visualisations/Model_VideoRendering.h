@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <string>
+#include <boost/property_tree/ptree_fwd.hpp>
 
 class Settings_VideoRendering;
 class FFMPEG_Encoder;
@@ -28,6 +29,9 @@ class Model_VideoRendering
 {
 
 public:
+	bool loadFileTree(const boost::property_tree::ptree& t);
+	bool saveFileTree(boost::property_tree::ptree& t) const;
+
 	enum class RecordState
 	{
 		Started,

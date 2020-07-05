@@ -1,7 +1,7 @@
 #pragma once
 #include "Camera.h"
 #include "CameraSystem.h"
-
+#include <boost/property_tree/ptree_fwd.hpp>
 struct GLFWwindow;
 
 // Note: Cameras need to be told about aspect ratio changes now, since they handle perspective projection.
@@ -21,6 +21,10 @@ public:
 
 	bool freeCamera() { return m_freeCamera; }
 	void setFreeCamera(bool f) { m_freeCamera = f; }
+
+
+	bool loadFileTree(const boost::property_tree::ptree & t);
+	bool saveFileTree(boost::property_tree::ptree& t) const;
 private:
 	GLFWwindow* m_window;
 

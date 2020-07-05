@@ -1,5 +1,7 @@
 #pragma once
 #include <GLFW/glfw3.h>
+#include <boost/property_tree/ptree_fwd.hpp>
+
 typedef double Timecode;
 enum class TimeMode { Realtime, Sequence }; // nb window relies on two boolean values for both enums
 enum class TransportState { Playing, Paused };
@@ -7,6 +9,10 @@ enum class TransportState { Playing, Paused };
 class Model_Transport
 {
 public:
+	bool loadFileTree(const boost::property_tree::ptree& t);
+	bool saveFileTree(boost::property_tree::ptree& t) const;
+
+
 	Model_Transport()
 		:
 		m_mode{ TimeMode::Sequence },

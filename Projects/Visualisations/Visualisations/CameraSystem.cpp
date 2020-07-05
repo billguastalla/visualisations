@@ -105,42 +105,75 @@ glm::quat CameraSystem::rotationTransformation(float t) const // DRAFT FUNCTION.
 	return result;
 }
 
-void Interpolation::drawUI()
+void Interpolation::drawUI(const std::string& name)
 {
-
 	for (size_t i{ 0 }; i < m_coefficients.size(); ++i)
-		ImGui::SliderFloat(std::string{ "c" + std::to_string(i) }.c_str(), &m_coefficients[i], 0.f, 1.f);
+		ImGui::SliderFloat(std::string{ "c" + std::to_string(i) + " " + name }.c_str(), &m_coefficients[i], 0.f, 1.f);
 	// TODO: Safety check of coefficients to prevent division by zero.
 }
 
-void InterpolatedEvent::drawUI()
+void InterpolatedEvent::drawUI(const std::string& name)
 {
-	ImGui::SliderFloat("Start Time", &t_begin, 0.f, 100.f);
-	ImGui::SliderFloat("End Time", &t_end, t_begin, t_begin + 10.f); // TODO: EVENTS LONGER THAN 10s (use rescaling ui)
-	interp.drawUI();
+	ImGui::SliderFloat(std::string{ "t_0 " + name }.c_str(), &t_begin, 0.f, 100.f);
+	ImGui::SliderFloat(std::string{ "t_f " + name }.c_str(), &t_end, t_begin, t_begin + 10.f); // TODO: EVENTS LONGER THAN 10s (use rescaling ui)
+	interp.drawUI(name);
 }
 
 void CameraSystem::drawUI()
 {
 	ImGui::Begin("Camera System");
 
-	std::vector<bool> posDeletion{}, rotDeletion{};
+	//std::vector<bool> posDeletion{}, rotDeletion{};
 
 	ImGui::Text("Position Events");
 	ImGui::SameLine();
-	bool addPostition{ ImGui::Button("+p") };
-	for (PositionEvent& p : m_positionEvents)
+	bool addPosition{ ImGui::Button("add p") };
+	ImGui::SameLine();
+	bool remPosition{ ImGui::Button("rem p") };
+	ImGui::SameLine();
+	ImGui::Text(std::string{ "pTotal: " + std::to_string(m_positionEvents.size()) }.c_str());
+	ImGui::InputInt("editing p-event #:", &ui_currentPositionEvent, 1);
+
+	//for (PositionEvent& p : m_positionEvents)
+	//{
+	//	p.first.drawUI();
+	//	ImGui::SliderFloat3("Movement", &p.second[0], 0.f, 5.f); // TODO: Positions larger than 5 (see above)
+	//	posDeletion.push_back(ImGui::Button("-"));
+	//}
+	if (ui_currentPositionEvent < m_positionEvents.size()
+		&& ui_currentPositionEvent >= 0)
 	{
-		p.first.drawUI();
-		ImGui::SliderFloat3("Movement", &p.second[0], 0.f, 5.f); // TODO: Positions larger than 5 (see above)
-		posDeletion.push_back(ImGui::Button("-"));
+		PositionEvent& p{ m_positionEvents[ui_currentPositionEvent] };
+		p.first.drawUI(std::to_string(ui_currentPositionEvent));
+		ImGui::SliderFloat3(std::string{ "movement" + std::to_string(ui_currentPositionEvent) }.c_str(),
+			&p.second[0],
+			-5.f * (float)ui_movementScale, 5.f * (float)ui_movementScale);
+		ImGui::SameLine();
+		if (ImGui::Button("mscale+"))
+			ui_movementScale++;
+		ImGui::SameLine();
+		if (ImGui::Button("mscale-"))
+			(ui_movementScale > 1) ? ui_movementScale-- : ui_movementScale;
 	}
+	else
+		ui_currentPositionEvent = 0;
+
+
 	ImGui::Text("Rotation Events");
 	ImGui::SameLine();
-	bool addRotation{ ImGui::Button("+r") };
-	for (RotationEvent& r : m_rotationEvents)
+	bool addRotation{ ImGui::Button("add r") };
+	ImGui::SameLine();
+	bool remRotation{ ImGui::Button("rem r") };
+	ImGui::SameLine();
+	ImGui::Text(std::string{ "rTotal: " + std::to_string(m_rotationEvents.size())}.c_str());
+	ImGui::InputInt("editing r-event #:",&ui_currentRotationEvent,1);
+
+
+	if (ui_currentRotationEvent < m_rotationEvents.size()
+		&& ui_currentRotationEvent >= 0)
 	{
-		r.first.drawUI();
+		RotationEvent& r{ m_rotationEvents[ui_currentRotationEvent] };
+		r.first.drawUI(std::to_string(ui_currentRotationEvent));
 		for (glm::quat& q : r.second)
 		{
 			glm::quat& qslide{ q };
@@ -148,22 +181,47 @@ void CameraSystem::drawUI()
 			if (qslide != q)
 				q = glm::normalize(qslide);
 		}
-		rotDeletion.push_back(ImGui::Button("-"));
 	}
+	else
+		ui_currentRotationEvent = 0;
+
+
+	//for (RotationEvent& r : m_rotationEvents)
+	//{
+	//	r.first.drawUI();
+	//	for (glm::quat& q : r.second)
+	//	{
+	//		glm::quat& qslide{ q };
+	//		ImGui::SliderFloat4("quaternion", &qslide[0], -1.f, 1.f);
+	//		if (qslide != q)
+	//			q = glm::normalize(qslide);
+	//	}
+	//	rotDeletion.push_back(ImGui::Button("-"));
+	//}
 	ImGui::End();
 
-	// Add/Remove positions and rotations.
-	for (size_t j = 0; j < posDeletion.size(); ++j)
-		if (posDeletion[j])
-			m_positionEvents.erase(m_positionEvents.begin() + j);
-	for (size_t j = 0; j < rotDeletion.size(); ++j)
-		if (rotDeletion[j])
-			m_rotationEvents.erase(m_rotationEvents.begin() + j);
-	if (addPostition)
+
+	if (addPosition)
 		m_positionEvents.push_back(PositionEvent{});
 	if (addRotation)
 	{
 		m_rotationEvents.push_back(RotationEvent{});
 		m_rotationEvents.back().second.resize(1);
 	}
+	if (remPosition)
+		if (ui_currentPositionEvent >= 0 && ui_currentPositionEvent < m_positionEvents.size())
+			m_positionEvents.erase(m_positionEvents.begin() + ui_currentPositionEvent);
+	if (remRotation)
+		if (ui_currentRotationEvent >= 0 && ui_currentRotationEvent < m_rotationEvents.size())
+			m_rotationEvents.erase(m_rotationEvents.begin() + ui_currentRotationEvent);
+
+
+	//// Add/Remove positions and rotations.
+	//for (size_t j = 0; j < posDeletion.size(); ++j)
+	//	if (posDeletion[j])
+	//		m_positionEvents.erase(m_positionEvents.begin() + j);
+	//for (size_t j = 0; j < rotDeletion.size(); ++j)
+	//	if (rotDeletion[j])
+	//		m_rotationEvents.erase(m_rotationEvents.begin() + j);
+
 }

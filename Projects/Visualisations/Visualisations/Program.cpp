@@ -46,7 +46,7 @@ void Program::initialise()
 	m_modelAudioInterface = std::shared_ptr<Model_AudioInterface>{ new Model_AudioInterface{ } };
 	m_modelVisualisation = std::shared_ptr<Model_Visualisation>{ new Model_Visualisation{ m_window} };
 	m_modelTransport = std::shared_ptr<Model_Transport>{ new Model_Transport{} };
-	m_modelSession = std::shared_ptr<Model_Session>{new Model_Session{}};
+	m_modelSession = std::shared_ptr<Model_Session>{new Model_Session{*this}};
 
 	/* Set up window instances */
 	Window_Abstract* videoRenderWindow = new Window_VideoRendering{ m_modelVideoRendering };

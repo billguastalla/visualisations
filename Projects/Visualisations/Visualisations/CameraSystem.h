@@ -2,6 +2,7 @@
 #include <GLM/glm.hpp>
 #include <GLM/gtc/quaternion.hpp>
 #include <vector>
+#include <string>
 /*
 	Design limitations:
 		-> Implementing rotations as an single interpolated quaternion
@@ -29,7 +30,7 @@ struct Interpolation // TODO: Allow different coefficient sizes in UI. // NOTE: 
 	float value(float x); // expects x between [0,1], undefined behaviour outside.
 	FunctionType m_functionType;
 	std::vector<float> m_coefficients;
-	void drawUI();
+	void drawUI(const std::string& name);
 };
 struct InterpolatedEvent
 {
@@ -38,7 +39,7 @@ struct InterpolatedEvent
 	bool started(float t) { return t >= t_begin; }
 	Interpolation interp;
 	float t_begin, t_end;
-	void drawUI();
+	void drawUI(const std::string & name);
 };
 typedef std::pair<InterpolatedEvent, glm::vec3> PositionEvent;
 typedef std::pair<InterpolatedEvent, std::vector<glm::quat>> RotationEvent; // order of rotation multiplications is given in vector.
@@ -47,7 +48,14 @@ typedef std::pair<InterpolatedEvent, std::vector<glm::quat>> RotationEvent; // o
 class CameraSystem
 {
 public:
-	CameraSystem() : m_positionEvents{}, m_rotationEvents{} {}
+	CameraSystem() :
+		m_positionEvents{},
+		m_rotationEvents{},
+
+		ui_currentPositionEvent{0},
+		ui_currentRotationEvent{ 0 },
+		ui_movementScale{1}
+	{}
 	CameraPos cameraPos(float t) const;
 	glm::vec3 positionTransformation(float t) const;
 	glm::quat rotationTransformation(float t) const; // order of simultaneous rotations is made by start time.
@@ -57,4 +65,9 @@ private:
 
 	std::vector<PositionEvent> m_positionEvents;
 	std::vector<RotationEvent> m_rotationEvents;
+
+	int ui_currentPositionEvent;
+	int ui_currentRotationEvent;
+
+	int ui_movementScale;
 };

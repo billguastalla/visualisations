@@ -23,6 +23,17 @@ public:
 	void deinitialise();
 
 	void run();
+
+
+	// note:	these functions exist to provide other models to session via Program*. 
+	//			open to an alternative.
+	std::shared_ptr<Model_ViewportSystem> modelViewportSystem() const { return m_modelViewportSystem; }
+	std::shared_ptr<Model_VideoRendering> modelVideoRendering() const { return m_modelVideoRendering; }
+	std::shared_ptr<Model_AudioInterface> modelAudioInterface() const { return m_modelAudioInterface; }
+	std::shared_ptr<Model_Visualisation> modelVisualisation() const { return m_modelVisualisation; }
+	std::shared_ptr<Model_Transport> modelTransport() const { return m_modelTransport; }
+	std::shared_ptr<Model_Session> modelSession() const { return m_modelSession; }
+
 private:
 	void runSandbox(); // I don't think this is a good method.
 	void runScripted();

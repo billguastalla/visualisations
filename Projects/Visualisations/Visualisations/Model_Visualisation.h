@@ -1,6 +1,7 @@
 #pragma once
 #include "Visualisation.h"
 #include "PostProcessing.h"
+#include <boost/property_tree/ptree_fwd.hpp>
 
 #include <memory>
 #include <vector>
@@ -12,6 +13,9 @@ struct GLFWwindow;
 class Model_Visualisation
 {
 public:
+	bool loadFileTree(const boost::property_tree::ptree& t);
+	bool saveFileTree(boost::property_tree::ptree& t) const;
+
 	Model_Visualisation(GLFWwindow * win);
 	~Model_Visualisation();
 
