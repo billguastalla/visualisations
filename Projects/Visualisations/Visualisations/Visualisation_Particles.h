@@ -26,6 +26,8 @@ private:
 	//glm::vec3 ui_trajectorysinFreq;
 
 	float  ui_globalSpeed;
+	float ui_particleLifetime;
 	//int    ui_hSamplesPerFrame;
 	double m_lastTime;
+
 };

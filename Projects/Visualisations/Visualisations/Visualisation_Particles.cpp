@@ -14,7 +14,8 @@ Visualisation_Particles::Visualisation_Particles()
 	:
 	m_particleSet{nullptr},
 	m_lastTime{0.},
-	ui_globalSpeed{1.0f}
+	ui_globalSpeed{1.0f},
+	ui_particleLifetime{2.f}
 	//ui_hSamplesPerFrame{3}
 {
 }
@@ -40,10 +41,10 @@ void Visualisation_Particles::processSamples(const Buffer& buf, unsigned samples
 void Visualisation_Particles::renderFrame(const Camera& camera, Timecode t)
 {
 
-	for (auto ps : m_particleSystems)
+	for (auto & ps : m_particleSystems)
 		ps.generate(*m_particleSet,m_lastTime,t);
-	m_particleSet->clearParticles();
-	m_particleSet->moveParticles((t - m_lastTime) * ui_globalSpeed);
+	m_particleSet->clearParticles(ui_particleLifetime);
+	m_particleSet->moveParticles((t - m_lastTime) * ui_globalSpeed,ui_particleLifetime);
 	m_particleSet->draw(camera);
 
 	m_lastTime = t;
@@ -77,6 +78,11 @@ void Visualisation_Particles::drawInterface()
 	//ImGui::SliderFloat3("Trajectory Freqs", &ui_trajectorysinFreq[0], 0.1f, 10.0f);
 
 
+	ImGui::Text(std::string{ "Particle count: {" + std::to_string(m_particleSet->particleCount()) + "}" }.c_str());
 	ImGui::SliderFloat("Global Time Speed", &ui_globalSpeed, 0.1f, 5.f);
+	ImGui::SliderFloat("Particle Lifetime", &ui_particleLifetime, 0.5f, 10.f);
+
+
+
 	//ImGui::SliderInt("Helix samples per frame", &ui_hSamplesPerFrame, 3, 100);
 }

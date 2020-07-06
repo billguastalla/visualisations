@@ -28,5 +28,6 @@ void ParticleSystem::drawUI(const std::string& name)
 	ImGui::Combo("Emission Direction", (int*)&m_emissionSettings.m_emissionDirection, &emissionOptions[0]);
 	ImGui::Combo("Trajectory Type", (int*)&m_trajectorySettings.type, &Trajectory::trajectoryTypeOptions[0]);
 
+
 	ImGui::End();
 }

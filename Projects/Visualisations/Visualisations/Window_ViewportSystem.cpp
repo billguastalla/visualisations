@@ -7,10 +7,12 @@
 Window_ViewportSystem::Window_ViewportSystem(std::shared_ptr<Model_ViewportSystem>& viewport)
 	: m_viewportSystem{ viewport }
 {
+
 }
 
 Window_ViewportSystem::~Window_ViewportSystem()
 {
+
 }
 
 void Window_ViewportSystem::draw()
