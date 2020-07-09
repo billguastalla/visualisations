@@ -75,9 +75,11 @@ bool Model_Session::save()
 	p_program.modelVisualisation()->saveFileTree(*m_fileTree);
 
 	// add all objects/events/mappings here
+
+	// TODO: Check file is accessible before writing.
 	write_xml(m_filepath+m_filename,*m_fileTree);
-	write_json(m_filepath + m_filename + ".json", *m_fileTree);
-	write_ini(m_filepath + m_filename + ".ini", *m_fileTree);
+	write_json(m_filepath+m_filename + ".json", *m_fileTree);
+	write_ini(m_filepath+m_filename + ".ini", *m_fileTree);
 
 	m_state = SessionState::Open;
 	return true;

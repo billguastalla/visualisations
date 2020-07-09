@@ -17,10 +17,18 @@ public:
 	bool loadFileTree(const boost::property_tree::ptree& t);
 	bool saveFileTree(boost::property_tree::ptree& t) const;
 
+
+
+
 	std::map<int, Texture> m_textures;
 	std::map<int, Shader> m_shaders;
-
-
-	
-
+	// Resource system (textures/shaders)
+	// Mesh instances..
+	// Skybox
+	// ParticleSystems / settings
 };
+
+
+/*
+	Are events their own system?
+*/

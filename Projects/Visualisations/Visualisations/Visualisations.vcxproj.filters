@@ -112,6 +112,12 @@
     <Filter Include="Header Files\Program\Model Systems\Settings">
       <UniqueIdentifier>{6b5c0090-fa5c-4412-b3f5-298576dd7735}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Events System">
+      <UniqueIdentifier>{6cee4dc9-3c46-4e8f-a54b-f46dfe85a2e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Events System">
+      <UniqueIdentifier>{1cf774e7-eed7-45eb-a1e8-f3f87455206f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Recorder.cpp">
@@ -278,6 +284,9 @@
     </ClCompile>
     <ClCompile Include="Model_Transport.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Interpolation.cpp">
+      <Filter>Source Files\Events System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -466,6 +475,18 @@
     </ClInclude>
     <ClInclude Include="Window_Session.h">
       <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>Header Files\Events System</Filter>
+    </ClInclude>
+    <ClInclude Include="EventsSystem.h">
+      <Filter>Header Files\Events System</Filter>
+    </ClInclude>
+    <ClInclude Include="FunctionSource.h">
+      <Filter>Header Files\Events System</Filter>
+    </ClInclude>
+    <ClInclude Include="Interpolation.h">
+      <Filter>Header Files\Events System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

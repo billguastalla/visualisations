@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <boost/property_tree/ptree_fwd.hpp>
 
-typedef double Timecode;
+typedef double Timecode; // TODO: switch time information to timestep.
 enum class TimeMode { Realtime, Sequence }; // nb window relies on two boolean values for both enums
 enum class TransportState { Playing, Paused };
 

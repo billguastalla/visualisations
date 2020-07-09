@@ -8,7 +8,6 @@ class Model_Visualisation;
 class Model_ViewportSystem;
 class Model_Transport;
 class Model_Session;
-
 struct GLFWwindow;
 
 class Program
@@ -21,9 +20,7 @@ public:
 
 	void initialise();
 	void deinitialise();
-
 	void run();
-
 
 	// note:	these functions exist to provide other models to session via Program*. 
 	//			open to an alternative.
@@ -34,9 +31,9 @@ public:
 	std::shared_ptr<Model_Transport> modelTransport() const { return m_modelTransport; }
 	std::shared_ptr<Model_Session> modelSession() const { return m_modelSession; }
 
+	void setMode(const ProgramMode& mode) { m_mode = mode; }
+	ProgramMode mode() { return m_mode; }
 private:
-	void runSandbox(); // I don't think this is a good method.
-	void runScripted();
 	void interpretMouseInput();
 	void interpretKeyboardInput();
 
@@ -54,5 +51,4 @@ private:
 	std::shared_ptr<Model_Visualisation> m_modelVisualisation;
 	std::shared_ptr<Model_Transport> m_modelTransport;
 	std::shared_ptr<Model_Session> m_modelSession;
-
 };

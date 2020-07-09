@@ -30,7 +30,7 @@ private:
 
 	bool m_freeCamera;
 	CameraSystem m_cameraSystem;
-	Camera m_camera;			
+	Camera m_camera; // TODO: Convert to set of cameras
 
 	float m_lastX, m_lastY;		
 	bool m_mouseDown;	
