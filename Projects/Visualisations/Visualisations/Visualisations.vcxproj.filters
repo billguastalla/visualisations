@@ -288,6 +288,9 @@
     <ClCompile Include="Interpolation.cpp">
       <Filter>Source Files\Events System</Filter>
     </ClCompile>
+    <ClCompile Include="Event.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Buffer.h">

@@ -1,4 +1,5 @@
 #pragma once
+#include <boost/property_tree/ptree_fwd.hpp>
 #include <string>
 #include <vector>
 
@@ -13,4 +14,6 @@ struct Interpolation // TODO: Allow different coefficient sizes in UI. // NOTE: 
 	void drawUI(const std::string& name);
 
 	// TODO: read/write ptree 
+	bool loadFileTree(const boost::property_tree::ptree& t);
+	bool saveFileTree(boost::property_tree::ptree& t) const;
 };

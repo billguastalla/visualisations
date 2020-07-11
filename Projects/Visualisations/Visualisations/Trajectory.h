@@ -149,7 +149,7 @@ namespace Trajectory
 	};
 
 
-	constexpr char trajectoryTypeOptions[] = "SHO\0Helix\0Mesh\0Tree\0LorentzAttractor\0HarmonicOscillator\0PlanetarySystem\0SphericalHarmonics";
+	constexpr char trajectoryTypeOptions[] = "SHO\0Helix\0Mesh\0Tree\0LorenzAttractor\0HarmonicOscillator\0PlanetarySystem\0SphericalHarmonics";
 	struct Settings // temporary design, will switch to simpler one as common data/methods are found.
 	{
 		Settings() : sho{}, helix{}, tree{}, type{ Type::Helix } {}

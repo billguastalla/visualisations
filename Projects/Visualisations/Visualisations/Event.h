@@ -3,24 +3,34 @@
 #include <boost/property_tree/ptree.hpp> // TODO: Compare perf with fwd decl + pointer type for interpolation.
 #include <map>
 
+/*
+	1. How are mappings implemented
+	2. Options for event:
+		-> Does event set value or alter it?
+*/
 class Event
 {
 public:
 	Event()
 		:
-		t_0{ 0. },
-		t_f{ 0. },
+		t0_tf{ 0. , 0. },
 		m_interp{},
 		m_mapTo{},
 		m_mapFrom{},
 		m_attributes{}
 	{}
+
+	bool loadFileTree(const boost::property_tree::ptree& t);
+	bool saveFileTree(boost::property_tree::ptree& t) const;
 private:
-	double t_0, t_f;
+	std::pair<double, double> t0_tf;
+	std::pair<double, double> m_inputRange; // do we need this? Should it be placed in interpolation?
+	std::pair<double, double> m_outputRange;
+
 	Interpolation m_interp;
-	boost::property_tree::ptree m_mapTo;
-	boost::property_tree::ptree m_mapFrom;
-	boost::property_tree::ptree m_attributes; // 
+	boost::property_tree::ptree m_mapTo; // e.g. particleSystem[1].particleScale
+	boost::property_tree::ptree m_mapFrom; // e.g. audiotrack[0].amplitude or transport.timeSeconds
+	boost::property_tree::ptree m_attributes; // e.g. method for transition of value. 
 	// TODO: Check if there is a lighter alternative to 3 ptrees.
 
 	// Alternative: (TODO: see comparison between Event & Mapping!!)

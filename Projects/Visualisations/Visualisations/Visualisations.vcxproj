@@ -175,6 +175,7 @@
     <ClCompile Include="..\Includes\kissfft\kiss_fft.c" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraSystem.cpp" />
+    <ClCompile Include="Event.cpp" />
     <ClCompile Include="GeometryTools.cpp" />
     <ClCompile Include="Interpolation.cpp" />
     <ClCompile Include="Mesh.cpp" />

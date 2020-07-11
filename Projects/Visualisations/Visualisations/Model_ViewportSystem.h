@@ -10,7 +10,7 @@ class Model_ViewportSystem
 public:
 	Model_ViewportSystem(GLFWwindow* win);
 
-	const Camera& camera() { return m_camera; }
+	Camera& camera() { return m_camera; } // nb non-const for window
 	CameraSystem& cameraSystem() { return m_cameraSystem; }
 
 	void mouseMovement(float xPos, float yPos, bool mouseDown);
