@@ -45,11 +45,36 @@ namespace Trajectory
 		double sigma;
 		double R;
 		double b;
+
+		//double gamma;
+		//double alpha;
+
+		//double a_r, b_r, c_r, u_r;
+
 		void operator() (const state_type& x, state_type& dxdt, const double t)
 		{
 			dxdt[0] = sigma * (x[1] - x[0]);
 			dxdt[1] = R * x[0] - x[1] - x[0] * x[2];
 			dxdt[2] = -b * x[2] + x[0] * x[1];
+
+			// Rabinovich–Fabrikant equations (gamma = 0.87, alpha = 1.1)
+			//dxdt[0] = x[1] * (x[2] - 1. + (x[0] * x[0])) + (gamma* x[0]);
+			//dxdt[1] = x[0] * ((3. * x[2]) + 1. - (x[0] * x[0])) + (gamma * x[1]);
+			//dxdt[2] = -2. * x[2] * (alpha + (x[0] * x[1]));
+
+			// Rössler attractor ( a = 0.2, b = 0.2, c = 5.7 )
+			//dxdt[0] = - x[1] - x[2];
+			//dxdt[1] = x[0] + (a_r * x[1]);
+			//dxdt[2] = b_r + (x[2] * (x[0] - c_r));
+
+			//// Multiscroll attractors (see modified chua, might have modes!)
+			// Lu Chen (a = 36, c = 20, b = 3, u = -15.15), (x(0) = .1, y(0) = .3, z(0) = -.6)
+			//dxdt[0] = a_r * (x[1] - x[0]);
+			//dxdt[1] = x[0] - (x[0] * x[2]) + (c_r * x[1]) + u_r;
+			//dxdt[2] = (x[0] * x[1]) - (b_r * x[2]);
+
+			// ... 
+
 		}
 	};
 
@@ -78,8 +103,8 @@ namespace Trajectory
 			dt{ 0.005 },
 			timescale{ 1.f }
 		{}
-		double R,b,sigma;	// linear constant of SHO
-		double x_0,y_0,z_0;		// starting position
+		double R, b, sigma;	// linear constant of SHO
+		double x_0, y_0, z_0;		// starting position
 		double t_0;		// initial time
 		double t_f;		// final time
 		double dt;		// timestep size
@@ -158,8 +183,8 @@ namespace Trajectory
 			SHO,
 			Helix,
 			Mesh, // tbc
-			Tree, // tbc
-			LorenzAttractor, // tbc
+			Tree,
+			LorenzAttractor,
 			HarmonicOscillator, // tbc
 			PlanetarySystem, // tbc
 			SphericalHarmonics // tbc
