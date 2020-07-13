@@ -72,7 +72,7 @@ public:
 		m_zoom(ZOOM),
 		m_aspectRatio{ 1920.f / 1080.f },
 		m_nearZ{ 0.1f },
-		m_farZ{ 100.f }
+		m_farZ{ 1000.f }
 	{
 		m_position = position;
 		m_worldup = up;

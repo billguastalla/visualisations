@@ -21,7 +21,7 @@ void Window_Transport::draw()
 	int framerate{ m_transport->framerate() };
 	ImGui::SliderInt("Transport",&currentFrame,0,maxFrames);
 
-	ImGui::Text(std::string{ "Time: {" + std::to_string(m_transport->time()) + "s}" }.c_str());
+	ImGui::Text(std::string{ "Time: {" + std::to_string(m_transport->time().current().count()) + "s}" }.c_str());
 	ImGui::InputInt("Total Frames", &maxFrames, 1);
 	ImGui::InputInt("Framerate",&framerate,15);
 

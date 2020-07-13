@@ -76,7 +76,7 @@ void Program::run()
 	// Main loop
 	while (!glfwWindowShouldClose(m_window))
 	{
-		Timecode t{ m_modelTransport->time() };
+		Timestep t{ m_modelTransport->time() };
 
 		if (!m_modelViewportSystem->freeCamera())
 			m_modelViewportSystem->processCamera(t); // Update camerapos according to camera system if locked camera.

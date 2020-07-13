@@ -1,5 +1,6 @@
 #pragma once
 #include "Camera.h"
+#include "Timekeeping.h"
 #include "CameraSystem.h"
 #include <boost/property_tree/ptree_fwd.hpp>
 struct GLFWwindow;
@@ -16,8 +17,7 @@ public:
 	void mouseMovement(float xPos, float yPos, bool mouseDown);
 	void keyMovement(Camera_Movement cm);
 
-	// iteration function (TODO: should this be done by another class?)
-	void processCamera(double time);
+	void processCamera(Timestep ts);
 
 	bool freeCamera() { return m_freeCamera; }
 	void setFreeCamera(bool f) { m_freeCamera = f; }

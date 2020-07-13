@@ -43,8 +43,9 @@ void Model_ViewportSystem::keyMovement(Camera_Movement cm)
 	m_camera.ProcessKeyboard(cm, 0.01f);
 }
 
-void Model_ViewportSystem::processCamera(double time)
+void Model_ViewportSystem::processCamera(Timestep ts)
 {	// TODO: Camera is missing roll. This means it needs free/locked mode to function as a state for quaternion transforms
+	double time{ ts.current().count() };
 
 	CameraPos p{ m_cameraSystem.cameraPos((float)time) };
 

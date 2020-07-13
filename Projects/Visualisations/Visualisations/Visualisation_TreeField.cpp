@@ -45,8 +45,10 @@ void Visualisation_TreeField::processSamples(const Buffer& buf, unsigned samples
 {
 }
 
-void Visualisation_TreeField::renderFrame(const Camera& camera, Timecode t)
+void Visualisation_TreeField::renderFrame(const Camera& camera, const Timestep& ts)
 {
+	double t{ ts.current().count() };
+
 	m_objectShader->use();
 	m_objectShader->setVec3("lightColour", glm::vec3{ 1.0f,0.5f,0.31f });
 	m_objectShader->setVec3("objectColour", glm::vec3{ 1.0f,0.5f,0.31f });

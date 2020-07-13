@@ -131,7 +131,7 @@ void Visualisation_Oscilloscope::processSamples(const Buffer & buf, unsigned sam
 	}
 }
 
-void Visualisation_Oscilloscope::renderFrame(const Camera& camera, Timecode t)
+void Visualisation_Oscilloscope::renderFrame(const Camera& camera, const Timestep& t)
 {
 	for (size_t c = 0; c < m_audioChannelCount; ++c)
 	{

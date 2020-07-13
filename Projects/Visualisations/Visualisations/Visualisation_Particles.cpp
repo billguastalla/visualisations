@@ -38,16 +38,13 @@ void Visualisation_Particles::processSamples(const Buffer& buf, unsigned samples
 {
 }
 
-void Visualisation_Particles::renderFrame(const Camera& camera, Timecode t)
+void Visualisation_Particles::renderFrame(const Camera& camera, const Timestep& ts)
 {
-
 	for (auto & ps : m_particleSystems)
-		ps.generate(*m_particleSet,m_lastTime,t);
+		ps.generate(*m_particleSet,ts);
 	m_particleSet->clearParticles(ui_particleLifetime);
-	m_particleSet->moveParticles((t - m_lastTime) * ui_globalSpeed,ui_particleLifetime);
+	m_particleSet->moveParticles(ts.dt().count() * ui_globalSpeed,ui_particleLifetime);
 	m_particleSet->draw(camera);
-
-	m_lastTime = t;
 }
 
 void Visualisation_Particles::drawInterface()

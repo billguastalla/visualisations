@@ -10,6 +10,7 @@
 #include "Visualisation_Splinters.h"
 #include "Visualisation_Particles.h"
 
+#include "Timekeeping.h"
 #include "Buffer.h"
 #include <GLFW/glfw3.h>
 
@@ -122,7 +123,7 @@ void Model_Visualisation::setVisualisation(int option)
 		As vis code gets heavier we can move it if needed. */
 }
 
-void Model_Visualisation::runVisualisation(const Camera& camera, Timecode t)
+void Model_Visualisation::runVisualisation(const Camera& camera, Timestep t)
 {
 	if (m_currentVisualisaton != -1)
 	{

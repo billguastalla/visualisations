@@ -2,6 +2,7 @@
 #include "Visualisation.h"
 #include "PostProcessing.h"
 #include <boost/property_tree/ptree_fwd.hpp>
+#include "Timekeeping.h"
 
 #include <memory>
 #include <vector>
@@ -24,7 +25,7 @@ public:
 	Visualisation* currentVisualisation() { return (m_currentVisualisaton != -1) ? m_visualisations[m_currentVisualisaton] : nullptr; }
 	std::string visualisationOptionsString();
 	void setVisualisation(int option);
-	void runVisualisation(const Camera& camera, Timecode t);
+	void runVisualisation(const Camera& camera, Timestep t);
 	void processAudio(const Buffer & buffer);
 
 	std::shared_ptr<PostProcessing> postProcessing() { return m_postProcessing; }

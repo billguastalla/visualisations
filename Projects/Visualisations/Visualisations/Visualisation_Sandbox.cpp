@@ -143,8 +143,10 @@ void Visualisation_Sandbox::processSamples(const Buffer & buf, unsigned samples)
 	//m_bottomModelMat = glm::scale(m_bottomModelMat, glm::vec3{ 1.0,1.0,1.0 + min });
 }
 
-void Visualisation_Sandbox::renderFrame(const Camera& camera, Timecode t)
+void Visualisation_Sandbox::renderFrame(const Camera& camera, const Timestep& ts)
 {
+	double t{ ts.current().count() };
+
 	++m_frameCounter;
 	if (m_frameCounter % 100 == 0)
 	{

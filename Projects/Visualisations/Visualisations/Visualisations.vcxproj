@@ -118,6 +118,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/verbose:lib</AdditionalOptions>
     </Link>
     <PreLinkEvent>
       <Command>@ECHO ON
@@ -251,6 +252,7 @@
     <ClInclude Include="Trajectory.h" />
     <ClInclude Include="ParticleSet.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Timekeeping.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshGenerator.h" />

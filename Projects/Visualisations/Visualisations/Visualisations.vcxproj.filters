@@ -273,16 +273,10 @@
     <ClCompile Include="Model_Session.cpp">
       <Filter>Source Files\Program\Model Systems</Filter>
     </ClCompile>
-    <ClCompile Include="Window_Transport.cpp">
-      <Filter>Source Files\UI\Windows</Filter>
-    </ClCompile>
     <ClCompile Include="Window_Session.cpp">
       <Filter>Source Files\UI\Windows</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Model_Transport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Interpolation.cpp">
@@ -290,6 +284,12 @@
     </ClCompile>
     <ClCompile Include="Event.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_Transport.cpp">
+      <Filter>Source Files\Program\Model Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Window_Transport.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -490,6 +490,9 @@
     </ClInclude>
     <ClInclude Include="Interpolation.h">
       <Filter>Header Files\Events System</Filter>
+    </ClInclude>
+    <ClInclude Include="Timekeeping.h">
+      <Filter>Header Files\Graphics\Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
