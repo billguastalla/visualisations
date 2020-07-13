@@ -47,7 +47,7 @@ void ParticleSet::draw(const Camera& camera)
 
 	m_particleShader.use();
 
-	glm::mat4 projection = glm::perspective(glm::radians(camera.m_zoom), (float)1920 / (float)1080, 0.1f, 100.0f);
+	glm::mat4 projection{ camera.projectionMatrix() };
 	glm::mat4 view = camera.GetViewMatrix();
 
 
