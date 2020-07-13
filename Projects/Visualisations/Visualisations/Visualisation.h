@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "Camera.h"
+#include "Timekeeping.h"
 
 class Buffer;
 typedef double Timecode;
@@ -16,7 +17,7 @@ public:
 	/* Unload shaders etc. */
 	virtual void deactivate() = 0;
 	virtual void processSamples(const Buffer& buf, unsigned samples) = 0;
-	virtual void renderFrame(const Camera& camera, Timecode t) = 0;
+	virtual void renderFrame(const Camera& camera, const Timestep& t) = 0;
 	virtual void drawInterface() {};
 	virtual std::string titleString() = 0;
 protected:

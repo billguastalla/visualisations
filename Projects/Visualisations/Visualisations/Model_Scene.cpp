@@ -1,12 +1,12 @@
 #include "Model_Scene.h"
 #include <boost/property_tree/ptree.hpp>
 
-void Model_Scene::load(const boost::property_tree::ptree & t)
+bool Model_Scene::loadFileTree(const boost::property_tree::ptree& t)
 {
-
+	return false;
 }
 
-void Model_Scene::save(boost::property_tree::ptree & t)
+bool Model_Scene::saveFileTree(boost::property_tree::ptree& t) const
 {
-
+	return false;
 }

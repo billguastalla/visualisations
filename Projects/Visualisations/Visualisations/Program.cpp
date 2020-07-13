@@ -26,7 +26,7 @@
 /* Try to ensure nothing below program level knows about GLFWwindow */
 Program::Program(GLFWwindow* window, std::string glslVersion, const ProgramMode& m)
 	: m_window{ window },
-	m_interface{},
+	m_interface{ this },
 	m_glslVersion{ glslVersion },
 	m_mode{ m }
 {
@@ -46,7 +46,7 @@ void Program::initialise()
 	m_modelAudioInterface = std::shared_ptr<Model_AudioInterface>{ new Model_AudioInterface{ } };
 	m_modelVisualisation = std::shared_ptr<Model_Visualisation>{ new Model_Visualisation{ m_window} };
 	m_modelTransport = std::shared_ptr<Model_Transport>{ new Model_Transport{} };
-	m_modelSession = std::shared_ptr<Model_Session>{new Model_Session{}};
+	m_modelSession = std::shared_ptr<Model_Session>{ new Model_Session{*this} };
 
 	/* Set up window instances */
 	Window_Abstract* videoRenderWindow = new Window_VideoRendering{ m_modelVideoRendering };
@@ -76,73 +76,65 @@ void Program::run()
 	// Main loop
 	while (!glfwWindowShouldClose(m_window))
 	{
-		while (m_mode == ProgramMode::Sandbox && !glfwWindowShouldClose(m_window))
-			runSandbox();
-		while (m_mode == ProgramMode::Scripted && !glfwWindowShouldClose(m_window))
-			runScripted();
+		Timestep t{ m_modelTransport->time() };
+
+		if (!m_modelViewportSystem->freeCamera())
+			m_modelViewportSystem->processCamera(t); // Update camerapos according to camera system if locked camera.
+
+		Camera c{ m_modelViewportSystem->camera() };
+
+		//Gist<float> audioAnalysis{ buf.framecountPerChannel(),test.sampleRate() };
+		//audioAnalysis.processAudioFrame(buf.data(0));
+
+		// Poll and handle events (inputs, window resize, etc.)
+		// You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
+		// - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
+		// - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
+		// Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
+		glfwPollEvents();
+
+		/* Later we can pass the interval in samples/ms per frame here*/
+		/* Should the Program class care about the check for the record state? */
+		if (m_modelAudioInterface->streamRunning())
+		{
+			Buffer currentAudio = m_modelAudioInterface->buffer();
+			m_modelVisualisation->processAudio(currentAudio);
+			//m_modelVideoRendering->processAudio();
+		}
+		interpretMouseInput();
+		interpretKeyboardInput();
+
+		/* Draw the current visualisation. */
+		if (m_mode == ProgramMode::Sandbox)
+			m_modelVisualisation->runVisualisation(c, t);
+		else if (m_mode == ProgramMode::Scripted)
+			;// m_modelScene->frame();
+
+		/* If user wants to see UI in the video output, draw the interface before rendering a video frame. */
+		if (m_modelVideoRendering->renderUI())
+		{
+			m_interface.render();
+			m_modelVideoRendering->renderFrame();
+		}
+		else
+		{
+			m_modelVideoRendering->renderFrame();
+			m_interface.render();
+		}
+
+		glfwMakeContextCurrent(m_window);
+		glfwSwapBuffers(m_window);
+
+		std::vector<float> backgroundColour = m_interface.backgroundColour();
+		if (backgroundColour.size() >= 4)
+			glClearColor(backgroundColour[0], backgroundColour[1], backgroundColour[2], backgroundColour[3]);
+		else
+			glClearColor(0.3f, 0.4f, 0.1f, 1.0f);
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		m_modelTransport->nextFrame();
 	}
-}
-
-void Program::runSandbox()
-{
-	Timecode t{ m_modelTransport->time() };
-
-	if (!m_modelViewportSystem->freeCamera())
-		m_modelViewportSystem->processCamera(t); // Update camerapos according to camera system if locked camera.
-
-	Camera c{ m_modelViewportSystem->camera() };
-
-	//Gist<float> audioAnalysis{ buf.framecountPerChannel(),test.sampleRate() };
-	//audioAnalysis.processAudioFrame(buf.data(0));
-
-	// Poll and handle events (inputs, window resize, etc.)
-	// You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
-	// - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
-	// - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
-	// Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
-	glfwPollEvents();
-
-	/* Later we can pass the interval in samples/ms per frame here*/
-	/* Should the Program class care about the check for the record state? */
-	if (m_modelAudioInterface->streamRunning())
-	{
-		Buffer currentAudio = m_modelAudioInterface->buffer();
-		m_modelVisualisation->processAudio(currentAudio);
-		//m_modelVideoRendering->processAudio();
-	}
-	interpretMouseInput();
-	interpretKeyboardInput();
-
-	/* Draw the current visualisation. */
-	m_modelVisualisation->runVisualisation(c, t);
-	/* If user wants to see UI in the video output, draw the interface before rendering a video frame. */
-	if (m_modelVideoRendering->renderUI())
-	{
-		m_interface.render();
-		m_modelVideoRendering->renderFrame();
-	}
-	else
-	{
-		m_modelVideoRendering->renderFrame();
-		m_interface.render();
-	}
-
-	glfwMakeContextCurrent(m_window);
-	glfwSwapBuffers(m_window);
-
-	std::vector<float> backgroundColour = m_interface.backgroundColour();
-	if (backgroundColour.size() >= 4)
-		glClearColor(backgroundColour[0], backgroundColour[1], backgroundColour[2], backgroundColour[3]);
-	else
-		glClearColor(0.3f, 0.4f, 0.1f, 1.0f);
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	m_modelTransport->nextFrame();
-}
-
-void Program::runScripted()
-{
 }
 
 void Program::interpretMouseInput()

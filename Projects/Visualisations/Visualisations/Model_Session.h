@@ -3,10 +3,14 @@
 #include <memory>
 #include <boost/property_tree/ptree_fwd.hpp>
 
+class Program;
+/*
+	Entry point for serialisation and the file tree.
+*/
 class Model_Session
 {
 public:
-	Model_Session();
+	Model_Session(Program & p);
 
 	enum class SessionState
 	{
@@ -18,7 +22,7 @@ public:
 	static std::string sessionStateString(const SessionState& s);
 
 	bool create();
-	bool open(std::string file);
+	bool open();
 	bool save();
 	bool close();
 
@@ -28,9 +32,11 @@ public:
 	const std::string& filepath() { return m_filepath; };
 
 	void setTitle(const std::string& t) { m_title = t; };
-	void setFilename(const std::string& fn) { m_filename = fn; };
+	void setFilename(const std::string& fn) { m_filename = fn; }; // note: I think you only need one of these
 	void setFilepath(const std::string& fp) { m_filepath = fp; };
 private:
+	Program & p_program;
+
 	std::shared_ptr<boost::property_tree::ptree> m_fileTree;
 
 	SessionState m_state;

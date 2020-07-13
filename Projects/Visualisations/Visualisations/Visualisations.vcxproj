@@ -118,6 +118,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/verbose:lib</AdditionalOptions>
     </Link>
     <PreLinkEvent>
       <Command>@ECHO ON
@@ -173,13 +174,17 @@
     <ClCompile Include="..\Includes\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\Includes\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\Includes\kissfft\kiss_fft.c" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraSystem.cpp" />
+    <ClCompile Include="Event.cpp" />
     <ClCompile Include="GeometryTools.cpp" />
+    <ClCompile Include="Interpolation.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshGenerator.cpp" />
     <ClCompile Include="Model_AudioInterface.cpp" />
     <ClCompile Include="Model_Scene.cpp" />
     <ClCompile Include="Model_Session.cpp" />
+    <ClCompile Include="Model_Transport.cpp" />
     <ClCompile Include="Model_VideoRendering.cpp" />
     <ClCompile Include="Model_ViewportSystem.cpp" />
     <ClCompile Include="Model_Visualisation.cpp" />
@@ -233,8 +238,12 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraSystem.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="EventsSystem.h" />
     <ClInclude Include="GeometryTools.h" />
+    <ClInclude Include="Event.h" />
+    <ClInclude Include="Interpolation.h" />
     <ClInclude Include="MappableProperty.h" />
+    <ClInclude Include="FunctionSource.h" />
     <ClInclude Include="Model_Scene.h" />
     <ClInclude Include="Model_Session.h" />
     <ClInclude Include="Model_Transport.h" />
@@ -243,6 +252,7 @@
     <ClInclude Include="Trajectory.h" />
     <ClInclude Include="ParticleSet.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Timekeeping.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshGenerator.h" />

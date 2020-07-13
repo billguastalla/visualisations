@@ -45,8 +45,8 @@ void Visualisation_Splinters::activate()
 	root->addChild(glm::vec3{ 0.0,0.0,10.0 }, 0.5);
 	root->addChild(glm::vec3{ 0.0,10.0,0.0 }, 0.5);
 	SplinterNode* c3 = root->addChild(glm::vec3{ 30.0,10.0,0.0 }, 0.2);
-	c3->addChild(glm::vec3{ 35.0,15.0,2.0 }, 0.2);
-	c3->addChild(glm::vec3{ 35.0,25.0,-8.0 }, 0.2);
+	c3->addChild(glm::vec3{ 35.0,15.0,2.0 }, 0.2f);
+	c3->addChild(glm::vec3{ 35.0,25.0,-8.0 }, 0.2f);
 
 	MetaDistribution<double> direction{ 0.5f,0.1f,0.001f,0.3f };
 	std::normal_distribution<double> directionX{ direction.createDistribution() };
@@ -81,7 +81,7 @@ void Visualisation_Splinters::processSamples(const Buffer& buf, unsigned samples
 
 }
 
-void Visualisation_Splinters::renderFrame(const Camera& camera, Timecode t)
+void Visualisation_Splinters::renderFrame(const Camera& camera, const Timestep& t)
 {
 	glm::mat4 projection{ camera.projectionMatrix() };
 	m_objectShader->setMat4("projection", projection);

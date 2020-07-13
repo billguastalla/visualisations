@@ -38,7 +38,7 @@ void Window_Session::draw()
 		m_session->create();
 	ImGui::SameLine();
 	if (ImGui::Button("open"))
-		m_session->open("");
+		m_session->open();
 	ImGui::SameLine();
 	if (ImGui::Button("save"))
 		m_session->save();

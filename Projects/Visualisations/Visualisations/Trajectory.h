@@ -11,6 +11,13 @@
 			-> Could be changed with oscillation of tree branches!?
 		-> When getting vertices from tree: issue of disjoint vertices from one branch to another.
 				-> How do we prevent incorrect velocities being calculated from start of new branch?
+
+
+	Issues with ODEs:
+		-> ODEs need to be 'set off' after which they will evolve.
+			-> To continuously produce new trajectories, they need to be fed with their final values.
+		-> With the SHO, the realtime timestep is too small!
+			-> Sol: timestep rescale?
 */
 
 namespace Trajectory
@@ -30,17 +37,84 @@ namespace Trajectory
 		}
 	};
 
+	class ODE_Lorenz
+	{
+	public:
+		ODE_Lorenz()
+			: sigma{ 10. }, R{ 28. }, b{ 8. / 3. }{}
+		double sigma;
+		double R;
+		double b;
+
+		//double gamma;
+		//double alpha;
+
+		//double a_r, b_r, c_r, u_r;
+
+		void operator() (const state_type& x, state_type& dxdt, const double t)
+		{
+			dxdt[0] = sigma * (x[1] - x[0]);
+			dxdt[1] = R * x[0] - x[1] - x[0] * x[2];
+			dxdt[2] = -b * x[2] + x[0] * x[1];
+
+			// Rabinovich–Fabrikant equations (gamma = 0.87, alpha = 1.1)
+			//dxdt[0] = x[1] * (x[2] - 1. + (x[0] * x[0])) + (gamma* x[0]);
+			//dxdt[1] = x[0] * ((3. * x[2]) + 1. - (x[0] * x[0])) + (gamma * x[1]);
+			//dxdt[2] = -2. * x[2] * (alpha + (x[0] * x[1]));
+
+			// Rössler attractor ( a = 0.2, b = 0.2, c = 5.7 )
+			//dxdt[0] = - x[1] - x[2];
+			//dxdt[1] = x[0] + (a_r * x[1]);
+			//dxdt[2] = b_r + (x[2] * (x[0] - c_r));
+
+			//// Multiscroll attractors (see modified chua, might have modes!)
+			// Lu Chen (a = 36, c = 20, b = 3, u = -15.15), (x(0) = .1, y(0) = .3, z(0) = -.6)
+			//dxdt[0] = a_r * (x[1] - x[0]);
+			//dxdt[1] = x[0] - (x[0] * x[2]) + (c_r * x[1]) + u_r;
+			//dxdt[2] = (x[0] * x[1]) - (b_r * x[2]);
+
+			// ... 
+
+		}
+	};
+
+
 	struct ODE_State // holds intermediate steps in an odeint integral calculation
 	{
-		ODE_State() : m_states{}, m_times{} {}
-		std::vector<state_type> m_states;
-		std::vector<double> m_times;
+		ODE_State(std::vector<state_type>& states, std::vector<double>& times) : m_states{ states }, m_times{ times } {}
+		std::vector<state_type>& m_states;
+		std::vector<double>& m_times;
 		void operator() (const state_type& x, double t)
 		{
 			m_states.push_back(x);
 			m_times.push_back(t);
 		}
 	};
+
+
+	struct Settings_Lorenz
+	{
+		Settings_Lorenz()
+			:
+			sigma{ 10. }, R{ 28. }, b{ 8. / 3. },
+			x_0{ 0.5 }, y_0{ 0.5 }, z_0{ 0.5 },
+			t_0{ 0.0 },
+			t_f{ 10.0 },
+			dt{ 0.005 },
+			timescale{ 1.f }
+		{}
+		double R, b, sigma;	// linear constant of SHO
+		double x_0, y_0, z_0;		// starting position
+		double t_0;		// initial time
+		double t_f;		// final time
+		double dt;		// timestep size
+
+		// debugging
+		double timescale; // time rescaling!
+
+		void drawUI();
+	};
+	std::vector<glm::vec3> generateLorenz(Settings_Lorenz& s);
 
 	struct Settings_SHO
 	{
@@ -51,7 +125,8 @@ namespace Trajectory
 			p_0{ 0.0 },
 			t_0{ 0.0 },
 			t_f{ 10.0 },
-			dt{ 0.005 }
+			dt{ 0.005 },
+			timescale{ 1.f }
 		{}
 		double gamma;	// linear constant of SHO
 		double x_0;		// starting position
@@ -59,9 +134,13 @@ namespace Trajectory
 		double t_0;		// initial time
 		double t_f;		// final time
 		double dt;		// timestep size
+
+		// debugging
+		double timescale; // time rescaling!
+
 		void drawUI();
 	};
-	std::vector<glm::vec3> generateSHO(const Settings_SHO& s);
+	std::vector<glm::vec3> generateSHO(Settings_SHO& s);
 	struct Settings_Helix
 	{
 		Settings_Helix()
@@ -69,8 +148,8 @@ namespace Trajectory
 			t_0{ 0.0 },
 			t_f{ 10.0 },
 			intervals{ 3u },
-			componentAmplitudes{1.f},
-			componentFrequencies{1.f}
+			componentAmplitudes{ 1.f },
+			componentFrequencies{ 1.f }
 		{}
 		float t_0;
 		float t_f;
@@ -95,7 +174,7 @@ namespace Trajectory
 	};
 
 
-	constexpr char trajectoryTypeOptions[] = "SHO\0Helix\0Mesh\0Tree\0LorentzAttractor\0HarmonicOscillator\0PlanetarySystem\0SphericalHarmonics";
+	constexpr char trajectoryTypeOptions[] = "SHO\0Helix\0Mesh\0Tree\0LorenzAttractor\0HarmonicOscillator\0PlanetarySystem\0SphericalHarmonics";
 	struct Settings // temporary design, will switch to simpler one as common data/methods are found.
 	{
 		Settings() : sho{}, helix{}, tree{}, type{ Type::Helix } {}
@@ -104,8 +183,8 @@ namespace Trajectory
 			SHO,
 			Helix,
 			Mesh, // tbc
-			Tree, // tbc
-			LorentzAttractor, // tbc
+			Tree,
+			LorenzAttractor,
 			HarmonicOscillator, // tbc
 			PlanetarySystem, // tbc
 			SphericalHarmonics // tbc
@@ -113,9 +192,10 @@ namespace Trajectory
 		void setTime(double t_0, double t_f, double dt);
 		void drawUI();
 		Settings_SHO sho;
+		Settings_Lorenz lorenz;
 		Settings_Helix helix;
 		Settings_Tree tree;
 	};
-	std::vector<glm::vec3> generate(const Settings& s);
+	std::vector<glm::vec3> generate(Settings& s);
 
 }

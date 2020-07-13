@@ -47,7 +47,7 @@ void ParticleSet::draw(const Camera& camera)
 
 	m_particleShader.use();
 
-	glm::mat4 projection = glm::perspective(glm::radians(camera.m_zoom), (float)1920 / (float)1080, 0.1f, 100.0f);
+	glm::mat4 projection{ camera.projectionMatrix() };
 	glm::mat4 view = camera.GetViewMatrix();
 
 
@@ -94,6 +94,10 @@ void ParticleSet::generateParticles(std::vector<glm::vec3> path, const ParticleE
 		glm::vec3& pNext = path[i + 1];
 		glm::vec3& pCurrent = path[i];
 		glm::vec3 pathDirection{ pNext - pCurrent };
+
+		if (pathDirection == glm::vec3{ 0.f })
+			pathDirection = glm::vec3{ 1.f,0.f,0.f }; // TODO: Handle this circumstance better (this avoids sigma = 0)
+
 		std::pair<glm::vec3, glm::vec3> normalBasis{ Geometry::normalBasis(pathDirection) }; // build basis for normal plane to path
 		glm::vec3 particleDirection{}; // build random direction in plane
 		switch (settings.m_emissionDirection)
@@ -112,6 +116,8 @@ void ParticleSet::generateParticles(std::vector<glm::vec3> path, const ParticleE
 		}
 
 		float meanLength{ settings.m_meanTravelDist * glm::length(pathDirection) };
+		if (meanLength == 0.f)
+			meanLength = 0.1f; // TODO: Better edge cases.
 		std::normal_distribution<float> distScale{ meanLength, meanLength * settings.m_sigmaTravelDist }; // used to distribute velocity magnitude
 
 		Particle part{};
@@ -127,7 +133,7 @@ void ParticleSet::generateParticles(std::vector<glm::vec3> path, const ParticleE
 	}
 }
 
-void ParticleSet::moveParticles(float dt)
+void ParticleSet::moveParticles(float dt, float particleLifetime)
 {
 	for (Particle& p : m_particles)
 	{
@@ -135,14 +141,14 @@ void ParticleSet::moveParticles(float dt)
 		float decay{ std::exp(-p.velocityDecay * dt) };
 		p.velocity *= decay;
 		p.duration += dt;
-		p.lifeScale = (m_particleLifetime - p.duration) / m_particleLifetime;
+		p.lifeScale = (particleLifetime - p.duration) / particleLifetime;
 	}
 }
 
-void ParticleSet::clearParticles()
+void ParticleSet::clearParticles(float particleLifetime)
 {
 	m_particles.erase(
-		std::remove_if(m_particles.begin(), m_particles.end(), [this](Particle& p) { return p.duration > m_particleLifetime; }),
+		std::remove_if(m_particles.begin(), m_particles.end(), [this,particleLifetime](Particle& p) { return p.duration > particleLifetime; }),
 		m_particles.end());
 
 }
@@ -162,6 +168,8 @@ void ParticleEmissionSettings::drawUI()
 	ImGui::SliderFloat("Travel Distance Mean", &m_meanTravelDist, 1.f, 10.0f);
 	ImGui::SliderFloat("Travel Distance Sigma", &m_sigmaTravelDist, 0.03f, 1.0f);
 	ImGui::SliderFloat("Velocity Decay Rate Base", &m_baseDecayRate, 0.1f, 5.f);
-	ImGui::SliderFloat("Global Particle Scale", &m_globalParticleScale, 0.1f, 1.f);
+	ImGui::SliderFloat("Global Particle Scale", &m_globalParticleScale, 0.1f, 100.f);
 	ImGui::SliderFloat("Global Velocity", &m_globalVelocity, 0.1f, 10.f);
+
+	
 }

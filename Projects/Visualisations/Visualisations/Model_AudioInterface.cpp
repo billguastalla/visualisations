@@ -1,6 +1,16 @@
 #include "Model_AudioInterface.h"
 #include "Program.h"
 
+bool Model_AudioInterface::loadFileTree(const boost::property_tree::ptree& t)
+{
+	return false;
+}
+
+bool Model_AudioInterface::saveFileTree(boost::property_tree::ptree& t) const
+{
+	return false;
+}
+
 PaStreamParameters defaultParams()
 {
 	PaStreamParameters params;
@@ -11,6 +21,7 @@ PaStreamParameters defaultParams()
 	params.suggestedLatency = 10.0;
 	return params;
 }
+
 
 Model_AudioInterface::Model_AudioInterface(Program * prog)
 	:
