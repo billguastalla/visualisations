@@ -11,9 +11,13 @@ struct Interpolation // TODO: Allow different coefficient sizes in UI. // NOTE: 
 	float value(float x); // expects x between [0,1], undefined behaviour outside.
 	FunctionType m_functionType;
 	std::vector<float> m_coefficients;
-	void drawUI(const std::string& name);
 
 	// TODO: read/write ptree 
 	bool loadFileTree(const boost::property_tree::ptree& t);
 	bool saveFileTree(boost::property_tree::ptree& t) const;
+	void drawUI(const std::string& name);
+
+
+	std::pair<double, double> m_inputRange;
+	std::pair<double, double> m_outputRange;
 };

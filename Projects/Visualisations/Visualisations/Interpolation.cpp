@@ -5,7 +5,7 @@
 
 constexpr char funcTypeStr[] = "Polynomial\0Exponential\0Sinusoidal\0";
 
-template <class T>
+template <class T> // note: move to general functions if reused.
 auto floatingVectToStr = [](const std::vector<T>& t) {
 	std::string res{};
 	for (const T& a : t)
