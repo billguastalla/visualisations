@@ -1,13 +1,14 @@
 #include "UserInterface.h"
 #include "Buffer.h"
+#include "About.h"
+#include "Window_Abstract.h"
+#include "Program.h"
 
 #include <glad\glad.h>
 #include <GLFW/glfw3.h>
 #include "imgui/imgui.h"
 #include "imgui/examples/imgui_impl_glfw.h"
 #include "imgui/examples/imgui_impl_opengl3.h"
-#include "Window_Abstract.h"
-#include "Program.h"
 
 // WARNING: state is connected to Program::ProgramMode
 constexpr char programModeOptsString[] = "Sandbox\0Scripted\0";
@@ -18,6 +19,7 @@ UserInterface::UserInterface(Program * prog)
 	ui_programMode{(int)Program::ProgramMode::Sandbox},
 	m_showMainWindow{ true },
 	m_windows{},
+	m_aboutDlg{false},
 	m_clearColour{ {0.11f,0.24f,0.35f,1.0f} }
 {
 }
@@ -90,6 +92,10 @@ void UserInterface::render()
 		ImGui::Text("\tSpeed up/down:\t [ / ]");
 		ImGui::Text("\tReset Position:\t 0");
 
+
+		ImGui::Checkbox("About", &m_aboutDlg);
+		if(m_aboutDlg)
+			drawAboutDialog();
 
 		ImGui::End();
 

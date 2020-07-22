@@ -126,10 +126,9 @@ This project owes a huge amount to the [OpenGL tutorial](https://learnopengl.com
 A number of OpenGL-based components in this project are derived from these OpenGL tutorials. The author of this project is grateful to Joey's contributions to
 computer graphics.
 
-By default, files in Visualisations are licensed under GPL 3.0 (see LICENSE-GUASTALLA.md)
-In derived works please include my full name and my github profile.
+Currently, Visualisations itself is not licensed. If you would like to use the program, send me an email.
+My email is my github username @gmail.com.
 
 The components that are modified works from Joey De Vries, are licensed under Creative Commons 4.0 Non-commercial Attribution,
 and are labelled as such at the top of the file. (see LICENSE-DEVRIEZ.md)
 
-If you have any questions about licensing write me an email. My email is my github username @gmail.com

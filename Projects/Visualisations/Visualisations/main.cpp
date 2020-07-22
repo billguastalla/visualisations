@@ -2,9 +2,11 @@
 #include <GLFW/glfw3.h>
 
 #include "Program.h"
+#include "About.h"
 
 #include <string>
 #include <stdio.h>
+#include <iostream>
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -27,7 +29,7 @@ static int mainInit(GLFWwindow * & window, int width, int height)
 	glfwWindowHint(GLFW_SAMPLES, 8); /* MSAA */
 
 	// Create window with graphics context
-	window = glfwCreateWindow(1920, 1080, "Visualisations", nullptr, nullptr);
+	window = glfwCreateWindow(1920, 1080, "Visualisations 0.4 {(c) Bill Guastalla 2020}", nullptr, nullptr);
 	if (window == nullptr)
 		return 1;
 	glfwMakeContextCurrent(window);
@@ -56,6 +58,8 @@ int main(int, char**)
 #ifdef WIN32
 	//FreeConsole();
 #endif
+	std::cout << about;
+
 
 	GLFWwindow* window{ nullptr };
 	mainInit(window, 1920,1080);

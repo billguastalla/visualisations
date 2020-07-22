@@ -291,6 +291,9 @@
     <ClCompile Include="Window_Transport.cpp">
       <Filter>Source Files\UI\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="About.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Buffer.h">
@@ -493,6 +496,9 @@
     </ClInclude>
     <ClInclude Include="Timekeeping.h">
       <Filter>Header Files\Graphics\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="About.h">
+      <Filter>Header Files\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

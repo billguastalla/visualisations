@@ -1,3 +1,13 @@
+****************************************************************************************
+
+This license applies only to code that is modified from work provided by 
+Joey De Vries, from the Learn OpenGL tutorial. Files that have the CC4.0NA license
+applied are marked clearly in the source headers.
+
+Assume that other source files are unlicensed, unless LICENSE.md says otherwise.
+
+****************************************************************************************
+
 Attribution-NonCommercial 4.0 International
 
 =======================================================================
