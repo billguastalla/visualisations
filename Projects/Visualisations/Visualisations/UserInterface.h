@@ -29,6 +29,7 @@ private:
 	std::vector<std::unique_ptr<Window_Abstract>> m_windows;
 
 	bool m_showMainWindow;
+	bool m_aboutDlg;
 	std::vector<float> m_clearColour;
 
 	int ui_programMode; // NOTE: type is Program::ProgramMode
