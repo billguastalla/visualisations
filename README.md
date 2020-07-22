@@ -130,5 +130,5 @@ Currently, Visualisations itself is not licensed. If you would like to use the p
 My email is my github username @gmail.com.
 
 The components that are modified works from Joey De Vries, are licensed under Creative Commons 4.0 Non-commercial Attribution,
-and are labelled as such at the top of the file. (see LICENSE-DEVRIEZ.md)
+and are labelled as such at the top of the file. (see LICENSE-CC4.0NA.md)
 
