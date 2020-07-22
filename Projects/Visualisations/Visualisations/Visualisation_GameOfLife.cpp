@@ -164,7 +164,7 @@ void Visualisation_GameOfLife::processSamples(const Buffer& buf, unsigned sample
 	//m_camera.m_front = glm::normalize(front);
 }
 
-void Visualisation_GameOfLife::renderFrame(const Camera& camera, Timecode t)
+void Visualisation_GameOfLife::renderFrame(const Camera& camera, const Timestep& t)
 {
 	// activate shader
 	m_objectShader->use();

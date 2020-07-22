@@ -2,18 +2,13 @@
 #include "UserInterface.h"
 #include "Recorder.h"
 
-class Settings_VideoRendering;
-class Settings_AudioInterface;
-class Settings_Visualisation;
-
 class Model_VideoRendering;
 class Model_AudioInterface;
 class Model_Visualisation;
 class Model_ViewportSystem;
 class Model_Transport;
-
+class Model_Session;
 struct GLFWwindow;
-
 
 class Program
 {
@@ -25,11 +20,20 @@ public:
 
 	void initialise();
 	void deinitialise();
-
 	void run();
+
+	// note:	these functions exist to provide other models to session via Program*. 
+	//			open to an alternative.
+	std::shared_ptr<Model_ViewportSystem> modelViewportSystem() const { return m_modelViewportSystem; }
+	std::shared_ptr<Model_VideoRendering> modelVideoRendering() const { return m_modelVideoRendering; }
+	std::shared_ptr<Model_AudioInterface> modelAudioInterface() const { return m_modelAudioInterface; }
+	std::shared_ptr<Model_Visualisation> modelVisualisation() const { return m_modelVisualisation; }
+	std::shared_ptr<Model_Transport> modelTransport() const { return m_modelTransport; }
+	std::shared_ptr<Model_Session> modelSession() const { return m_modelSession; }
+
+	void setMode(const ProgramMode& mode) { m_mode = mode; }
+	ProgramMode mode() { return m_mode; }
 private:
-	void runSandbox(); // I don't think this is a good method.
-	void runScripted();
 	void interpretMouseInput();
 	void interpretKeyboardInput();
 
@@ -46,4 +50,5 @@ private:
 	std::shared_ptr<Model_AudioInterface> m_modelAudioInterface;
 	std::shared_ptr<Model_Visualisation> m_modelVisualisation;
 	std::shared_ptr<Model_Transport> m_modelTransport;
+	std::shared_ptr<Model_Session> m_modelSession;
 };

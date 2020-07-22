@@ -45,7 +45,7 @@ private:
 
 	RecorderState m_state;
 
-	LockableBuffer *	m_lockedBuffer;
+	LockableBuffer *    m_lockedBuffer;
 	PaStreamParameters  m_inputParameters;
 	PaStream *          m_stream;
 };

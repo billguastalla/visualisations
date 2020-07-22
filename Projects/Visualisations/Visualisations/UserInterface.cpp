@@ -1,5 +1,8 @@
 #include "UserInterface.h"
 #include "Buffer.h"
+#include "About.h"
+#include "Window_Abstract.h"
+#include "Program.h"
 
 #include <glad\glad.h>
 #include <GLFW/glfw3.h>
@@ -7,12 +10,16 @@
 #include "imgui/examples/imgui_impl_glfw.h"
 #include "imgui/examples/imgui_impl_opengl3.h"
 
-#include "Window_Abstract.h"
+// WARNING: state is connected to Program::ProgramMode
+constexpr char programModeOptsString[] = "Sandbox\0Scripted\0";
 
-UserInterface::UserInterface()
+UserInterface::UserInterface(Program * prog)
 	:
+	p_program{prog}, // Warning: pointer passed before construction of program finished.
+	ui_programMode{(int)Program::ProgramMode::Sandbox},
 	m_showMainWindow{ true },
 	m_windows{},
+	m_aboutDlg{false},
 	m_clearColour{ {0.11f,0.24f,0.35f,1.0f} }
 {
 }
@@ -66,6 +73,9 @@ void UserInterface::render()
 	if (m_showMainWindow)
 	{
 		ImGui::Begin("Interface");
+
+		int progMode{ ui_programMode };
+		ImGui::Combo("Program Mode", &progMode, programModeOptsString);
 		
 		ImGui::Text("Windows:\t");
 		ImGui::Checkbox("Main Window (toggle with \"i\")", &m_showMainWindow);
@@ -83,8 +93,17 @@ void UserInterface::render()
 		ImGui::Text("\tReset Position:\t 0");
 
 
+		ImGui::Checkbox("About", &m_aboutDlg);
+		if(m_aboutDlg)
+			drawAboutDialog();
+
 		ImGui::End();
 
+		if (ui_programMode != progMode && p_program != nullptr)
+		{
+			p_program->setMode((Program::ProgramMode)progMode);
+			ui_programMode = progMode;
+		}
 	}
 	// Press I to toggle main window 
 	if (ImGui::IsKeyPressed('I'))

@@ -1,4 +1,5 @@
 #include "Model_ViewportSystem.h"
+#include <boost/property_tree/ptree.hpp>
 
 Model_ViewportSystem::Model_ViewportSystem(GLFWwindow* win)
 	:
@@ -42,10 +43,11 @@ void Model_ViewportSystem::keyMovement(Camera_Movement cm)
 	m_camera.ProcessKeyboard(cm, 0.01f);
 }
 
-void Model_ViewportSystem::processCamera(double time)
+void Model_ViewportSystem::processCamera(Timestep ts)
 {	// TODO: Camera is missing roll. This means it needs free/locked mode to function as a state for quaternion transforms
+	double time{ ts.current().count() };
 
-	CameraPos p{ m_cameraSystem.cameraPos(time) };
+	CameraPos p{ m_cameraSystem.cameraPos((float)time) };
 
 	glm::vec3 orient{ glm::eulerAngles(p.orientation) };
 	m_camera.m_pitch = orient.x;
@@ -55,4 +57,16 @@ void Model_ViewportSystem::processCamera(double time)
 	m_camera.m_up = p.orientation * m_camera.m_up;
 	m_camera.m_right = p.orientation * m_camera.m_right;
 	m_camera.m_front = p.orientation * m_camera.m_front;
+}
+
+bool Model_ViewportSystem::loadFileTree(const boost::property_tree::ptree& t)
+{
+	return false;
+}
+
+bool Model_ViewportSystem::saveFileTree(boost::property_tree::ptree& t) const
+{
+	t.put("viewport.freecamera",m_freeCamera);
+	m_camera.saveFileTree(t);
+	return false;
 }

@@ -16,7 +16,7 @@ public:
 	void activate() override;
 	void deactivate() override;
 	void processSamples(const Buffer & buf, unsigned samples) override;
-	void renderFrame(const Camera& camera, Timecode t) override;
+	void renderFrame(const Camera& camera, const Timestep& t) override;
 	std::string titleString() override { return "Tree/Field"; };
 	void drawInterface() override;
 

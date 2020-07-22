@@ -8,11 +8,12 @@ class Window_Abstract;
 
 struct GLFWwindow;
 class Buffer;
+class Program;
 
 class UserInterface
 {
 public:
-	UserInterface();
+	UserInterface(Program * prog);
 	~UserInterface();
 
 	void initialise(GLFWwindow * window, std::string glslVersion);
@@ -23,14 +24,15 @@ public:
 	void addWindow(Window_Abstract * win);
 	void render();
 
-	//void hideAll();
-	//void showAll();
-
 	std::vector<float> backgroundColour() { return m_clearColour; }
 private:
 	std::vector<std::unique_ptr<Window_Abstract>> m_windows;
 
 	bool m_showMainWindow;
+	bool m_aboutDlg;
 	std::vector<float> m_clearColour;
+
+	int ui_programMode; // NOTE: type is Program::ProgramMode
+	Program* p_program;
 };
 

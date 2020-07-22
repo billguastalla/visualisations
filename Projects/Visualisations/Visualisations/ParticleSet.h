@@ -74,9 +74,9 @@ public:
 
 	void setTexture(const Texture& t);
 	void generateParticles(std::vector<glm::vec3> path, const ParticleEmissionSettings& settings); // add particles to the list
-	void moveParticles(float dt = .02f); // update the velocity of the particles
-	void clearParticles(); // 
-
+	void moveParticles(float dt = .02f, float particleLife = 2.f); // update the velocity of the particles
+	void clearParticles(float particleLifetime = 2.f); // 
+	size_t particleCount() { return m_particles.size(); }
 private:
 	void sortParticles(glm::vec3 cameraPos); // reorder particles in order of distance from the camera, to allow alpha blending.
 
@@ -84,9 +84,12 @@ private:
 	Texture m_particleTexture;
 	unsigned int m_particleVAO;
 
+
+	// TODO: should lifetime be in a settings structure?
+
 	std::vector<Particle> m_particles;
 	float m_particleLifetime;			// in seconds, how long before particle should be deleted
 	unsigned int m_maxParticleCount;	// max number of particles in set
-	long m_seed;						// 
+	long m_seed;						
 };
 

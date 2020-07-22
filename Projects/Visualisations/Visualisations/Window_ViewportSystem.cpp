@@ -7,10 +7,12 @@
 Window_ViewportSystem::Window_ViewportSystem(std::shared_ptr<Model_ViewportSystem>& viewport)
 	: m_viewportSystem{ viewport }
 {
+
 }
 
 Window_ViewportSystem::~Window_ViewportSystem()
 {
+
 }
 
 void Window_ViewportSystem::draw()
@@ -22,11 +24,32 @@ void Window_ViewportSystem::draw()
 	m_viewportSystem->setFreeCamera(f);
 
 	glm::vec3 cPos = m_viewportSystem->camera().m_position;
-	ImGui::Text("\tFramerate: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	ImGui::Text("\tFramerate: %.3f ms/frame (%.1f fps)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	ImGui::Text(std::string{ "Camera Position = {" +
 		std::to_string(cPos.x).substr(0,5) + ", " +
 		std::to_string(cPos.y).substr(0,5) + ", " +
 		std::to_string(cPos.z).substr(0,5) + "} " }.c_str());
+
+	
+	ImGui::Text("Perspective");
+	float log10zNear{ std::log10(m_viewportSystem->camera().m_nearZ) };
+	float log10zFar{ std::log10(m_viewportSystem->camera().m_farZ) };
+	float zoom{ m_viewportSystem->camera().m_zoom };
+	ImGui::SliderFloat("log10[zNear]", &log10zNear, -10.f, 0.f);
+	ImGui::SliderFloat("log10[zFar]", &log10zFar, 0.f, 10.f);
+	ImGui::SliderFloat("zoom",&zoom,0.f,90.f);
+	if (
+		std::abs(log10zNear - std::log10(m_viewportSystem->camera().m_nearZ)) > 0.01f ||
+		std::abs(log10zFar - std::log10(m_viewportSystem->camera().m_farZ)) > 0.01f ||
+		zoom != m_viewportSystem->camera().m_zoom
+		)
+	{
+		m_viewportSystem->camera().m_nearZ = std::powf(10, log10zNear);
+		m_viewportSystem->camera().m_farZ = std::powf(10, log10zFar);
+		m_viewportSystem->camera().m_zoom = zoom;
+	}
+
+
 
 	m_viewportSystem->cameraSystem().drawUI();
 

@@ -56,7 +56,7 @@ public:
 	void deactivate();
 
 	void processSamples(const Buffer& buf, unsigned samples);
-	void renderFrame(const Camera& camera, Timecode t);
+	void renderFrame(const Camera& camera, const Timestep& t);
 	void drawInterface();
 	std::string titleString() override { return "Splinters"; };
 
