@@ -58,8 +58,8 @@ void ParticleSet::draw(const Camera& camera)
 		glm::mat4 model{ 1.0 };
 		model = glm::translate(model, p.pos);
 
-		m_particleShader.setVec3("cameraRight", camera.m_right);
-		m_particleShader.setVec3("cameraUp", camera.m_up);
+		m_particleShader.setVec3("cameraRight", camera.right());
+		m_particleShader.setVec3("cameraUp", camera.up());
 
 		m_particleShader.setMat4("projection", projection);
 		m_particleShader.setMat4("view", view);

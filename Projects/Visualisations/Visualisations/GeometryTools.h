@@ -10,4 +10,8 @@ namespace Geometry
 
 	// Get a quaternion from an axis and an angle of rotation
 	glm::quat axisAngleToQuat(double angle, glm::vec3 axis);
+
+	using YawPitchRoll = glm::vec3;
+	YawPitchRoll ypr(const glm::quat& q);
+	glm::quat quat(const YawPitchRoll & _ypr);
 }

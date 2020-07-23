@@ -34,12 +34,12 @@ bool Camera::saveFileTree(boost::property_tree::ptree& t) const
 	t.put("camera.nearZ", m_nearZ);
 	t.put("camera.farZ", m_farZ);
 	t.put("camera.position", glmToString(m_position));
-	t.put("camera.front", glmToString(m_front));
-	t.put("camera.right", glmToString(m_right));
-	t.put("camera.up", glmToString(m_up));
+	//t.put("camera.front", glmToString(m_front));
+	//t.put("camera.right", glmToString(m_right));
+	//t.put("camera.up", glmToString(m_up));
 	t.put("camera.worldup", glmToString(m_worldup));
-	t.put("camera.pitch", m_pitch);
-	t.put("camera.yaw", m_yaw);
+	//t.put("camera.pitch", m_pitch);
+	//t.put("camera.yaw", m_yaw);
 	t.put("camera.zoom", m_zoom);
 	return true;
 }

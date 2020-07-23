@@ -9,6 +9,7 @@
 		-> Implementing rotations as an single interpolated quaternion
 			limits the ability to control relative rates of rotation components
 			e.g. yaw vs. roll.
+				-> Quaternions also have an issue with precision at certain angles!
 	Considerations:
 		-> Option to pop finished transformations and save an internal position/orientation in the camera system.
 */
@@ -30,7 +31,7 @@ struct InterpolatedEvent
 	bool started(float t) { return t >= t_begin; }
 	Interpolation interp;
 	float t_begin, t_end;
-	void drawUI(const std::string & name);
+	void drawUI(const std::string& name);
 };
 typedef std::pair<InterpolatedEvent, glm::vec3> PositionEvent;
 typedef std::pair<InterpolatedEvent, std::vector<glm::quat>> RotationEvent; // order of rotation multiplications is given in vector.
@@ -43,9 +44,9 @@ public:
 		m_positionEvents{},
 		m_rotationEvents{},
 
-		ui_currentPositionEvent{0},
+		ui_currentPositionEvent{ 0 },
 		ui_currentRotationEvent{ 0 },
-		ui_movementScale{1}
+		ui_movementScale{ 1 }
 	{}
 	CameraPos cameraPos(float t) const;
 	glm::vec3 positionTransformation(float t) const;
@@ -53,7 +54,7 @@ public:
 
 	void drawUI();
 private:
-
+	CameraPos m_begin;
 	std::vector<PositionEvent> m_positionEvents;
 	std::vector<RotationEvent> m_rotationEvents;
 

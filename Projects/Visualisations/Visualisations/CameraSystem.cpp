@@ -1,4 +1,5 @@
 #include "CameraSystem.h"
+#include "GeometryTools.h"
 #include <GLM/gtc/quaternion.hpp>
 #include <imgui/imgui.h>
 #include <string>
@@ -25,7 +26,7 @@ float InterpolatedEvent::value(float t)
 
 CameraPos CameraSystem::cameraPos(float t) const
 {
-	CameraPos result{};
+	CameraPos result{m_begin};
 	result.orientation *= rotationTransformation(t);
 	result.position += positionTransformation(t);
 	return result;
@@ -74,6 +75,17 @@ void CameraSystem::drawUI()
 	ImGui::Begin("Camera System");
 
 	//std::vector<bool> posDeletion{}, rotDeletion{};
+
+	ImGui::Text("Initial Camera Pos");
+	ImGui::SliderFloat3("Start Pos", &m_begin.position[0], -10.f, 10.f);
+	glm::quat _orient{ m_begin.orientation };
+	ImGui::SliderFloat4("Start Orientation: Quat",&_orient[0], -10.f, 10.f);
+	Geometry::YawPitchRoll _ypr{ Geometry::ypr(m_begin.orientation) };
+	ImGui::SliderFloat3("Start Orientation: Yaw/Pitch/Roll",&_ypr[0],0.f,360.f);
+	if (_orient != m_begin.orientation)
+		m_begin.orientation = glm::normalize(_orient);
+	else if (_ypr != Geometry::ypr(m_begin.orientation))
+		m_begin.orientation = Geometry::quat(_ypr);
 
 	ImGui::Text("Position Events");
 	ImGui::SameLine();

@@ -12,14 +12,15 @@
 //                                                                                  //
 //////////////////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "CameraSystem.h"
+#include "GeometryTools.h"
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 #include <boost/property_tree/ptree_fwd.hpp>
 
-// Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
-enum Camera_Movement {
+enum class Camera_Movement {
 	NONE = 0x00,
 	FORWARD = 0x01,
 	BACKWARD = 0x02,
@@ -31,9 +32,10 @@ enum Camera_Movement {
 	RESET_POSITION = 0x80,
 };
 
-// Default camera values
 const float YAW = -90.0f;
 const float PITCH = 0.0f;
+const float ROLL = 0.0f;
+
 const float SPEED = 2.5f;
 const float SENSITIVITY = 0.1f;
 const float ZOOM = 45.0f;
@@ -45,63 +47,80 @@ public:
 	bool saveFileTree(boost::property_tree::ptree& t) const;
 
 
-	// Camera Attributes
+	// TODO: hide these variables to formalise how they should be used.
+	// TODO: Swap ypr for quaternions or concat into vec3.
+
+	void setPosition(CameraPos p)
+	{
+		m_position = p.position;
+		m_orientation = p.orientation;
+	}
+
 	glm::vec3 m_position;
-	glm::vec3 m_front;
-	glm::vec3 m_up;
-	glm::vec3 m_right;
+	//glm::vec3 m_front;
+	//glm::vec3 m_up;
+	//glm::vec3 m_right;
 	glm::vec3 m_worldup;
-	// Euler Angles
-	float m_yaw;
-	float m_pitch;
-	// Camera options
+
+
+	glm::quat m_orientation;
+	//float m_yaw;
+	//float m_pitch;
+	//float m_roll;
+
 	float m_movementSpeed;
 	float m_mouseSensitivity;
 	float m_zoom;
 
-	// values for perspective projection
 	float m_nearZ;
 	float m_farZ;
 	float m_aspectRatio;
 
 	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH)
 		:
-		m_front(glm::vec3(0.0f, 0.0f, -1.0f)),
+		//m_front(glm::vec3(0.0f, 0.0f, -1.0f)),
 		m_movementSpeed(SPEED),
 		m_mouseSensitivity(SENSITIVITY),
 		m_zoom(ZOOM),
 		m_aspectRatio{ 1920.f / 1080.f },
 		m_nearZ{ 0.1f },
-		m_farZ{ 1000.f }
+		m_farZ{ 1000.f }, 
+		m_orientation{glm::normalize(glm::quat{0.f,0.f,0.f,1.f})}
 	{
 		m_position = position;
 		m_worldup = up;
-		m_yaw = yaw;
-		m_pitch = pitch;
-		updateCameraVectors();
+		////m_yaw = yaw;
+		////m_pitch = pitch;
+		//updateCameraVectors();
 	}
-	// Constructor with scalar values
+
 	Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch)
 		:
-		m_front{ glm::vec3{0.0f, 0.0f, -1.0f} },
+		//m_front{ glm::vec3{0.0f, 0.0f, -1.0f} },
 		m_movementSpeed{ SPEED },
-		m_mouseSensitivity{SENSITIVITY},
+		m_mouseSensitivity{ SENSITIVITY },
 		m_zoom{ ZOOM },
-		m_aspectRatio{1920.f / 1080.f},
+		m_aspectRatio{ 1920.f / 1080.f },
 		m_nearZ{ 0.1f },
-		m_farZ{ 100.f }
+		m_farZ{ 100.f },
+
+		m_position{ glm::vec3(posX, posY, posZ) },
+		m_worldup{ glm::vec3(upX, upY, upZ) }
+		//m_yaw{ yaw },
+		//m_pitch{ pitch }
 	{
-		m_position = glm::vec3(posX, posY, posZ);
-		m_worldup = glm::vec3(upX, upY, upZ);
-		m_yaw = yaw;
-		m_pitch = pitch;
 		updateCameraVectors();
 	}
+
+	glm::vec3 front() const { return  glm::conjugate(m_orientation) * glm::vec3{0.f,0.f,-1.f} *m_orientation ; };
+	glm::vec3 up() const { return  glm::conjugate(m_orientation) * glm::vec3{0.f,1.f,0.f} *m_orientation ; };
+	glm::vec3 right() const { return  glm::conjugate(m_orientation) * glm::vec3{1.f,0.f,0.f} *m_orientation ; };
 
 	// Returns the view matrix calculated using Euler Angles and the LookAt Matrix
 	glm::mat4 GetViewMatrix() const
 	{
-		return glm::lookAt(m_position, m_position + m_front, m_up);
+
+		return glm::lookAt(m_position, m_position + front(), up());
 	}
 	glm::mat4 projectionMatrix() const
 	{
@@ -112,28 +131,34 @@ public:
 	void ProcessKeyboard(Camera_Movement direction, float deltaTime)
 	{
 		float velocity = m_movementSpeed * deltaTime;
-		if (direction & FORWARD)
-			m_position += m_front * velocity;
-		if (direction & BACKWARD)
-			m_position -= m_front * velocity;
-		if (direction & LEFT)
-			m_position -= m_right * velocity;
-		if (direction & RIGHT)
-			m_position += m_right * velocity;
-		if (direction & UP)
-			m_position += glm::vec3{0.0,1.0,0.0} * velocity;
-		if (direction & Camera_Movement::DECREASE_MOVEMENT_SPEED)
+		if ((int)direction & (int)Camera_Movement::FORWARD)
+			m_position += front() * velocity;
+		if ((int)direction & (int)Camera_Movement::BACKWARD)
+			m_position -= front() * velocity;
+		if ((int)direction & (int)Camera_Movement::LEFT)
+			m_position -= right() * velocity;
+		if ((int)direction & (int)Camera_Movement::RIGHT)
+			m_position += right() * velocity;
+		if ((int)direction & (int)Camera_Movement::UP)
+			m_position += glm::vec3{ 0.0,1.0,0.0 } *velocity;
+		if ((int)direction & (int)Camera_Movement::DECREASE_MOVEMENT_SPEED)
 			m_movementSpeed *= 0.95f;
-		if (direction & Camera_Movement::INCREASE_MOVEMENT_SPEED)
+		if ((int)direction & (int)Camera_Movement::INCREASE_MOVEMENT_SPEED)
 			m_movementSpeed *= 1.05f;
-		if (direction & Camera_Movement::RESET_POSITION)
+		if ((int)direction & (int)Camera_Movement::RESET_POSITION)
 			resetPosition();
 	}
 
 	void resetPosition()
 	{
-		m_position = glm::vec3(0.0f, 0.0f, 0.0f);
-		m_up = glm::vec3(0.0f, 1.0f, 0.0f);
+		m_position = glm::vec3{};
+		m_orientation = glm::quat{};
+		//m_up = glm::vec3(0.0f, 1.0f, 0.0f);
+
+		//m_yaw = YAW;
+		//m_pitch = PITCH;
+		//m_roll = ROLL;
+
 		updateCameraVectors();
 	}
 
@@ -143,20 +168,24 @@ public:
 		xoffset *= m_mouseSensitivity;
 		yoffset *= m_mouseSensitivity;
 
-		m_yaw += xoffset;
-		m_pitch += yoffset;
+		Geometry::YawPitchRoll _ypr{ Geometry::ypr(m_orientation) };
+		_ypr[0] += xoffset;
+		_ypr[1] += yoffset;
 
-		// Make sure that when pitch is out of bounds, screen doesn't get flipped
-		if (constrainm_pitch)
-		{
-			if (m_pitch > 89.0f)
-				m_pitch = 89.0f;
-			if (m_pitch < -89.0f)
-				m_pitch = -89.0f;
-		}
+		m_orientation = glm::rotate(m_orientation, -xoffset / 10.f, up());
+		m_orientation = glm::rotate(m_orientation, -yoffset / 10.f, right());
+		m_orientation = glm::normalize(m_orientation);
 
-		// m_update m_front, m_right and m_up Vectors using the updated Euler angles
-		updateCameraVectors();
+		//if (constrainm_pitch)
+		//{
+		//	if (_ypr[1] > 89.0f)
+		//		_ypr[1] = 89.0f;
+		//	if (_ypr[1] < -89.0f)
+		//		_ypr[1] = -89.0f;
+		//}
+		//m_orientation = Geometry::quat(_ypr);
+
+		//updateCameraVectors();
 	}
 
 	// Processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
@@ -174,13 +203,13 @@ public:
 	void updateCameraVectors()
 	{
 		// Calculate the new m_front vector
-		glm::vec3 front;
-		front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-		front.y = sin(glm::radians(m_pitch));
-		front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-		m_front = glm::normalize(front);
-		// Also re-calculate the m_right and m_up vector
-		m_right = glm::normalize(glm::cross(m_front, m_worldup));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-		m_up = glm::normalize(glm::cross(m_right, m_front));
+		//glm::vec3 front;
+		//front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+		//front.y = sin(glm::radians(m_pitch));
+		//front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+		//m_front = glm::normalize(front);
+		//// Also re-calculate the m_right and m_up vector
+		//m_right = glm::normalize(glm::cross(m_front, m_worldup));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+		//m_up = glm::normalize(glm::cross(m_right, m_front));
 	}
 };
