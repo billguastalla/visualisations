@@ -64,15 +64,20 @@ bool Model_Session::save()
 {
 	// todo: check existence of filepath.
 	m_fileTree->clear();
+	
+	ptree& sessionTree{ m_fileTree->put("visualisations","") };
+	sessionTree.add("<xmlattr>.title", m_title);
+	sessionTree.add("<xmlattr>.filename", m_filename);
+	sessionTree.add("<xmlattr>.filepath", m_filepath);
 
 	//m_fileTree->push_back(ptree::value_type("test", ptree{"123.456"}));
 	//m_fileTree->put("test.<xmlattr>.id","hello");
 
-	p_program.modelAudioInterface()->saveFileTree(*m_fileTree);
-	p_program.modelTransport()->saveFileTree(*m_fileTree);
-	p_program.modelVideoRendering()->saveFileTree(*m_fileTree);
-	p_program.modelViewportSystem()->saveFileTree(*m_fileTree);
-	p_program.modelVisualisation()->saveFileTree(*m_fileTree);
+	p_program.modelAudioInterface()->saveFileTree(sessionTree);
+	p_program.modelTransport()->saveFileTree(sessionTree);
+	p_program.modelVideoRendering()->saveFileTree(sessionTree);
+	p_program.modelViewportSystem()->saveFileTree(sessionTree);
+	p_program.modelVisualisation()->saveFileTree(sessionTree);
 
 	// add all objects/events/mappings here
 

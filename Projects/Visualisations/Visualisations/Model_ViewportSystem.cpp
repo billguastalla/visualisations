@@ -69,5 +69,6 @@ bool Model_ViewportSystem::saveFileTree(boost::property_tree::ptree& t) const
 {
 	t.put("viewport.freecamera",m_freeCamera);
 	m_camera.saveFileTree(t);
+	m_cameraSystem.saveFileTree(t);
 	return false;
 }

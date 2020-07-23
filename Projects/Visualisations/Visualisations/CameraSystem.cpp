@@ -1,6 +1,7 @@
 #include "CameraSystem.h"
 #include "GeometryTools.h"
 #include <GLM/gtc/quaternion.hpp>
+#include <boost/property_tree/ptree.hpp>
 #include <imgui/imgui.h>
 #include <string>
 
@@ -22,6 +23,20 @@ float InterpolatedEvent::value(float t)
 			interp.value((t - t_begin) / (t_end - t_begin))
 			: 1.f)
 		: 0.f;
+}
+
+bool CameraSystem::loadFileTree(const boost::property_tree::ptree& t)
+{
+	return false;
+}
+
+bool CameraSystem::saveFileTree(boost::property_tree::ptree& t) const
+{
+	bool result{ true };
+	boost::property_tree::ptree cameraSystemTree{ t.put("camerasystem","") };
+	result |= m_begin.saveFileTree(cameraSystemTree);
+
+	return true;
 }
 
 CameraPos CameraSystem::cameraPos(float t) const
@@ -199,4 +214,14 @@ void CameraSystem::drawUI()
 	//	if (rotDeletion[j])
 	//		m_rotationEvents.erase(m_rotationEvents.begin() + j);
 
+}
+
+bool CameraPos::loadFileTree(const boost::property_tree::ptree& t)
+{
+	return false;
+}
+
+bool CameraPos::saveFileTree(boost::property_tree::ptree& t) const
+{
+	return false;
 }

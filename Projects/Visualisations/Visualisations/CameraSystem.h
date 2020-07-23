@@ -4,6 +4,8 @@
 #include <GLM/gtc/quaternion.hpp>
 #include <vector>
 #include <string>
+#include <boost/property_tree/ptree_fwd.hpp>
+
 /*
 	Design limitations:
 		-> Implementing rotations as an single interpolated quaternion
@@ -19,6 +21,9 @@ struct CameraPos
 	CameraPos(glm::vec3 pos = glm::vec3{ 0.0f }, glm::quat orient = glm::quat{}) : position{ pos }, orientation{ orient } {}
 	glm::vec3 position; // n.b should this be a change in position or a world space value?
 	glm::quat orientation; // always normalised
+
+	bool loadFileTree(const boost::property_tree::ptree& t);
+	bool saveFileTree(boost::property_tree::ptree& t) const;
 };
 
 // NOTE: Unused, pending deletion.
@@ -49,11 +54,17 @@ public:
 		ui_movementScale{ 1 },
 		ui_yprMode{false}
 	{}
+
+	bool loadFileTree(const boost::property_tree::ptree& t);
+	bool saveFileTree(boost::property_tree::ptree& t) const;
+
 	CameraPos cameraPos(float t) const;
 	glm::vec3 positionTransformation(float t) const;
 	glm::quat rotationTransformation(float t) const; // order of simultaneous rotations is made by start time.
 
 	void drawUI();
+
+
 private:
 	CameraPos m_begin;
 	std::vector<PositionEvent> m_positionEvents;
