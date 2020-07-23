@@ -26,7 +26,7 @@ float InterpolatedEvent::value(float t)
 
 CameraPos CameraSystem::cameraPos(float t) const
 {
-	CameraPos result{m_begin};
+	CameraPos result{ m_begin };
 	result.orientation *= rotationTransformation(t);
 	result.position += positionTransformation(t);
 	return result;
@@ -47,7 +47,7 @@ glm::quat CameraSystem::rotationTransformation(float t) const // DRAFT FUNCTION.
 	for (RotationEvent r : m_rotationEvents)
 	{
 		if (r.first.finished(t))
-			for (glm::quat q : r.second)	// TODO: SWAP DIRECTIONS
+			for (const glm::quat & q : r.second)	// TODO: SWAP DIRECTIONS
 				result *= q;
 		else if (r.first.started(t))
 		{
@@ -59,7 +59,7 @@ glm::quat CameraSystem::rotationTransformation(float t) const // DRAFT FUNCTION.
 		}
 	}
 	double debugTest{ glm::length(result) };
-	assert(glm::normalize(result) == result);
+	//assert(glm::normalize(result) == result);
 	return result;
 }
 
@@ -79,9 +79,9 @@ void CameraSystem::drawUI()
 	ImGui::Text("Initial Camera Pos");
 	ImGui::SliderFloat3("Start Pos", &m_begin.position[0], -10.f, 10.f);
 	glm::quat _orient{ m_begin.orientation };
-	ImGui::SliderFloat4("Start Orientation: Quat",&_orient[0], -10.f, 10.f);
+	ImGui::SliderFloat4("Start Orientation: Quat", &_orient[0], -10.f, 10.f);
 	Geometry::YawPitchRoll _ypr{ Geometry::ypr(m_begin.orientation) };
-	ImGui::SliderFloat3("Start Orientation: Yaw/Pitch/Roll",&_ypr[0],0.f,360.f);
+	ImGui::SliderFloat3("Start Orientation: Yaw/Pitch/Roll", &_ypr[0], 0.f, 360.f);
 	if (_orient != m_begin.orientation)
 		m_begin.orientation = glm::normalize(_orient);
 	else if (_ypr != Geometry::ypr(m_begin.orientation))
@@ -106,7 +106,7 @@ void CameraSystem::drawUI()
 		&& ui_currentPositionEvent >= 0)
 	{
 		PositionEvent& p{ m_positionEvents[ui_currentPositionEvent] };
-		p.first.drawUI(std::to_string(ui_currentPositionEvent));
+		p.first.drawUI(std::string{ "p" + std::to_string(ui_currentPositionEvent) });
 		ImGui::SliderFloat3(std::string{ "movement" + std::to_string(ui_currentPositionEvent) }.c_str(),
 			&p.second[0],
 			-5.f * (float)ui_movementScale, 5.f * (float)ui_movementScale);
@@ -127,21 +127,34 @@ void CameraSystem::drawUI()
 	ImGui::SameLine();
 	bool remRotation{ ImGui::Button("rem r") };
 	ImGui::SameLine();
-	ImGui::Text(std::string{ "rTotal: " + std::to_string(m_rotationEvents.size())}.c_str());
-	ImGui::InputInt("editing r-event #:",&ui_currentRotationEvent,1);
+	ImGui::Text(std::string{ "rTotal: " + std::to_string(m_rotationEvents.size()) }.c_str());
+	ImGui::InputInt("editing r-event #:", &ui_currentRotationEvent, 1);
 
 
 	if (ui_currentRotationEvent < m_rotationEvents.size()
 		&& ui_currentRotationEvent >= 0)
 	{
 		RotationEvent& r{ m_rotationEvents[ui_currentRotationEvent] };
-		r.first.drawUI(std::to_string(ui_currentRotationEvent));
+		r.first.drawUI(std::string{ "r" + std::to_string(ui_currentRotationEvent) });
 		for (glm::quat& q : r.second)
 		{
 			glm::quat& qslide{ q };
-			ImGui::SliderFloat4("quaternion", &qslide[0], -1.f, 1.f);
-			if (qslide != q)
-				q = glm::normalize(qslide);
+			if (ui_yprMode)
+			{
+				Geometry::YawPitchRoll yprSlide{ Geometry::ypr(qslide) };
+				ImGui::SliderFloat3("Yaw/Pitch/Roll", &yprSlide[0], -2.f * 3.14159f, 2.f * 3.14159f);
+				if (yprSlide != Geometry::ypr(q))
+					q = glm::normalize(Geometry::quat(yprSlide));
+			}
+			else
+			{
+				ImGui::SliderFloat4("quaternion", &qslide[0], -1.f, 1.f);
+				if (qslide != q)
+					q = glm::normalize(qslide);
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("switch input"))
+				ui_yprMode = !ui_yprMode;
 		}
 	}
 	else

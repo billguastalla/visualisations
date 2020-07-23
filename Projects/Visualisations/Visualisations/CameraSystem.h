@@ -46,7 +46,8 @@ public:
 
 		ui_currentPositionEvent{ 0 },
 		ui_currentRotationEvent{ 0 },
-		ui_movementScale{ 1 }
+		ui_movementScale{ 1 },
+		ui_yprMode{false}
 	{}
 	CameraPos cameraPos(float t) const;
 	glm::vec3 positionTransformation(float t) const;
@@ -60,6 +61,7 @@ private:
 
 	int ui_currentPositionEvent;
 	int ui_currentRotationEvent;
+	bool ui_yprMode; // use quaternion or yaw/pitch/roll in ui
 
 	int ui_movementScale;
 };

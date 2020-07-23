@@ -75,7 +75,7 @@ float Interpolation::value(float x) // input is \in [0,1]
 void Interpolation::drawUI(const std::string& name)
 {
 	int f{ (int)m_functionType };
-	ImGui::Combo("Function", &f, &funcTypeStr[0]);
+	ImGui::Combo(std::string{ "Function (" + name + ")"}.c_str(), &f, &funcTypeStr[0]);
 	for (size_t i{ 0 }; i < m_coefficients.size(); ++i)
 		ImGui::SliderFloat(std::string{ "c" + std::to_string(i) + " " + name }.c_str(), &m_coefficients[i], 0.f, 1.f);
 	// TODO: Safety check of coefficients to prevent division by zero.

@@ -145,7 +145,7 @@ void Program::interpretMouseInput()
 		double xPos{ 0.0 }, yPos{ 0.0 };
 		glfwGetCursorPos(m_window, &xPos, &yPos);
 
-		m_modelViewportSystem->mouseMovement(xPos, yPos, leftMouse == 1);
+		m_modelViewportSystem->mouseMovement((float)xPos, (float)yPos, leftMouse == 1);
 	}
 }
 
