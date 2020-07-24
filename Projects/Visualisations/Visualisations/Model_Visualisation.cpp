@@ -105,7 +105,6 @@ void Model_Visualisation::setVisualisation(int option)
 	if (option == m_currentVisualisaton)
 		return;
 
-
 	if (option < (int)m_visualisations.size() && option >= 0)
 	{
 		if(currentVisualisation())
@@ -116,11 +115,6 @@ void Model_Visualisation::setVisualisation(int option)
 	}
 	else
 		m_currentVisualisaton = -1;
-
-
-
-	/* Can activate/deactivate here if you'd like, but currently it's in the constructor/destructor.
-		As vis code gets heavier we can move it if needed. */
 }
 
 void Model_Visualisation::runVisualisation(const Camera& camera, Timestep t)
@@ -139,7 +133,7 @@ void Model_Visualisation::processAudio(const Buffer & buffer)
 	if (m_currentVisualisaton != -1)
 	{
 		Visualisation * currentVis = m_visualisations[m_currentVisualisaton];
-		/* You need:
+		/* TODO: You need:
 			(a) A better way of passing the buffer through
 			(b) An accurate method for monitoring samples passed. (e.g. maybe use some index in the audio interface..)
 		*/

@@ -182,9 +182,9 @@ void Visualisation_GameOfLife::renderFrame(const Camera& camera, const Timestep&
 
 	glm::mat4 lightModel{ 1.0f };
 
-	glm::vec3 upMod = camera.m_up;
+	glm::vec3 upMod = camera.up();
 	upMod *= sin((float)m_frameLoop / 600.0);
-	glm::vec3 rightMod = camera.m_up;
+	glm::vec3 rightMod = camera.up();
 	upMod *= cos((float)m_frameLoop / 600.0);
 
 	m_lightPos = camera.m_position + upMod + rightMod;

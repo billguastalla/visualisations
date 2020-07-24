@@ -118,6 +118,9 @@
     <Filter Include="Source Files\Events System">
       <UniqueIdentifier>{1cf774e7-eed7-45eb-a1e8-f3f87455206f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\General">
+      <UniqueIdentifier>{fd123cab-a492-4935-9d41-949e5be4ce73}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Recorder.cpp">
@@ -499,6 +502,9 @@
     </ClInclude>
     <ClInclude Include="About.h">
       <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Serialisation.h">
+      <Filter>Header Files\General</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
