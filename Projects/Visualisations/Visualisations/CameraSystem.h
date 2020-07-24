@@ -24,6 +24,10 @@ struct CameraPos
 
 	bool loadFileTree(const boost::property_tree::ptree& t);
 	bool saveFileTree(boost::property_tree::ptree& t) const;
+	void clear() {
+		position = glm::vec3{};
+		orientation = glm::quat{};
+	}
 };
 
 // NOTE: Unused, pending deletion.
@@ -31,15 +35,31 @@ CameraPos interpolation(const CameraPos& p1, const CameraPos& p2, float f_t);
 
 struct InterpolatedEvent
 {
-	float value(float t); // expects t in time units (seconds), values outside bounds are handled.
-	bool finished(float t) { return t >= t_end; }
-	bool started(float t) { return t >= t_begin; }
+	float value(float t) const; // expects t in time units (seconds), values outside bounds are handled.
+	bool finished(float t) const { return t >= t_end; }
+	bool started(float t) const { return t >= t_begin; }
 	Interpolation interp;
 	float t_begin, t_end;
 	void drawUI(const std::string& name);
+
+	bool loadFileTree(const boost::property_tree::ptree& t);
+	bool saveFileTree(boost::property_tree::ptree& t) const;
 };
-typedef std::pair<InterpolatedEvent, glm::vec3> PositionEvent;
-typedef std::pair<InterpolatedEvent, std::vector<glm::quat>> RotationEvent; // order of rotation multiplications is given in vector.
+struct PositionEvent
+{
+	InterpolatedEvent first;
+	glm::vec3 second;
+	bool loadFileTree(const boost::property_tree::ptree& t);
+	bool saveFileTree(boost::property_tree::ptree& t) const;
+};
+struct RotationEvent
+{
+	InterpolatedEvent first;
+	glm::quat second; // removed vect: YAGNI
+	bool loadFileTree(const boost::property_tree::ptree& t);
+	bool saveFileTree(boost::property_tree::ptree& t) const;
+};
+
 // Could add orbit event..
 
 class CameraSystem
@@ -55,6 +75,7 @@ public:
 		ui_yprMode{false}
 	{}
 
+	void clear();
 	bool loadFileTree(const boost::property_tree::ptree& t);
 	bool saveFileTree(boost::property_tree::ptree& t) const;
 

@@ -251,6 +251,7 @@
     <ClInclude Include="Model_Transport.h" />
     <ClInclude Include="Model_ViewportSystem.h" />
     <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="Serialisation.h" />
     <ClInclude Include="Trajectory.h" />
     <ClInclude Include="ParticleSet.h" />
     <ClInclude Include="Scene.h" />

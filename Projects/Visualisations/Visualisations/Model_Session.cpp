@@ -83,8 +83,8 @@ bool Model_Session::save()
 
 	// TODO: Check file is accessible before writing.
 	write_xml(m_filepath+m_filename,*m_fileTree);
-	write_json(m_filepath+m_filename + ".json", *m_fileTree);
-	write_ini(m_filepath+m_filename + ".ini", *m_fileTree);
+	write_json(m_filepath+m_filename + ".json", *m_fileTree); // WARNING: It is non-standard json to have multiple nodes at the same level with the same element name
+	//write_ini(m_filepath+m_filename + ".ini", *m_fileTree); // NOTE: An exception is thrown on writing ini files: "ptree is too deep"
 
 	m_state = SessionState::Open;
 	return true;
