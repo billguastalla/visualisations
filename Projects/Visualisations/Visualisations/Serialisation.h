@@ -5,6 +5,8 @@
 
 namespace Serialisation
 {
+	// TODO: Throw exception on conversion failure!
+
 	auto vec3glmToString = [](const glm::vec3& v)
 	{
 		std::string res{};
@@ -17,10 +19,10 @@ namespace Serialisation
 	{
 		glm::vec3 res{ 0.f };
 		size_t sep1{ s.find(",") };
-		size_t sep2{ s.find(",",sep1) };
+		size_t sep2{ s.find(",",sep1+1u) };
 		std::string v1{ s.substr(0,sep1) };
-		std::string v2{ s.substr(sep1,sep2 - sep1) };
-		std::string v3{ s.substr(sep2,s.size() - sep2) };
+		std::string v2{ s.substr(sep1+1u,sep2 - (sep1+1u)) };
+		std::string v3{ s.substr(sep2+1u,s.size() - (sep2+1u)) };
 		res.x = std::stof(v1);
 		res.y = std::stof(v2);
 		res.z = std::stof(v3);
@@ -39,12 +41,12 @@ namespace Serialisation
 	{
 		glm::quat res{ 0.f,0.f,0.f,1.f };
 		size_t sep1{ s.find(",") };
-		size_t sep2{ s.find(",",sep1) };
-		size_t sep3{ s.find(",",sep2) };
+		size_t sep2{ s.find(",",sep1+1u) };
+		size_t sep3{ s.find(",",sep2+1u) };
 		std::string q1{ s.substr(0,sep1) };
-		std::string q2{ s.substr(sep1,sep2 - sep1) };
-		std::string q3{ s.substr(sep2,s.size() - sep2) };
-		std::string q4{ s.substr(sep3,s.size() - sep3) }; // CHECK THIS!
+		std::string q2{ s.substr(sep1 + 1u,sep2 - sep1) };
+		std::string q3{ s.substr(sep2 + 1u,s.size() - sep2) };
+		std::string q4{ s.substr(sep3 + 1u,s.size() - sep3) }; // CHECK THIS!
 		res[0] = std::stof(q1);
 		res[1] = std::stof(q2);
 		res[2] = std::stof(q3);

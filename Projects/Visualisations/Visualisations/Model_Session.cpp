@@ -52,12 +52,22 @@ bool Model_Session::create()
 
 bool Model_Session::open()
 {
+	bool result{ true };
 	// prompt to save in window before calling this
 	m_fileTree->clear();
 	read_xml(m_filepath + m_filename, *m_fileTree);
 
+	ptree& sessionTree{ m_fileTree->get_child("visualisations") };
+	m_title = sessionTree.get_child("<xmlattr>.title").get_value<std::string>();
+
+	p_program.modelAudioInterface()->loadFileTree(sessionTree);
+	p_program.modelTransport()->loadFileTree(sessionTree);
+	p_program.modelVideoRendering()->loadFileTree(sessionTree);
+	p_program.modelViewportSystem()->loadFileTree(sessionTree);
+	p_program.modelVisualisation()->loadFileTree(sessionTree);
+
 	m_state = SessionState::Open;
-	return false;
+	return result;
 }
 
 bool Model_Session::save()

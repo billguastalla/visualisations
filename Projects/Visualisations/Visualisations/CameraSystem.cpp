@@ -36,28 +36,38 @@ void CameraSystem::clear()
 bool CameraSystem::loadFileTree(const boost::property_tree::ptree& t)
 {
 	bool result{ true };
-	boost::optional<boost::property_tree::ptree&> cameraSystemTree{ t.get_child_optional("camerasystem") };
+	boost::optional<const boost::property_tree::ptree&> cameraSystemTree{ t.get_child_optional("camerasystem") };
 	if (result |= cameraSystemTree.is_initialized())
 	{
-		m_begin.loadFileTree(cameraSystemTree.value());
-		
-
+		boost::optional<const boost::property_tree::ptree&> cameraPosTree{ t.get_child_optional("CameraPos") };
+		if (result &= cameraPosTree.is_initialized())
+			result |= m_begin.loadFileTree(cameraPosTree.value());
+		for (const boost::property_tree::ptree::value_type& posEventTree : cameraSystemTree.value().get_child("positionEvents"))
+		{
+			PositionEvent pEvent{};
+			if (result |= pEvent.loadFileTree(posEventTree.second))
+				m_positionEvents.push_back(pEvent);
+		}
+		for (const boost::property_tree::ptree::value_type& posEventTree : cameraSystemTree.value().get_child("rotationEvents"))
+		{
+			RotationEvent rEvent{};
+			if (result |= rEvent.loadFileTree(posEventTree.second))
+				m_rotationEvents.push_back(rEvent);
+		}
 	}
-
-
 	return result;
 }
 
 bool CameraSystem::saveFileTree(boost::property_tree::ptree& t) const
 {
 	bool result{ true };
-	boost::property_tree::ptree &cameraSystemTree{ t.put("camerasystem","") };
+	boost::property_tree::ptree& cameraSystemTree{ t.put("camerasystem","") };
 	result |= m_begin.saveFileTree(cameraSystemTree);
 
 	boost::property_tree::ptree& posEventsTree{ cameraSystemTree.put("positionEvents","") };
 	for (const auto& pos : m_positionEvents)
 		result |= pos.saveFileTree(posEventsTree);
-	boost::property_tree::ptree &rotEventsTree{ cameraSystemTree.put("rotationEvents","") };
+	boost::property_tree::ptree& rotEventsTree{ cameraSystemTree.put("rotationEvents","") };
 	for (const auto& rot : m_rotationEvents)
 		result |= rot.saveFileTree(rotEventsTree);
 	return result;
@@ -86,12 +96,12 @@ glm::quat CameraSystem::rotationTransformation(float t) const // DRAFT FUNCTION.
 	for (const RotationEvent& r : m_rotationEvents)
 	{
 		if (r.first.finished(t))
-				result *= r.second;
+			result *= r.second;
 		else if (r.first.started(t))
 		{
 			double partialProgress{ r.first.value(t) };
 			glm::quat partialQuaternion{ 1.f,glm::vec3{0.f} };
-				partialQuaternion *= r.second;
+			partialQuaternion *= r.second;
 			result = glm::slerp(result, partialQuaternion, (float)partialProgress);
 		}
 	}
@@ -263,14 +273,23 @@ bool CameraPos::loadFileTree(const boost::property_tree::ptree& t)
 
 bool CameraPos::saveFileTree(boost::property_tree::ptree& t) const
 {
-	t.put("position", Serialisation::vec3glmToString(position));
-	t.put("orientation", Serialisation::quatglmToString(orientation));
+	boost::property_tree::ptree& cameraPosTree{ t.add("CameraPos","") };
+	cameraPosTree.put("position", Serialisation::vec3glmToString(position));
+	cameraPosTree.put("orientation", Serialisation::quatglmToString(orientation));
 	return true;
 }
 
 bool PositionEvent::loadFileTree(const boost::property_tree::ptree& t)
 {
-	return false;
+	// ISSUE: If we're passed parent node, then we don't know which position event to read!
+	bool result{ true };
+	boost::optional<const boost::property_tree::ptree&> interpEventNode{ t.get_child_optional("InterpolatedEvent") };
+	if (interpEventNode.is_initialized())
+		result |= first.loadFileTree(t);
+	boost::optional<const boost::property_tree::ptree&> positionNode{ t.get_child_optional("position") };
+	if (positionNode.is_initialized())
+		second = Serialisation::vec3glmFromString(positionNode.value().get_value<std::string>());
+	return result;
 }
 
 bool PositionEvent::saveFileTree(boost::property_tree::ptree& t) const
@@ -284,7 +303,9 @@ bool PositionEvent::saveFileTree(boost::property_tree::ptree& t) const
 
 bool RotationEvent::loadFileTree(const boost::property_tree::ptree& t)
 {
-	return false;
+	bool result{ true };
+
+	return result;
 }
 
 bool RotationEvent::saveFileTree(boost::property_tree::ptree& t) const

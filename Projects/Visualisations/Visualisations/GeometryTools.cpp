@@ -24,6 +24,8 @@ Geometry::YawPitchRoll Geometry::ypr(const glm::quat& q)
 
 glm::quat Geometry::quat(const Geometry::YawPitchRoll& _ypr)
 {
+	// Taken from https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+
 	// Abbreviations for the various angular functions
 	double cy = cos(_ypr[0]* 0.5);
 	double sy = sin(_ypr[0] * 0.5);

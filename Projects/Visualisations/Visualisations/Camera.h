@@ -78,7 +78,6 @@ public:
 
 	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH)
 		:
-		//m_front(glm::vec3(0.0f, 0.0f, -1.0f)),
 		m_movementSpeed(SPEED),
 		m_mouseSensitivity(SENSITIVITY),
 		m_zoom(ZOOM),
@@ -89,32 +88,25 @@ public:
 	{
 		m_position = position;
 		m_worldup = up;
-		////m_yaw = yaw;
-		////m_pitch = pitch;
-		//updateCameraVectors();
 	}
 
 	Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch)
 		:
-		//m_front{ glm::vec3{0.0f, 0.0f, -1.0f} },
 		m_movementSpeed{ SPEED },
 		m_mouseSensitivity{ SENSITIVITY },
 		m_zoom{ ZOOM },
 		m_aspectRatio{ 1920.f / 1080.f },
 		m_nearZ{ 0.1f },
 		m_farZ{ 100.f },
-
 		m_position{ glm::vec3(posX, posY, posZ) },
 		m_worldup{ glm::vec3(upX, upY, upZ) }
-		//m_yaw{ yaw },
-		//m_pitch{ pitch }
 	{
 		updateCameraVectors();
 	}
 
-	glm::vec3 front() const { return  glm::conjugate(m_orientation) * glm::vec3{0.f,0.f,-1.f} *m_orientation ; };
-	glm::vec3 up() const { return  glm::conjugate(m_orientation) * glm::vec3{0.f,1.f,0.f} *m_orientation ; };
-	glm::vec3 right() const { return  glm::conjugate(m_orientation) * glm::vec3{1.f,0.f,0.f} *m_orientation ; };
+	__inline glm::vec3 front() const { return  glm::conjugate(m_orientation) * glm::vec3{0.f,0.f,-1.f} *m_orientation ; };
+	__inline glm::vec3 up() const { return  glm::conjugate(m_orientation) * glm::vec3{0.f,1.f,0.f} *m_orientation ; };
+	__inline glm::vec3 right() const { return  glm::conjugate(m_orientation) * glm::vec3{1.f,0.f,0.f} *m_orientation ; };
 
 	// Returns the view matrix calculated using Euler Angles and the LookAt Matrix
 	glm::mat4 GetViewMatrix() const
