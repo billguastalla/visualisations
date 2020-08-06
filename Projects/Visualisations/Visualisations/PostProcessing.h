@@ -44,6 +44,8 @@ public:
 		deinitBuffers();
 		initBuffers();
 	}
+	/* Drawing the buffer over the viewport */
+	static void renderQuad();
 private:
 	void initShaders();
 	void deinitShaders();
@@ -53,8 +55,6 @@ private:
 
 	int m_lastFrameWidth, m_lastFrameHeight;
 
-	/* Drawing the buffer over the viewport */
-	static void renderQuad();
 
 	// Wireframe needs to be here because post-processing needs it always disabled.
 	bool m_wireframeEnabled;

@@ -81,7 +81,7 @@ void Program::run()
 		if (!m_modelViewportSystem->freeCamera())
 			m_modelViewportSystem->processCamera(t); // Update camerapos according to camera system if locked camera.
 
-		const Camera & c{ m_modelViewportSystem->camera() };
+		const Camera& c{ m_modelViewportSystem->camera() };
 
 		//Gist<float> audioAnalysis{ buf.framecountPerChannel(),test.sampleRate() };
 		//audioAnalysis.processAudioFrame(buf.data(0));
@@ -125,7 +125,7 @@ void Program::run()
 		glfwMakeContextCurrent(m_window);
 		glfwSwapBuffers(m_window);
 
-		std::vector<float> backgroundColour = m_interface.backgroundColour();
+		std::vector<float> backgroundColour{ m_interface.backgroundColour() };
 		if (backgroundColour.size() >= 4)
 			glClearColor(backgroundColour[0], backgroundColour[1], backgroundColour[2], backgroundColour[3]);
 		else
@@ -135,6 +135,25 @@ void Program::run()
 
 		m_modelTransport->nextFrame();
 	}
+}
+
+void Program::setResolution(const std::array<int,2> & res)
+{
+	if (res[0] > 16384 || res[1] > 16384 || res[0] < 512 || res[1] < 512)
+		return;
+
+	glfwSetWindowSize(m_window, res[0], res[1]);
+	m_modelViewportSystem->camera().m_aspectRatio = ((float)res[0] / (float)res[1]);
+	int testW{ 0 }, testH{ 0 };
+	glfwGetFramebufferSize(m_window, &testW, &testH);
+	std::cout << std::endl << "New framebuffer size  w:" << testW << " h:" << testH << std::endl;
+}
+
+std::array<int, 2> Program::resolution()
+{
+	std::array<int, 2> res{};
+	glfwGetWindowSize(m_window, &res[0], &res[1]);
+	return res;
 }
 
 void Program::interpretMouseInput()

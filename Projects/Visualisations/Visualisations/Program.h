@@ -33,6 +33,9 @@ public:
 
 	void setMode(const ProgramMode& mode) { m_mode = mode; }
 	ProgramMode mode() { return m_mode; }
+
+	void setResolution(const std::array<int,2> & res);
+	std::array<int, 2> resolution();
 private:
 	void interpretMouseInput();
 	void interpretKeyboardInput();

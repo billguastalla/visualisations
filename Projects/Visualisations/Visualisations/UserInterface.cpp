@@ -43,6 +43,8 @@ void UserInterface::initialise(GLFWwindow * window, std::string glslVersion)
 	//ImGui::StyleColorsDark();
 	ImGui::StyleColorsClassic();
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+	ui_winSize = p_program->resolution();
 }
 
 void UserInterface::deinitialise()
@@ -85,6 +87,14 @@ void UserInterface::render()
 		}
 		ImGui::Text("Properties:\t");
 		ImGui::SliderFloat4("Background Colour", &m_clearColour[0], 0.0f, 1.0f);
+
+		ImGui::Text(std::string{ "Current resolution: {" + std::to_string(p_program->resolution()[0]) + ", "
+						+ std::to_string(p_program->resolution()[1]) + "}" }.c_str());
+		ImGui::SliderInt2("Change resolution",&ui_winSize[0],512,8192);
+		ImGui::SameLine();
+		if (ImGui::Button("Apply"))
+			p_program->setResolution(ui_winSize);
+
 
 		ImGui::Text("Key Bindings:\t");
 		ImGui::Text("\tMove:\t W,A,S,D");

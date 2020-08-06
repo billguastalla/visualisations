@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include <array>
 
 class Window_Abstract;
 
@@ -33,6 +34,9 @@ private:
 	std::vector<float> m_clearColour;
 
 	int ui_programMode; // NOTE: type is Program::ProgramMode
+
+	std::array<int, 2> ui_winSize;
+
 	Program* p_program;
 };
 

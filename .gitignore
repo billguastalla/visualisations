@@ -3,6 +3,8 @@
 /Scripts/
 Features/
 
+*.bmp
+
 # Write Video things
 *.mp4
 *.wav

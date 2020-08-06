@@ -178,6 +178,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraSystem.cpp" />
     <ClCompile Include="Event.cpp" />
+    <ClCompile Include="FramebufferSystem.cpp" />
     <ClCompile Include="GeometryTools.cpp" />
     <ClCompile Include="Interpolation.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -242,6 +243,7 @@
     <ClInclude Include="CameraSystem.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="EventsSystem.h" />
+    <ClInclude Include="FramebufferSystem.h" />
     <ClInclude Include="GeometryTools.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="Interpolation.h" />
