@@ -81,7 +81,7 @@ void Program::run()
 		if (!m_modelViewportSystem->freeCamera())
 			m_modelViewportSystem->processCamera(t); // Update camerapos according to camera system if locked camera.
 
-		Camera c{ m_modelViewportSystem->camera() };
+		const Camera & c{ m_modelViewportSystem->camera() };
 
 		//Gist<float> audioAnalysis{ buf.framecountPerChannel(),test.sampleRate() };
 		//audioAnalysis.processAudioFrame(buf.data(0));

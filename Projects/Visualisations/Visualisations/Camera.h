@@ -50,7 +50,7 @@ public:
 	// TODO: hide these variables to formalise how they should be used.
 	// TODO: Swap ypr for quaternions or concat into vec3.
 
-	void setPosition(CameraPos p)
+	void setPosition(const CameraPos & p)
 	{
 		m_position = p.position;
 		m_orientation = p.orientation;

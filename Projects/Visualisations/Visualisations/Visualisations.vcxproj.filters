@@ -297,6 +297,9 @@
     <ClCompile Include="About.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
+    <ClCompile Include="ODE.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Buffer.h">
@@ -505,6 +508,9 @@
     </ClInclude>
     <ClInclude Include="Serialisation.h">
       <Filter>Header Files\General</Filter>
+    </ClInclude>
+    <ClInclude Include="ODE.h">
+      <Filter>Header Files\Graphics\Engine\Particles</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

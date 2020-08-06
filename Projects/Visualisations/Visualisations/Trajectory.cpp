@@ -5,23 +5,39 @@
 using namespace Trajectory;
 using namespace boost::numeric;
 
-std::vector<glm::vec3> Trajectory::generateLorenz(Settings_Lorenz& s)
+constexpr char attractorOptsStr[] = "Lorenz\0RabinovichFabrikant\0Rossler\0Multiscroll\0";
+
+std::vector<glm::vec3> Trajectory::generateAttractor(Settings_Attractor& s)
 {
 	double tempDT{ (s.t_f - s.t_0) * s.dt };
 	std::vector<glm::vec3> result{};
-	ODE_Lorenz lorenz{};
-	lorenz.sigma = s.sigma;
-	lorenz.R = s.R;
-	lorenz.b = s.b;
-	std::vector<state_type> states;
-	std::vector<double> times;
+	std::vector<state_type> states{};
+	std::vector<double> times{};
 	ODE_State obs{ states,times };
 	state_type x{};
 	x.resize(3);
 	x[0] = s.x_0;
 	x[1] = s.y_0;
 	x[2] = s.z_0;
-	size_t steps = odeint::integrate(lorenz, x, s.t_0 * s.timescale, s.t_f * s.timescale, tempDT, obs);
+
+	size_t steps{ 0u };
+	switch (s.attractorType)
+	{
+	case Settings_Attractor::AttractorType::Lorenz:
+		steps = odeint::integrate(s.m_lorenz, x, s.t_0 * s.timescale, s.t_f * s.timescale, tempDT, obs);
+		break;
+	case Settings_Attractor::AttractorType::RabinovichFabrikant:
+		steps = odeint::integrate(s.m_rabinovichFabrikant, x, s.t_0 * s.timescale, s.t_f * s.timescale, tempDT, obs);
+		break;
+	case Settings_Attractor::AttractorType::Rossler:
+		steps = odeint::integrate(s.m_rossler, x, s.t_0 * s.timescale, s.t_f * s.timescale, tempDT, obs);
+		break;
+	case Settings_Attractor::AttractorType::Multiscroll:
+		steps = odeint::integrate(s.m_multiscroll, x, s.t_0 * s.timescale, s.t_f * s.timescale, tempDT, obs);
+		break;
+	default:
+		break;
+	}
 	for (state_type t : states)
 		result.push_back(glm::vec3{ t[0], t[1], t[2] });
 	if (!states.empty())
@@ -85,7 +101,7 @@ std::vector<glm::vec3> Trajectory::generate(Settings& s)
 	case Settings::Type::Helix:
 		return generateHelix(s.helix);
 	case Settings::Type::LorenzAttractor:
-		return generateLorenz(s.lorenz);
+		return generateAttractor(s.lorenz);
 	case Settings::Type::Tree:
 		return s.tree.generateVertices();
 	default:
@@ -203,29 +219,57 @@ void Trajectory::Settings_Tree::drawUI()
 	//ImGui::SliderInt("Vertices per branch", &depth, 1, 5);
 }
 
-void Trajectory::Settings_Lorenz::drawUI()
+std::string Trajectory::Settings_Attractor::attractorTypeStr(const AttractorType& t)
 {
-	glm::vec3 fsigRb{ (float)sigma,(float)R,(float)b };
+	switch (t)
+	{
+	case Trajectory::Settings_Attractor::AttractorType::Lorenz:
+		return std::string{ "Lorenz" };
+	case Trajectory::Settings_Attractor::AttractorType::RabinovichFabrikant:
+		return std::string{ "RabinovichFabrikant" };
+	case Trajectory::Settings_Attractor::AttractorType::Rossler:
+		return std::string{ "Rossler" };
+	case Trajectory::Settings_Attractor::AttractorType::Multiscroll:
+		return std::string{ "Multiscroll" };
+	default:
+		return std::string{ "Unknown" };
+	};
+}
+
+void Trajectory::Settings_Attractor::drawUI()
+{
 	glm::vec3 fPos{ (float)x_0,(float)y_0,(float)z_0 };
 	float fDt{ (float)dt };
 	float tscale{ (float)timescale };
-	ImGui::SliderFloat3("sig/r/b", &fsigRb[0], 0.0f, 30.f);
-	ImGui::SliderFloat3("Pos", &fPos[0], -10.f, 10.f);
-	ImGui::SliderFloat("timestep", &fDt, 0.0001f, 0.1f);
-	ImGui::SliderFloat("timescale", &tscale, 1.f, 100.f);
+	ImGui::SliderFloat3("Initial Position", &m_position[0], -20., 20.);
+	ImGui::SliderFloat3("Initial Orientation", &m_orientation[0], -1., 1.);
+	ImGui::SliderFloat3("tracked Position", &fPos[0], -10.f, 10.f);
+	ImGui::SliderFloat("Timestep", &fDt, 0.0001f, 0.1f);
+	ImGui::SliderFloat("Timescale", &tscale, 1.f, 100.f);
+	ImGui::Combo("Attractor Type", (int*)&attractorType, &attractorOptsStr[0]);
+	switch (attractorType)
+	{
+	case Trajectory::Settings_Attractor::AttractorType::Lorenz:
+		m_lorenz.drawUI();
+		break;
+	case Trajectory::Settings_Attractor::AttractorType::RabinovichFabrikant:
+		m_rabinovichFabrikant.drawUI();
+		break;
+	case Trajectory::Settings_Attractor::AttractorType::Rossler:
+		m_rossler.drawUI();
+		break;
+	case Trajectory::Settings_Attractor::AttractorType::Multiscroll:
+		m_multiscroll.drawUI();
+		break;
+	}
+
 	if (
-		fsigRb[0] != sigma ||
-		fsigRb[1] != R ||
-		fsigRb[2] != b ||
 		fPos[0] != x_0 ||
 		fPos[1] != y_0 ||
 		fPos[2] != z_0
 		|| fDt != dt
 		|| timescale != tscale)
 	{
-		sigma = fsigRb[0];
-		R = fsigRb[1];
-		b = fsigRb[2];
 		x_0 = fPos[0];
 		y_0 = fPos[1];
 		z_0 = fPos[2];
