@@ -5,6 +5,9 @@
 
 #include <GLFW/glfw3.h>
 #include <boost/property_tree/ptree.hpp>
+#include <stbimage/stb_image.h>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <stbimage/stb_image_write.h>
 
 bool Model_VideoRendering::loadFileTree(const boost::property_tree::ptree& t)
 {
@@ -44,6 +47,17 @@ void Model_VideoRendering::renderFrame()
 		m_encoder->ffmpeg_encoder_render_frame();
 		m_frameCount = m_encoder->currentFrame();
 	}
+}
+
+void Model_VideoRendering::takePicture(const std::string& filename)
+{
+	GLFWwindow * win{ glfwGetCurrentContext() };
+	int w{ 1920 }, h{ 1050 };
+	glfwGetFramebufferSize(win,&w,&h);
+	std::vector<GLubyte> pixelData{};
+	pixelData.resize(4u * (size_t)(w * h) );
+	glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, &pixelData[0]);
+	stbi_write_bmp(filename.c_str(), w, h, 4, &pixelData[0]);
 }
 
 bool Model_VideoRendering::start()

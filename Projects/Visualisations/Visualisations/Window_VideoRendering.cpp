@@ -9,6 +9,13 @@
 #include <vector>
 #include <string>
 
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
+
+#pragma warning(disable : 4996)
+
 Window_VideoRendering::Window_VideoRendering(std::shared_ptr<Model_VideoRendering>& Model)
 	:
 	m_videoModel{ Model }
@@ -51,6 +58,16 @@ void Window_VideoRendering::draw()
 	bool renderUI{ m_videoModel->renderUI() };
 	ImGui::Checkbox("Render Interface", &renderUI);
 	m_videoModel->setRenderUI(renderUI);
+
+
+	if (ImGui::Button("Take Picture"))
+	{
+		std::time_t t = std::time(nullptr);
+		std::tm tm = *std::gmtime(&t);
+		std::stringstream dtSStream{};
+		dtSStream << std::put_time(&tm, "%Y%m%d%H%M%S.bmp");
+		m_videoModel->takePicture(dtSStream.str());
+	}
 
 
 	ImGui::Text("Transport: ");

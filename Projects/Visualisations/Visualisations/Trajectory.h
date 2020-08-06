@@ -34,8 +34,6 @@ namespace Trajectory
 			t_f{ 10.0 },
 			dt{ 0.005 },
 			timescale{ 1.f },
-			m_position{0.f},
-			m_orientation{0.,0.,0.,1.},
 			attractorType{AttractorType::Lorenz}
 		{}
 
@@ -49,8 +47,6 @@ namespace Trajectory
 		static std::string attractorTypeStr(const AttractorType & t);
 
 		double x_0, y_0, z_0;		// tracked position (not translated or rotated by m_pos/m_orient)
-		glm::vec3 m_position;		// starting position
-		glm::quat m_orientation;	// starting orientation
 
 		double t_0;		// initial time
 		double t_f;		// final time
@@ -129,7 +125,9 @@ namespace Trajectory
 	constexpr char trajectoryTypeOptions[] = "SHO\0Helix\0Mesh\0Tree\0LorenzAttractor\0HarmonicOscillator\0PlanetarySystem\0SphericalHarmonics";
 	struct Settings // temporary design, will switch to simpler one as common data/methods are found.
 	{
-		Settings() : sho{}, helix{}, tree{}, type{ Type::Helix } {}
+		Settings() : sho{}, helix{}, tree{}, type{ Type::Helix }, m_position{ 0.f },
+			m_orientation{ 0.,0.,0.,1. }
+		{}
 		enum class Type
 		{
 			SHO,
@@ -147,6 +145,9 @@ namespace Trajectory
 		Settings_Attractor lorenz;
 		Settings_Helix helix;
 		Settings_Tree tree;
+
+		glm::vec3 m_position;		// starting position
+		glm::quat m_orientation;	// starting orientation
 	};
 	std::vector<glm::vec3> generate(Settings& s);
 

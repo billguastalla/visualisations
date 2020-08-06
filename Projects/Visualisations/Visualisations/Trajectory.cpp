@@ -94,19 +94,30 @@ std::vector<glm::vec3> Trajectory::generateHelix(const Settings_Helix& s)
 
 std::vector<glm::vec3> Trajectory::generate(Settings& s)
 {
+	std::vector<glm::vec3> result{};
 	switch (s.type)
 	{
 	case Settings::Type::SHO:
-		return generateSHO(s.sho);
+		result = generateSHO(s.sho);
+		break;
 	case Settings::Type::Helix:
-		return generateHelix(s.helix);
+		result = generateHelix(s.helix);
+		break;
 	case Settings::Type::LorenzAttractor:
-		return generateAttractor(s.lorenz);
+		result = generateAttractor(s.lorenz);
+		break;
 	case Settings::Type::Tree:
-		return s.tree.generateVertices();
+		result = s.tree.generateVertices();
+		break;
 	default:
-		return std::vector<glm::vec3>{};
+		break;
 	}
+	for (auto& v : result)
+	{
+		v = s.m_orientation * v * glm::conjugate(s.m_orientation);
+		v += s.m_position;
+	}
+	return result;
 }
 
 void Trajectory::Settings::setTime(double t_0, double t_f, double dt)
@@ -143,6 +154,8 @@ void Trajectory::Settings::setTime(double t_0, double t_f, double dt)
 
 void Trajectory::Settings::drawUI()
 {
+	ImGui::SliderFloat3("Initial Position", &m_position[0], -20., 20.);
+	ImGui::SliderFloat4("Initial Orientation", &m_orientation[0], -1., 1.);
 	switch (type)
 	{
 	case Trajectory::Settings::Type::SHO:
@@ -241,8 +254,6 @@ void Trajectory::Settings_Attractor::drawUI()
 	glm::vec3 fPos{ (float)x_0,(float)y_0,(float)z_0 };
 	float fDt{ (float)dt };
 	float tscale{ (float)timescale };
-	ImGui::SliderFloat3("Initial Position", &m_position[0], -20., 20.);
-	ImGui::SliderFloat3("Initial Orientation", &m_orientation[0], -1., 1.);
 	ImGui::SliderFloat3("tracked Position", &fPos[0], -10.f, 10.f);
 	ImGui::SliderFloat("Timestep", &fDt, 0.0001f, 0.1f);
 	ImGui::SliderFloat("Timescale", &tscale, 1.f, 100.f);

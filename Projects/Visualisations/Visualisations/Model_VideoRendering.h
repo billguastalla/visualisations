@@ -54,6 +54,8 @@ public:
 
 	void renderFrame();
 
+	void takePicture(const std::string & filename);
+
 	RecordState state() { return m_recordState; }
 	bool start();
 	bool pause();
