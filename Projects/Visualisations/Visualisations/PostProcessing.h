@@ -1,13 +1,13 @@
 #pragma once
 #include "Shader.h"
-
+#include <array>
 /* Class to handle HDR & Bloom effects */
 class PostProcessing
 {
 public:
 	PostProcessing();
 
-	void initialise(int width, int height);
+	void initialise();
 	void deinitialise();
 
 	void frameRenderBegin();
@@ -46,6 +46,11 @@ public:
 	}
 	/* Drawing the buffer over the viewport */
 	static void renderQuad();
+
+
+	GLuint getMainFramebufferHandle() { return m_mainFramebuffer; }
+	void setMainFramebufferResolution(const std::array<int, 2>& res) { m_mainResolution = res; }
+	std::array<int,2> mainFramebufferResolution() { return m_mainResolution; }
 private:
 	void initShaders();
 	void deinitShaders();
@@ -53,8 +58,14 @@ private:
 	void deinitBuffers();
 
 
-	int m_lastFrameWidth, m_lastFrameHeight;
+	///////////////////////////// MAIN FRAMEBUFFER //////////////////////////////
+	GLuint m_mainFramebuffer;
+	unsigned int m_mainTexture;
+	std::array<int, 2> m_mainResolution;
+	Shader* m_mainShader; // passthrough, to send texture to default framebuffer.
+	/////////////////////////////////////////////////////////////////////////////
 
+	int m_lastFrameWidth, m_lastFrameHeight;
 
 	// Wireframe needs to be here because post-processing needs it always disabled.
 	bool m_wireframeEnabled;

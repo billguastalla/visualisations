@@ -8,6 +8,8 @@ class Model_Visualisation;
 class Model_ViewportSystem;
 class Model_Transport;
 class Model_Session;
+class PostProcessing;
+
 struct GLFWwindow;
 
 class Program
@@ -30,6 +32,8 @@ public:
 	std::shared_ptr<Model_Visualisation> modelVisualisation() const { return m_modelVisualisation; }
 	std::shared_ptr<Model_Transport> modelTransport() const { return m_modelTransport; }
 	std::shared_ptr<Model_Session> modelSession() const { return m_modelSession; }
+
+	std::shared_ptr<PostProcessing> postProcessing() const { return m_postProcessing; }
 
 	void setMode(const ProgramMode& mode) { m_mode = mode; }
 	ProgramMode mode() { return m_mode; }
@@ -54,4 +58,6 @@ private:
 	std::shared_ptr<Model_Visualisation> m_modelVisualisation;
 	std::shared_ptr<Model_Transport> m_modelTransport;
 	std::shared_ptr<Model_Session> m_modelSession;
+
+	std::shared_ptr<PostProcessing> m_postProcessing;
 };

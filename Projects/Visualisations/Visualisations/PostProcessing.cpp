@@ -32,21 +32,20 @@ PostProcessing::PostProcessing()
 
 	m_wireframeEnabled{ false },
 
-	m_lastFrameWidth{ 0 },
-	m_lastFrameHeight{ 0 },
-
 	m_colBufPerc{1.0f },
 	m_rbPerc{ 1.0f },
-	m_pingPongPerc{ 1.0f }
+	m_pingPongPerc{ 1.0f },
+
+	m_mainFramebuffer{0u},
+	m_mainResolution{3840,2160},
+	m_mainShader{nullptr},
+	m_mainTexture{0u}
 {
 }
 
 #include "GLFW/glfw3.h"
-void PostProcessing::initialise(int width, int height)
+void PostProcessing::initialise() // TODO: Don't need these arguments, rather we need to communicate mainresolution to outside world.
 {
-	m_lastFrameWidth = width;
-	m_lastFrameHeight = height;
-
 	initShaders();
 	initBuffers();
 }
@@ -59,6 +58,9 @@ void PostProcessing::deinitialise()
 
 void PostProcessing::frameRenderBegin()
 {
+	glBindFramebuffer(GL_FRAMEBUFFER, m_mainFramebuffer);
+	glViewport(0, 0, m_mainResolution[0], m_mainResolution[1]);
+
 	if (m_hdrEnabled)
 	{
 		/* HDR: BIND FRAMEBUFFER */
@@ -76,8 +78,6 @@ void PostProcessing::frameRenderEnd()
 
 	if (m_hdrEnabled)
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 		/* Bloom: Blur image. */
 		bool horizontal = true, first_iteration = true;
 		unsigned int amount = 20;
@@ -92,7 +92,7 @@ void PostProcessing::frameRenderEnd()
 			if (first_iteration)
 				first_iteration = false;
 		}
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_mainFramebuffer);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		m_bloomShader->use();
@@ -104,6 +104,24 @@ void PostProcessing::frameRenderEnd()
 		m_bloomShader->setFloat("exposure", m_exposure);
 		renderQuad();
 	}
+
+	
+	////// MAIN FRAMEBUFFER -> DEFAULT FRAMEBUFFER //////////////////////////////
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	int defaultFramebufferWidth{ 0 }, defaultFramebufferHeight{ 0 };
+	glfwGetFramebufferSize(glfwGetCurrentContext(),&defaultFramebufferWidth,&defaultFramebufferHeight);
+	glViewport(0, 0, defaultFramebufferWidth, defaultFramebufferHeight);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_mainTexture);
+	m_mainShader->use();
+	renderQuad();
+	/////////////////////////////////////////////////////////////////////////////
+
+	glBindFramebuffer(GL_FRAMEBUFFER, m_mainFramebuffer);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
 
 }
 
@@ -145,6 +163,13 @@ void PostProcessing::renderQuad()
 
 void PostProcessing::initShaders()
 {
+	///////////////////////////// MAIN FRAMEBUFFER //////////////////////////////
+	if (m_mainShader == nullptr)
+		m_mainShader = new Shader{ "../Shaders/Rescale/rescale.vs", "../Shaders/Rescale/rescale.fs" };
+	/////////////////////////////////////////////////////////////////////////////
+
+
+
 	/* NB: This was taken from: https://learnopengl.com/Advanced-Lighting/Bloom, and refactored */
 	/* HDR: Set up shader */
 	//m_hdrShader = new Shader{ "../Shaders/Bloom/hdr.vs","../Shaders/Bloom/hdr.fs" };
@@ -163,6 +188,14 @@ void PostProcessing::initShaders()
 
 void PostProcessing::deinitShaders()
 {
+	///////////////////////////// MAIN FRAMEBUFFER //////////////////////////////
+	if (m_mainShader != nullptr)
+	{
+		delete m_mainShader;
+		m_mainShader = nullptr;
+	}
+	/////////////////////////////////////////////////////////////////////////////
+
 	if (m_bloomShader != nullptr)
 	{
 		delete m_bloomShader;
@@ -177,13 +210,36 @@ void PostProcessing::deinitShaders()
 
 void PostProcessing::initBuffers()
 {
+	///////////////////////////// MAIN FRAMEBUFFER //////////////////////////////
+	glGenFramebuffers(1, &m_mainFramebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_mainFramebuffer);
+	glViewport(0, 0, m_mainResolution[0], m_mainResolution[1]);
+
+	glGenTextures(1, &m_mainTexture);
+	glBindTexture(GL_TEXTURE_2D, m_mainTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_mainResolution[0], m_mainResolution[1], 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_mainTexture, 0);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer \"MainFramebuffer\" is not complete!" << std::endl;
+	/////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
 	/* For strange post-proc effects */
-	int colBufW = (int)(m_colBufPerc.x * (float)m_lastFrameWidth);
-	int colBufH = (int)(m_colBufPerc.y * (float)m_lastFrameHeight);
-	int rbW = (int)(m_rbPerc.x * (float)m_lastFrameWidth);
-	int rbH = (int)(m_rbPerc.y * (float)m_lastFrameHeight);
-	int pingPongW = (int)(m_pingPongPerc.x * (float)m_lastFrameWidth);
-	int pingPongH = (int)(m_pingPongPerc.y * (float)m_lastFrameHeight);
+	int colBufW = (int)(m_colBufPerc.x * (float)m_mainResolution[0]);
+	int colBufH = (int)(m_colBufPerc.y * (float)m_mainResolution[1]);
+	int rbW = (int)(m_rbPerc.x * (float)m_mainResolution[0]);
+	int rbH = (int)(m_rbPerc.y * (float)m_mainResolution[1]);
+	int pingPongW = (int)(m_pingPongPerc.x * (float)m_mainResolution[0]);
+	int pingPongH = (int)(m_pingPongPerc.y * (float)m_mainResolution[1]);
 
 	/* HDR: Generate Frame Buffer */
 	glGenFramebuffers(1, &m_hdrFBO);
@@ -197,8 +253,8 @@ void PostProcessing::initBuffers()
 		glBindTexture(GL_TEXTURE_2D, m_colourBuffers[i]);
 		/* Initialise an image on it, size of viewport */
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F,
-			m_lastFrameWidth - (i * (m_lastFrameWidth - colBufW)),
-			m_lastFrameHeight - (i * (m_lastFrameHeight - colBufH)),
+			m_mainResolution[0] - (i * (m_mainResolution[0] - colBufW)),
+			m_mainResolution[1] - (i * (m_mainResolution[1] - colBufH)),
 			0, GL_RGB, GL_FLOAT, NULL);
 		/* Usual interpolation parameters */
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -245,8 +301,8 @@ void PostProcessing::initBuffers()
 		glBindFramebuffer(GL_FRAMEBUFFER, m_pingpongFBO[i]);
 		glBindTexture(GL_TEXTURE_2D, m_pingpongColorbuffers[i]);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F,
-			m_lastFrameWidth - (i * (m_lastFrameWidth - pingPongW)),
-			m_lastFrameHeight - (i * (m_lastFrameHeight - pingPongH)),
+			m_mainResolution[0] - (i * (m_mainResolution[0] - pingPongW)),
+			m_mainResolution[1] - (i * (m_mainResolution[1] - pingPongH)),
 		0, GL_RGB, GL_FLOAT, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -262,6 +318,15 @@ void PostProcessing::initBuffers()
 
 void PostProcessing::deinitBuffers()
 {
+	///////////////////////////// MAIN FRAMEBUFFER //////////////////////////////
+	glDeleteFramebuffers(1, &m_mainFramebuffer);
+	glDeleteTextures(1, &m_mainTexture);
+	m_mainFramebuffer = 0u;
+	m_mainTexture = 0u;
+	/////////////////////////////////////////////////////////////////////////////
+
+
+
 	// ---
 	glDeleteFramebuffers(1, &m_hdrFBO);
 	glDeleteTextures(2, &m_colourBuffers[0]);

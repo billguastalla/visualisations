@@ -10,6 +10,7 @@
 #include "Model_Visualisation.h"
 #include "Model_Transport.h"
 #include "Model_Session.h"
+#include "PostProcessing.h"
 
 #include "Window_VideoRendering.h"
 #include "Window_AudioInterface.h"
@@ -17,6 +18,7 @@
 #include "Window_ViewportSystem.h"
 #include "Window_Transport.h"
 #include "Window_Session.h"
+#include "Window_PostProcessing.h"
 
 #include <glad\glad.h>
 #include <GLFW\glfw3.h>
@@ -28,7 +30,8 @@ Program::Program(GLFWwindow* window, std::string glslVersion, const ProgramMode&
 	: m_window{ window },
 	m_interface{ this },
 	m_glslVersion{ glslVersion },
-	m_mode{ m }
+	m_mode{ m },
+	m_postProcessing{ new PostProcessing{} }
 {
 }
 
@@ -39,6 +42,7 @@ Program::~Program()
 void Program::initialise()
 {
 	m_interface.initialise(m_window, m_glslVersion.c_str());
+	m_postProcessing->initialise();
 
 	/* Set up Model instances */
 	m_modelViewportSystem = std::shared_ptr<Model_ViewportSystem>{ new Model_ViewportSystem{m_window} };
@@ -55,6 +59,7 @@ void Program::initialise()
 	Window_Abstract* viewportSystemWindow = new Window_ViewportSystem{ m_modelViewportSystem };
 	Window_Abstract* transportWindow = new Window_Transport{ m_modelTransport };
 	Window_Abstract* sessionWindow = new Window_Session{ m_modelSession };
+	Window_Abstract* postProcessingWindow = new Window_PostProcessing{ m_postProcessing};
 
 	m_interface.addWindow(videoRenderWindow);
 	m_interface.addWindow(audioInterfaceWindow);
@@ -62,6 +67,7 @@ void Program::initialise()
 	m_interface.addWindow(viewportSystemWindow);
 	m_interface.addWindow(transportWindow);
 	m_interface.addWindow(sessionWindow);
+	m_interface.addWindow(postProcessingWindow);
 
 	glEnable(GL_DEPTH_TEST);
 }
@@ -69,6 +75,7 @@ void Program::initialise()
 void Program::deinitialise()
 {
 	m_interface.deinitialise();
+	m_postProcessing->deinitialise();
 }
 
 void Program::run()
@@ -104,11 +111,15 @@ void Program::run()
 		interpretMouseInput();
 		interpretKeyboardInput();
 
+		m_postProcessing->frameRenderBegin();
+
 		/* Draw the current visualisation. */
 		if (m_mode == ProgramMode::Sandbox)
 			m_modelVisualisation->runVisualisation(c, t);
 		else if (m_mode == ProgramMode::Scripted)
 			;// m_modelScene->frame();
+
+		m_postProcessing->frameRenderEnd();
 
 		/* If user wants to see UI in the video output, draw the interface before rendering a video frame. */
 		if (m_modelVideoRendering->renderUI())
@@ -121,6 +132,7 @@ void Program::run()
 			m_modelVideoRendering->renderFrame();
 			m_interface.render();
 		}
+
 
 		glfwMakeContextCurrent(m_window);
 		glfwSwapBuffers(m_window);

@@ -29,14 +29,8 @@ Model_Visualisation::Model_Visualisation(GLFWwindow* win)
 	m_visualisations{},
 	m_currentVisualisaton{0},
 	m_wireframe{false},
-	m_postProcessing{ new PostProcessing{} },
 	m_window{win}
 {
-	/* TODO: Make sure any viewport-based stuff is modifiable when viewport is changed!! */
-	int w{1920}, h{ 1080 };
-	glfwGetWindowSize(win, &w, &h);
-	m_postProcessing->initialise(w,h);
-
 	/* At some point you'll want to activate/deactivate on switching modes.*/
 	Visualisation_Cubes * visCubes = new Visualisation_Cubes{};
 	Visualisation_Oscilloscope * visOscilloscope = new Visualisation_Oscilloscope{};
@@ -67,8 +61,6 @@ Model_Visualisation::Model_Visualisation(GLFWwindow* win)
 
 Model_Visualisation::~Model_Visualisation()
 {
-	m_postProcessing->deinitialise();
-
 	/* Unset the current visualisation */
 	m_currentVisualisaton = -1;
 
@@ -122,9 +114,7 @@ void Model_Visualisation::runVisualisation(const Camera& camera, Timestep t)
 	if (m_currentVisualisaton != -1)
 	{
 		Visualisation * currentVis = m_visualisations[m_currentVisualisaton];
-		m_postProcessing->frameRenderBegin();
 		currentVis->renderFrame(camera,t);
-		m_postProcessing->frameRenderEnd();
 	}
 }
 

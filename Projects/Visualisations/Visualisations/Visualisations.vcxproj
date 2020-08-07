@@ -213,6 +213,7 @@
     <ClCompile Include="Visualisation_TreeField.cpp" />
     <ClCompile Include="Window_Abstract.cpp" />
     <ClCompile Include="Window_AudioInterface.cpp" />
+    <ClCompile Include="Window_PostProcessing.cpp" />
     <ClCompile Include="Window_Session.cpp" />
     <ClCompile Include="Window_Transport.cpp" />
     <ClCompile Include="Window_Transport.h" />
@@ -288,6 +289,7 @@
     <ClInclude Include="Visualisation_TreeField.h" />
     <ClInclude Include="Window_Abstract.h" />
     <ClInclude Include="Window_AudioInterface.h" />
+    <ClInclude Include="Window_PostProcessing.h" />
     <ClInclude Include="Window_Session.h" />
     <ClInclude Include="Window_VideoRendering.h" />
     <ClInclude Include="Program.h" />

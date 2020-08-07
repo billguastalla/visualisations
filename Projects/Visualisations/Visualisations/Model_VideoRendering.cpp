@@ -52,7 +52,7 @@ void Model_VideoRendering::renderFrame()
 void Model_VideoRendering::takePicture(const std::string& filename)
 {
 	GLFWwindow * win{ glfwGetCurrentContext() };
-	int w{ 1920 }, h{ 1050 };
+	int w{ 3840 }, h{ 2160 };
 	glfwGetFramebufferSize(win,&w,&h);
 	std::vector<GLubyte> pixelData{};
 	pixelData.resize(4u * (size_t)(w * h) );

@@ -228,9 +228,6 @@
     <ClCompile Include="MeshGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PostProcessing.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Visualisation_TreeField.cpp">
       <Filter>Source Files\Graphics\Visualisations\Implementations</Filter>
     </ClCompile>
@@ -301,6 +298,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FramebufferSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessing.cpp">
+      <Filter>Source Files\Program\Model Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Window_PostProcessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -422,9 +425,6 @@
     <ClInclude Include="Texture.h">
       <Filter>Header Files\Graphics\Engine\Models</Filter>
     </ClInclude>
-    <ClInclude Include="PostProcessing.h">
-      <Filter>Header Files\Graphics\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Tree.h">
       <Filter>Header Files\Graphics\Engine\Tree</Filter>
     </ClInclude>
@@ -517,6 +517,12 @@
     </ClInclude>
     <ClInclude Include="FramebufferSystem.h">
       <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessing.h">
+      <Filter>Header Files\Program\Model Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Window_PostProcessing.h">
+      <Filter>Header Files\UI\Windows</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
