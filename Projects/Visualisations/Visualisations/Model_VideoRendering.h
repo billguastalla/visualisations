@@ -5,6 +5,7 @@
 
 class Settings_VideoRendering;
 class FFMPEG_Encoder;
+class Program;
 
 struct GLFWwindow;
 
@@ -49,7 +50,7 @@ public:
 			-> Handle the width/height of the framebuffer, and permit/forbid modification of
 				width & height during recording
 	*/
-	Model_VideoRendering(GLFWwindow * window);
+	Model_VideoRendering(Program * p_program, GLFWwindow * window);
 	~Model_VideoRendering();
 
 	void renderFrame();
@@ -61,18 +62,21 @@ public:
 	bool pause();
 	bool stop();
 
-	std::string fileName() { return m_fileName; }
+	std::string fileName() const { return m_fileName; }
 	void setFileName(std::string fn) { m_fileName = fn; }
 
 	/* TODO: Connect this to the encoder and set it in the UI */
-	int frameRate() { return m_frameRate; }
+	int frameRate() const { return m_frameRate; }
 	bool setFrameRate(int fr);
 
-	bool recordAudio() { return m_recordAudio; }
+	bool recordAudio() const { return m_recordAudio; }
 	void setRecordAudio(bool rec) { m_recordAudio = rec; }
 
-	bool renderUI() { return m_renderUI; }
+	bool renderUI() const { return m_renderUI; }
 	void setRenderUI(bool ren) { m_renderUI = ren; }
+
+	bool renderFromMainBuffer() const { return m_renderFromMainBuffer; }
+	void setrenderFromMainBuffer(bool ren) { m_renderFromMainBuffer = ren; }
 
 	int frameCount() const { return m_frameCount; }
 
@@ -82,6 +86,7 @@ public:
 	const int combo_OPTToFR(int opt) const;
 
 private:
+
 	std::shared_ptr<FFMPEG_Encoder> m_encoder;
 
 	/* UI Values */
@@ -95,6 +100,8 @@ private:
 
 	bool m_recordAudio;
 	bool m_renderUI;
+	bool m_renderFromMainBuffer;
 
 	GLFWwindow* m_window;
+	Program* p_program;
 };

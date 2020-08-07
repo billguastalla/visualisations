@@ -297,9 +297,6 @@
     <ClCompile Include="ODE.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FramebufferSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PostProcessing.cpp">
       <Filter>Source Files\Program\Model Systems</Filter>
     </ClCompile>
@@ -514,9 +511,6 @@
     </ClInclude>
     <ClInclude Include="ODE.h">
       <Filter>Header Files\Graphics\Engine\Particles</Filter>
-    </ClInclude>
-    <ClInclude Include="FramebufferSystem.h">
-      <Filter>Source Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="PostProcessing.h">
       <Filter>Header Files\Program\Model Systems</Filter>

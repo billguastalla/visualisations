@@ -46,7 +46,7 @@ void Program::initialise()
 
 	/* Set up Model instances */
 	m_modelViewportSystem = std::shared_ptr<Model_ViewportSystem>{ new Model_ViewportSystem{m_window} };
-	m_modelVideoRendering = std::shared_ptr<Model_VideoRendering>{ new Model_VideoRendering{ m_window } };
+	m_modelVideoRendering = std::shared_ptr<Model_VideoRendering>{ new Model_VideoRendering{ this,m_window } };
 	m_modelAudioInterface = std::shared_ptr<Model_AudioInterface>{ new Model_AudioInterface{ } };
 	m_modelVisualisation = std::shared_ptr<Model_Visualisation>{ new Model_Visualisation{ m_window} };
 	m_modelTransport = std::shared_ptr<Model_Transport>{ new Model_Transport{} };
@@ -59,7 +59,7 @@ void Program::initialise()
 	Window_Abstract* viewportSystemWindow = new Window_ViewportSystem{ m_modelViewportSystem };
 	Window_Abstract* transportWindow = new Window_Transport{ m_modelTransport };
 	Window_Abstract* sessionWindow = new Window_Session{ m_modelSession };
-	Window_Abstract* postProcessingWindow = new Window_PostProcessing{ m_postProcessing};
+	Window_Abstract* postProcessingWindow = new Window_PostProcessing{ m_postProcessing };
 
 	m_interface.addWindow(videoRenderWindow);
 	m_interface.addWindow(audioInterfaceWindow);
@@ -119,19 +119,31 @@ void Program::run()
 		else if (m_mode == ProgramMode::Scripted)
 			;// m_modelScene->frame();
 
-		m_postProcessing->frameRenderEnd();
 
-		/* If user wants to see UI in the video output, draw the interface before rendering a video frame. */
-		if (m_modelVideoRendering->renderUI())
-		{
-			m_interface.render();
-			m_modelVideoRendering->renderFrame();
-		}
-		else
-		{
-			m_modelVideoRendering->renderFrame();
-			m_interface.render();
-		}
+		m_postProcessing->frameRenderEnd();
+		m_modelVideoRendering->renderFrame();
+		m_interface.render();
+		//if (m_modelVideoRendering->renderFromMainBuffer())
+		//{
+		//	m_modelVideoRendering->renderFrame();
+		//	m_postProcessing->frameRenderEnd();
+		//	m_interface.render();
+		//}
+		//else
+		//{
+		//	m_postProcessing->frameRenderEnd();
+		//	/* If user wants to see UI in the video output, draw the interface before rendering a video frame. */
+		//	if (m_modelVideoRendering->renderUI())
+		//	{
+		//		m_interface.render();
+		//		m_modelVideoRendering->renderFrame();
+		//	}
+		//	else
+		//	{
+		//		m_modelVideoRendering->renderFrame();
+		//		m_interface.render();
+		//	}
+		//}
 
 
 		glfwMakeContextCurrent(m_window);
@@ -149,7 +161,7 @@ void Program::run()
 	}
 }
 
-void Program::setResolution(const std::array<int,2> & res)
+void Program::setResolution(const std::array<int, 2>& res)
 {
 	if (res[0] > 16384 || res[1] > 16384 || res[0] < 512 || res[1] < 512)
 		return;

@@ -32,14 +32,16 @@ PostProcessing::PostProcessing()
 
 	m_wireframeEnabled{ false },
 
-	m_colBufPerc{1.0f },
+	m_colBufPerc{ 1.0f },
 	m_rbPerc{ 1.0f },
 	m_pingPongPerc{ 1.0f },
 
-	m_mainFramebuffer{0u},
-	m_mainResolution{3840,2160},
-	m_mainShader{nullptr},
-	m_mainTexture{0u}
+	m_mainFramebuffer{ 0u },
+	m_mainResolution{ 3840,2160 },
+	m_mainShader{ nullptr },
+	m_mainTexture{ 0u },
+
+	m_currentlyBoundFramebuffer{ 0u }
 {
 }
 
@@ -58,13 +60,13 @@ void PostProcessing::deinitialise()
 
 void PostProcessing::frameRenderBegin()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, m_mainFramebuffer);
+	setCurrentFramebuffer(m_mainFramebuffer);
 	glViewport(0, 0, m_mainResolution[0], m_mainResolution[1]);
 
 	if (m_hdrEnabled)
 	{
 		/* HDR: BIND FRAMEBUFFER */
-		glBindFramebuffer(GL_FRAMEBUFFER, m_hdrFBO);
+		setCurrentFramebuffer(m_hdrFBO);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 	if (m_wireframeEnabled)
@@ -84,7 +86,8 @@ void PostProcessing::frameRenderEnd()
 		m_blurShader->use();
 		for (unsigned int i = 0; i < amount; i++)
 		{
-			glBindFramebuffer(GL_FRAMEBUFFER, m_pingpongFBO[horizontal]);
+			setCurrentFramebuffer(m_pingpongFBO[horizontal]);
+
 			m_blurShader->setInt("horizontal", horizontal);
 			glBindTexture(GL_TEXTURE_2D, first_iteration ? m_colourBuffers[1] : m_pingpongColorbuffers[!horizontal]);  // bind texture of other framebuffer (or scene if first iteration)
 			renderQuad();
@@ -92,7 +95,9 @@ void PostProcessing::frameRenderEnd()
 			if (first_iteration)
 				first_iteration = false;
 		}
-		glBindFramebuffer(GL_FRAMEBUFFER, m_mainFramebuffer);
+		setCurrentFramebuffer(m_mainFramebuffer);
+
+
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		m_bloomShader->use();
@@ -107,7 +112,8 @@ void PostProcessing::frameRenderEnd()
 
 	
 	////// MAIN FRAMEBUFFER -> DEFAULT FRAMEBUFFER //////////////////////////////
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	setCurrentFramebuffer(0u);
+
 	int defaultFramebufferWidth{ 0 }, defaultFramebufferHeight{ 0 };
 	glfwGetFramebufferSize(glfwGetCurrentContext(),&defaultFramebufferWidth,&defaultFramebufferHeight);
 	glViewport(0, 0, defaultFramebufferWidth, defaultFramebufferHeight);
@@ -117,9 +123,10 @@ void PostProcessing::frameRenderEnd()
 	renderQuad();
 	/////////////////////////////////////////////////////////////////////////////
 
-	glBindFramebuffer(GL_FRAMEBUFFER, m_mainFramebuffer);
+	setCurrentFramebuffer(m_mainFramebuffer);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	setCurrentFramebuffer(0u);
+
 
 
 
@@ -159,6 +166,12 @@ void PostProcessing::renderQuad()
 	glBindVertexArray(quadVAO);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glBindVertexArray(0);
+}
+
+void PostProcessing::setCurrentFramebuffer(GLuint framebufferHandle)
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, framebufferHandle);
+	m_currentlyBoundFramebuffer = framebufferHandle;
 }
 
 void PostProcessing::initShaders()
@@ -212,7 +225,7 @@ void PostProcessing::initBuffers()
 {
 	///////////////////////////// MAIN FRAMEBUFFER //////////////////////////////
 	glGenFramebuffers(1, &m_mainFramebuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_mainFramebuffer);
+	setCurrentFramebuffer(m_mainFramebuffer);
 	glViewport(0, 0, m_mainResolution[0], m_mainResolution[1]);
 
 	glGenTextures(1, &m_mainTexture);
@@ -243,7 +256,8 @@ void PostProcessing::initBuffers()
 
 	/* HDR: Generate Frame Buffer */
 	glGenFramebuffers(1, &m_hdrFBO);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_hdrFBO);
+	setCurrentFramebuffer(m_hdrFBO);
+
 	/* HDR+Bloom: Generate Colour Buffers:
 		-> These two colour buffers will represend the unmodified render and the blurred render. */
 	glGenTextures(2, &m_colourBuffers[0]);
@@ -286,7 +300,7 @@ void PostProcessing::initBuffers()
 	/* Warn here if framebuffer has missing attachment etc. */
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "RENDERBUFFER: Framebuffer is incomplete" << std::endl;
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	setCurrentFramebuffer(0u);
 
 	/* Bloom: Generate Colour Buffers:
 		-> These two colour buffers hold vertically and horizontally blurred images.
@@ -298,7 +312,8 @@ void PostProcessing::initBuffers()
 	glGenTextures(2, m_pingpongColorbuffers);
 	for (unsigned int i = 0; i < 2; i++)
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, m_pingpongFBO[i]);
+		setCurrentFramebuffer(m_pingpongFBO[i]);
+
 		glBindTexture(GL_TEXTURE_2D, m_pingpongColorbuffers[i]);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F,
 			m_mainResolution[0] - (i * (m_mainResolution[0] - pingPongW)),
@@ -312,8 +327,8 @@ void PostProcessing::initBuffers()
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 			std::cout << "BLUR: Blur framebuffers not complete." << std::endl;
 	}
+	setCurrentFramebuffer(0u);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void PostProcessing::deinitBuffers()

@@ -1,3 +1,6 @@
+#include "Program.h"
+#include "PostProcessing.h"
+
 #include "Model_VideoRendering.h"
 
 #include "Settings_VideoRendering.h"
@@ -21,7 +24,7 @@ bool Model_VideoRendering::saveFileTree(boost::property_tree::ptree& t) const
 	return true;
 }
 
-Model_VideoRendering::Model_VideoRendering(GLFWwindow* window)
+Model_VideoRendering::Model_VideoRendering(Program * program, GLFWwindow* window)
 	:
 	m_encoder{ new FFMPEG_Encoder{} },
 	m_recordState{ RecordState::Stopped },
@@ -31,7 +34,8 @@ Model_VideoRendering::Model_VideoRendering(GLFWwindow* window)
 	m_renderUI{ true },
 	m_recordAudio{ false },
 
-	m_window{ window }
+	m_window{ window },
+	p_program{program}
 {
 
 }
@@ -65,9 +69,10 @@ bool Model_VideoRendering::start()
 	if (m_recordState == RecordState::Stopped)
 	{
 		m_frameCount = 0;
-		int width{ 1920 }, height{ 1080 };
-		glfwGetWindowSize(m_window, &width, &height);
-		FFMPEG_Encoder::StartResult res = m_encoder->ffmpeg_encoder_start(m_fileName.c_str(), AVCodecID::AV_CODEC_ID_MPEG1VIDEO, m_frameRate, width, height);
+		//int width{ 1920 }, height{ 1080 };
+		//glfwGetWindowSize(m_window, &width, &height);
+		std::array<int, 2> mainResolution{ p_program->postProcessing()->mainFramebufferResolution() };
+		FFMPEG_Encoder::StartResult res = m_encoder->ffmpeg_encoder_start(m_fileName.c_str(), AVCodecID::AV_CODEC_ID_MPEG1VIDEO, m_frameRate, mainResolution[0], mainResolution[1]);
 		if (res == FFMPEG_Encoder::StartResult::Success)
 		{
 			m_recordState = RecordState::Started;
