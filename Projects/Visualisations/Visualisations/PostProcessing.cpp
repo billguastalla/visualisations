@@ -171,6 +171,16 @@ void PostProcessing::renderQuad()
 	glBindVertexArray(0);
 }
 
+void PostProcessing::setMainFramebufferResolution(const std::array<int, 2>& res)
+{
+	GLuint originalFramebuffer{ m_currentlyBoundFramebuffer };
+	setCurrentFramebuffer(0u);
+	m_mainResolution = res;
+	deinitialise();
+	initialise();
+	setCurrentFramebuffer(originalFramebuffer);
+}
+
 void PostProcessing::setCurrentFramebuffer(GLuint framebufferHandle)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, framebufferHandle);

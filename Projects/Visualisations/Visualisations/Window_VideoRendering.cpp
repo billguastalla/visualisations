@@ -65,7 +65,7 @@ void Window_VideoRendering::draw()
 		std::time_t t = std::time(nullptr);
 		std::tm tm = *std::gmtime(&t);
 		std::stringstream dtSStream{};
-		dtSStream << std::put_time(&tm, "%Y%m%d%H%M%S.bmp");
+		dtSStream << std::put_time(&tm, "%Y%m%d%H%M%S.png");
 		m_videoModel->takePicture(dtSStream.str());
 	}
 

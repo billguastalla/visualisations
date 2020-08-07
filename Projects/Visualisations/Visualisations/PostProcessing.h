@@ -48,7 +48,7 @@ public:
 		initBuffers();
 	}
 
-	void setMainFramebufferResolution(const std::array<int, 2>& res) { m_mainResolution = res; }
+	void setMainFramebufferResolution(const std::array<int, 2>& res);
 	std::array<int,2> mainFramebufferResolution() { return m_mainResolution; }
 	GLuint mainFramebuffer() { return m_mainFramebuffer; }
 	GLuint currentFramebuffer() const { return m_currentlyBoundFramebuffer; }

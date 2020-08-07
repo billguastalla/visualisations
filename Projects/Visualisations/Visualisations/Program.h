@@ -25,7 +25,7 @@ public:
 	void run();
 
 	// note:	these functions exist to provide other models to session via Program*. 
-	//			open to an alternative.
+	//			open to an alternative approach.
 	std::shared_ptr<Model_ViewportSystem> modelViewportSystem() const { return m_modelViewportSystem; }
 	std::shared_ptr<Model_VideoRendering> modelVideoRendering() const { return m_modelVideoRendering; }
 	std::shared_ptr<Model_AudioInterface> modelAudioInterface() const { return m_modelAudioInterface; }
@@ -50,7 +50,7 @@ private:
 	GLFWwindow* m_window;
 	std::string m_glslVersion;
 
-	// NOTE:	Model is a misnomer really. It's a top-level item large enough to have a separation of
+	// NOTE:	Model is a misnomer really. It's a top-level item large enough to need a separation of
 	//			concerns between its functionality and its gui.
 	std::shared_ptr<Model_ViewportSystem> m_modelViewportSystem;
 	std::shared_ptr<Model_VideoRendering> m_modelVideoRendering;

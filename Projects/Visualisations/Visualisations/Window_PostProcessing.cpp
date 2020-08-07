@@ -5,7 +5,8 @@
 
 Window_PostProcessing::Window_PostProcessing(std::shared_ptr<PostProcessing>& pprocessing)
 	:
-	p_postProcessing{pprocessing}
+	p_postProcessing{pprocessing},
+	ui_mainFramebufferResolution{pprocessing->mainFramebufferResolution()}
 {
 }
 
@@ -18,6 +19,15 @@ void Window_PostProcessing::draw()
 	ImGui::Begin(windowTitle().c_str());
 
 	ImGui::Text("Post Processing:");
+
+	ImGui::Text(std::string{ "Framebuffer resolution: {" + std::to_string(p_postProcessing->mainFramebufferResolution()[0]) + ", "
+				+ std::to_string(p_postProcessing->mainFramebufferResolution()[1]) + "}" }.c_str());
+	ImGui::SliderInt2("fb res", &ui_mainFramebufferResolution[0], 512, 8192);
+	ImGui::SameLine();
+	if (ImGui::Button("Apply"))
+		p_postProcessing->setMainFramebufferResolution(ui_mainFramebufferResolution);
+
+
 	/* Post-processing details: */
 	bool wireframe = p_postProcessing->wireframe();
 	ImGui::Checkbox("Wireframe", &wireframe);

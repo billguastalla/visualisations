@@ -70,7 +70,7 @@ void Model_VideoRendering::takePicture(const std::string& filename)
 	std::vector<GLubyte> pixelData{};
 	pixelData.resize(4u * (size_t)(mainRes[0] * (size_t)mainRes[1]) );
 	glReadPixels(0, 0, mainRes[0], mainRes[1], GL_RGBA, GL_UNSIGNED_BYTE, &pixelData[0]);
-	stbi_write_bmp(filename.c_str(), mainRes[0], mainRes[1], 4, &pixelData[0]);
+	stbi_write_png(filename.c_str(), mainRes[0], mainRes[1], 4, &pixelData[0],0);
 
 	p_program->postProcessing()->setCurrentFramebuffer(originalFramebuffer);
 }
