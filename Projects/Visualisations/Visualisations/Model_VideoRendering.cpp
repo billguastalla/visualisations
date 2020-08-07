@@ -1,3 +1,6 @@
+#include "Program.h"
+#include "PostProcessing.h"
+
 #include "Model_VideoRendering.h"
 
 #include "Settings_VideoRendering.h"
@@ -5,6 +8,9 @@
 
 #include <GLFW/glfw3.h>
 #include <boost/property_tree/ptree.hpp>
+#include <stbimage/stb_image.h>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <stbimage/stb_image_write.h>
 
 bool Model_VideoRendering::loadFileTree(const boost::property_tree::ptree& t)
 {
@@ -18,7 +24,7 @@ bool Model_VideoRendering::saveFileTree(boost::property_tree::ptree& t) const
 	return true;
 }
 
-Model_VideoRendering::Model_VideoRendering(GLFWwindow* window)
+Model_VideoRendering::Model_VideoRendering(Program * program, GLFWwindow* window)
 	:
 	m_encoder{ new FFMPEG_Encoder{} },
 	m_recordState{ RecordState::Stopped },
@@ -28,7 +34,8 @@ Model_VideoRendering::Model_VideoRendering(GLFWwindow* window)
 	m_renderUI{ true },
 	m_recordAudio{ false },
 
-	m_window{ window }
+	m_window{ window },
+	p_program{program}
 {
 
 }
@@ -41,9 +48,31 @@ void Model_VideoRendering::renderFrame()
 {
 	if (m_recordState == RecordState::Started)
 	{
+		GLuint originalFramebuffer{ p_program->postProcessing()->currentFramebuffer() };
+		p_program->postProcessing()->setCurrentFramebuffer(p_program->postProcessing()->mainFramebuffer());
+		std::array<int, 2> mainRes{ p_program->postProcessing()->mainFramebufferResolution() };
+
 		m_encoder->ffmpeg_encoder_render_frame();
+
+		p_program->postProcessing()->setCurrentFramebuffer(originalFramebuffer);
+
+
 		m_frameCount = m_encoder->currentFrame();
 	}
+}
+
+void Model_VideoRendering::takePicture(const std::string& filename)
+{
+	GLuint originalFramebuffer{ p_program->postProcessing()->currentFramebuffer() };
+	p_program->postProcessing()->setCurrentFramebuffer(p_program->postProcessing()->mainFramebuffer());
+	std::array<int, 2> mainRes{ p_program->postProcessing()->mainFramebufferResolution() };
+
+	std::vector<GLubyte> pixelData{};
+	pixelData.resize(4u * (size_t)(mainRes[0] * (size_t)mainRes[1]) );
+	glReadPixels(0, 0, mainRes[0], mainRes[1], GL_RGBA, GL_UNSIGNED_BYTE, &pixelData[0]);
+	stbi_write_png(filename.c_str(), mainRes[0], mainRes[1], 4, &pixelData[0],0);
+
+	p_program->postProcessing()->setCurrentFramebuffer(originalFramebuffer);
 }
 
 bool Model_VideoRendering::start()
@@ -51,9 +80,10 @@ bool Model_VideoRendering::start()
 	if (m_recordState == RecordState::Stopped)
 	{
 		m_frameCount = 0;
-		int width{ 1920 }, height{ 1080 };
-		glfwGetWindowSize(m_window, &width, &height);
-		FFMPEG_Encoder::StartResult res = m_encoder->ffmpeg_encoder_start(m_fileName.c_str(), AVCodecID::AV_CODEC_ID_MPEG1VIDEO, m_frameRate, width, height);
+		//int width{ 1920 }, height{ 1080 };
+		//glfwGetWindowSize(m_window, &width, &height);
+		std::array<int, 2> mainResolution{ p_program->postProcessing()->mainFramebufferResolution() };
+		FFMPEG_Encoder::StartResult res = m_encoder->ffmpeg_encoder_start(m_fileName.c_str(), AVCodecID::AV_CODEC_ID_MPEG1VIDEO, m_frameRate, mainResolution[0], mainResolution[1]);
 		if (res == FFMPEG_Encoder::StartResult::Success)
 		{
 			m_recordState = RecordState::Started;

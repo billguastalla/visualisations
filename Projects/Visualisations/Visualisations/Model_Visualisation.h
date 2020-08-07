@@ -28,10 +28,7 @@ public:
 	void runVisualisation(const Camera& camera, Timestep t);
 	void processAudio(const Buffer & buffer);
 
-	std::shared_ptr<PostProcessing> postProcessing() { return m_postProcessing; }
-
 private:
-	std::shared_ptr<PostProcessing> m_postProcessing;
 
 	std::vector<Visualisation*> m_visualisations;
 	int m_currentVisualisaton;

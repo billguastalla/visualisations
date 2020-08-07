@@ -1,5 +1,8 @@
 #pragma once
 #include "Shader.h"
+#include <array>
+#include <map>
+// RESPONSIBILITY: This will keep track of the currently bound framebuffer and its resolution.
 
 /* Class to handle HDR & Bloom effects */
 class PostProcessing
@@ -7,7 +10,7 @@ class PostProcessing
 public:
 	PostProcessing();
 
-	void initialise(int width, int height);
+	void initialise();
 	void deinitialise();
 
 	void frameRenderBegin();
@@ -44,14 +47,28 @@ public:
 		deinitBuffers();
 		initBuffers();
 	}
+
+	void setMainFramebufferResolution(const std::array<int, 2>& res);
+	std::array<int,2> mainFramebufferResolution() { return m_mainResolution; }
+	GLuint mainFramebuffer() { return m_mainFramebuffer; }
+	GLuint currentFramebuffer() const { return m_currentlyBoundFramebuffer; }
+	void setCurrentFramebuffer(GLuint framebufferHandle);
 private:
+	GLuint m_currentlyBoundFramebuffer;
+
+
 	void initShaders();
 	void deinitShaders();
 	void initBuffers();
 	void deinitBuffers();
 
 
-	int m_lastFrameWidth, m_lastFrameHeight;
+	///////////////////////////// MAIN FRAMEBUFFER //////////////////////////////
+	GLuint m_mainFramebuffer;
+	unsigned int m_mainTexture;
+	std::array<int, 2> m_mainResolution;
+	Shader* m_mainShader; // passthrough, to send texture to default framebuffer.
+	/////////////////////////////////////////////////////////////////////////////
 
 	/* Drawing the buffer over the viewport */
 	static void renderQuad();

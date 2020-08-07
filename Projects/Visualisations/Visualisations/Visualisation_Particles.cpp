@@ -23,7 +23,7 @@ Visualisation_Particles::Visualisation_Particles()
 void Visualisation_Particles::activate()
 {
 	delete m_particleSet.release();
-	Texture particleTexture{ TextureGenerator::loadTexture("particle.png") };
+	Texture particleTexture{ TextureGenerator::loadTexture("particle1024.png") };
 	m_particleSet.reset(new ParticleSet{particleTexture});
 
 	m_lastTime = glfwGetTime();

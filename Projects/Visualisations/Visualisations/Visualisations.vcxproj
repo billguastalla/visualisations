@@ -190,6 +190,7 @@
     <ClCompile Include="Model_ViewportSystem.cpp" />
     <ClCompile Include="Model_Visualisation.cpp" />
     <ClCompile Include="FFMPEG_Encoder.cpp" />
+    <ClCompile Include="ODE.cpp" />
     <ClCompile Include="ParticleSet.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="PostProcessing.cpp" />
@@ -211,6 +212,7 @@
     <ClCompile Include="Visualisation_TreeField.cpp" />
     <ClCompile Include="Window_Abstract.cpp" />
     <ClCompile Include="Window_AudioInterface.cpp" />
+    <ClCompile Include="Window_PostProcessing.cpp" />
     <ClCompile Include="Window_Session.cpp" />
     <ClCompile Include="Window_Transport.cpp" />
     <ClCompile Include="Window_Transport.h" />
@@ -250,6 +252,7 @@
     <ClInclude Include="Model_Session.h" />
     <ClInclude Include="Model_Transport.h" />
     <ClInclude Include="Model_ViewportSystem.h" />
+    <ClInclude Include="ODE.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Serialisation.h" />
     <ClInclude Include="Trajectory.h" />
@@ -284,6 +287,7 @@
     <ClInclude Include="Visualisation_TreeField.h" />
     <ClInclude Include="Window_Abstract.h" />
     <ClInclude Include="Window_AudioInterface.h" />
+    <ClInclude Include="Window_PostProcessing.h" />
     <ClInclude Include="Window_Session.h" />
     <ClInclude Include="Window_VideoRendering.h" />
     <ClInclude Include="Program.h" />
