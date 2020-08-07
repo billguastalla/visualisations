@@ -61,6 +61,9 @@ void PostProcessing::deinitialise()
 void PostProcessing::frameRenderBegin()
 {
 	setCurrentFramebuffer(m_mainFramebuffer);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
 	glViewport(0, 0, m_mainResolution[0], m_mainResolution[1]);
 
 	if (m_hdrEnabled)
@@ -113,19 +116,19 @@ void PostProcessing::frameRenderEnd()
 	
 	////// MAIN FRAMEBUFFER -> DEFAULT FRAMEBUFFER //////////////////////////////
 	setCurrentFramebuffer(0u);
-
 	int defaultFramebufferWidth{ 0 }, defaultFramebufferHeight{ 0 };
 	glfwGetFramebufferSize(glfwGetCurrentContext(),&defaultFramebufferWidth,&defaultFramebufferHeight);
 	glViewport(0, 0, defaultFramebufferWidth, defaultFramebufferHeight);
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_mainTexture);
 	m_mainShader->use();
 	renderQuad();
 	/////////////////////////////////////////////////////////////////////////////
 
-	setCurrentFramebuffer(m_mainFramebuffer);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	setCurrentFramebuffer(0u);
+	//setCurrentFramebuffer(m_mainFramebuffer);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//setCurrentFramebuffer(0u);
 
 
 

@@ -48,20 +48,31 @@ void Model_VideoRendering::renderFrame()
 {
 	if (m_recordState == RecordState::Started)
 	{
+		GLuint originalFramebuffer{ p_program->postProcessing()->currentFramebuffer() };
+		p_program->postProcessing()->setCurrentFramebuffer(p_program->postProcessing()->mainFramebuffer());
+		std::array<int, 2> mainRes{ p_program->postProcessing()->mainFramebufferResolution() };
+
 		m_encoder->ffmpeg_encoder_render_frame();
+
+		p_program->postProcessing()->setCurrentFramebuffer(originalFramebuffer);
+
+
 		m_frameCount = m_encoder->currentFrame();
 	}
 }
 
 void Model_VideoRendering::takePicture(const std::string& filename)
 {
-	GLFWwindow * win{ glfwGetCurrentContext() };
-	int w{ 3840 }, h{ 2160 };
-	glfwGetFramebufferSize(win,&w,&h);
+	GLuint originalFramebuffer{ p_program->postProcessing()->currentFramebuffer() };
+	p_program->postProcessing()->setCurrentFramebuffer(p_program->postProcessing()->mainFramebuffer());
+	std::array<int, 2> mainRes{ p_program->postProcessing()->mainFramebufferResolution() };
+
 	std::vector<GLubyte> pixelData{};
-	pixelData.resize(4u * (size_t)(w * h) );
-	glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, &pixelData[0]);
-	stbi_write_bmp(filename.c_str(), w, h, 4, &pixelData[0]);
+	pixelData.resize(4u * (size_t)(mainRes[0] * (size_t)mainRes[1]) );
+	glReadPixels(0, 0, mainRes[0], mainRes[1], GL_RGBA, GL_UNSIGNED_BYTE, &pixelData[0]);
+	stbi_write_bmp(filename.c_str(), mainRes[0], mainRes[1], 4, &pixelData[0]);
+
+	p_program->postProcessing()->setCurrentFramebuffer(originalFramebuffer);
 }
 
 bool Model_VideoRendering::start()

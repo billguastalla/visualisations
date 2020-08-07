@@ -15,6 +15,7 @@ Window_PostProcessing::~Window_PostProcessing()
 
 void Window_PostProcessing::draw()
 {
+	ImGui::Begin(windowTitle().c_str());
 
 	ImGui::Text("Post Processing:");
 	/* Post-processing details: */
@@ -49,5 +50,5 @@ void Window_PostProcessing::draw()
 	if (pingPongPerc != pingPongSlide)
 		p_postProcessing->setpingpongPerc(pingPongPerc);
 
-
+	ImGui::End();
 }
