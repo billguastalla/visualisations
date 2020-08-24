@@ -40,5 +40,16 @@ private:
 
 	// e.g. method for transition of value or higher-dim value, quaternion/position.
 	// TODO: Check if there is a lighter alternative to 3 ptrees.
+
+
+
+public:
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int version)
+	{
+		// TODO: serialise
+	}
+
 };
 

@@ -2,6 +2,8 @@
 #include "Timekeeping.h"
 #include <GLFW/glfw3.h>
 #include <boost/property_tree/ptree_fwd.hpp>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/split_member.hpp>
 
 enum class TimeMode { Realtime, Sequence }; // nb window relies on two boolean values for both enums
 enum class TransportState { Playing, Paused };
@@ -85,4 +87,32 @@ private:
 	int m_currentFrame;
 	int m_framerate;
 	//double m_lastFreeTime; // Idea behind this was preventing jumps when switcing between realtime and sequence.
+
+
+public:
+	friend class boost::serialization::access;
+	template<class Archive>
+	void save(Archive& ar, const unsigned int version) const
+	{
+		ar& m_state;
+		ar& m_mode;
+		ar& m_totalFrames;
+		ar& m_currentFrame;
+		ar& m_framerate;
+	}
+	template<class Archive>
+	void load(Archive& ar, const unsigned int version)
+	{
+		ar& m_state;
+		ar& m_mode;
+		ar& m_totalFrames;
+		ar& m_currentFrame;
+		ar& m_framerate;
+
+		//m_firstTime = Timepoint{ std::chrono::steady_clock::now() };
+		//m_prevTime = Timepoint{ std::chrono::steady_clock::now() };
+		//m_currentTime = Timepoint{ std::chrono::steady_clock::now() };
+	};
+	BOOST_SERIALIZATION_SPLIT_MEMBER()
+
 };

@@ -6,6 +6,10 @@
 #include <string>
 #include <boost/property_tree/ptree_fwd.hpp>
 
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/vector.hpp>
+#include "Serialisation.h"
+
 /*
 	Design limitations:
 		-> Implementing rotations as an single interpolated quaternion
@@ -16,14 +20,24 @@
 		-> Option to pop finished transformations and save an internal position/orientation in the camera system.
 */
 
-struct CameraPos
+class CameraPos
 {
+public:
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int version)
+	{
+		ar& position;
+		ar& orientation;
+	}
+
 	CameraPos(glm::vec3 pos = glm::vec3{ 0.0f }, glm::quat orient = glm::quat{}) : position{ pos }, orientation{ orient } {}
 	glm::vec3 position; // n.b should this be a change in position or a world space value?
 	glm::quat orientation; // always normalised
 
 	bool loadFileTree(const boost::property_tree::ptree& t);
 	bool saveFileTree(boost::property_tree::ptree& t) const;
+
 	void clear() {
 		position = glm::vec3{};
 		orientation = glm::quat{};
@@ -44,6 +58,16 @@ struct InterpolatedEvent
 
 	bool loadFileTree(const boost::property_tree::ptree& t);
 	bool saveFileTree(boost::property_tree::ptree& t) const;
+
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int version)
+	{
+		ar& interp;
+		ar& t_begin;
+		ar& t_end;
+	}
+
 };
 struct PositionEvent
 {
@@ -51,6 +75,15 @@ struct PositionEvent
 	glm::vec3 second;
 	bool loadFileTree(const boost::property_tree::ptree& t);
 	bool saveFileTree(boost::property_tree::ptree& t) const;
+
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int version)
+	{
+		ar& first;
+		ar& second;
+	}
+
 };
 struct RotationEvent
 {
@@ -58,6 +91,15 @@ struct RotationEvent
 	glm::quat second; // removed vect: YAGNI
 	bool loadFileTree(const boost::property_tree::ptree& t);
 	bool saveFileTree(boost::property_tree::ptree& t) const;
+
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int version)
+	{
+		ar& first;
+		ar& second;
+	}
+
 };
 
 // Could add orbit event..
@@ -85,6 +127,22 @@ public:
 
 	void drawUI();
 
+
+
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int version)
+	{
+		ar& m_begin;
+		ar& m_positionEvents; // TODO
+		ar& m_rotationEvents;
+
+		// not necessary
+		ar& ui_currentPositionEvent;
+		ar& ui_currentRotationEvent;
+		ar& ui_yprMode;
+		ar& ui_movementScale;
+	}
 
 private:
 	CameraPos m_begin;

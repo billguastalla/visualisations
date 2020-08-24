@@ -20,6 +20,8 @@
 #include <vector>
 #include <boost/property_tree/ptree_fwd.hpp>
 
+#include <boost/serialization/access.hpp>
+
 enum class Camera_Movement {
 	NONE = 0x00,
 	FORWARD = 0x01,
@@ -83,9 +85,9 @@ public:
 		m_orientation{ ypr },
 		m_worldup{ 0.f,1.f,0.f },
 
-		m_front{0.f,0.f,-1.f},
-		m_right{1.f,0.f,0.f},
-		m_up{up}
+		m_front{ 0.f,0.f,-1.f },
+		m_right{ 1.f,0.f,0.f },
+		m_up{ up }
 	{
 	}
 	__inline glm::vec3 front() const { return m_front; };
@@ -167,15 +169,39 @@ public:
 	void updateCameraVectors()
 	{
 		// via https://math.stackexchange.com/questions/1637464/find-unit-vector-given-roll-pitch-and-yaw
-		glm::vec3 front;
-		front.x = -(sin(glm::radians(m_orientation[2])) * cos(glm::radians(m_orientation[0]))) - (cos(glm::radians(m_orientation[2])) * sin(glm::radians(m_orientation[1])) * sin(glm::radians(m_orientation[0])));
-		front.y = (sin(glm::radians(m_orientation[2])) * sin(glm::radians(m_orientation[0]))) - (cos(glm::radians(m_orientation[2])) * sin(glm::radians(m_orientation[1])) * cos(glm::radians(m_orientation[0])));
-		front.z = cos(glm::radians(m_orientation[2])) * cos(glm::radians(m_orientation[1]));
-		//front.x = cos(glm::radians(m_orientation[0])) * cos(glm::radians(m_orientation[1]));
-		//front.y = sin(glm::radians(m_orientation[1]));
-		//front.z = sin(glm::radians(m_orientation[0])) * cos(glm::radians(m_orientation[1]));
+		//front.x = -(sin(glm::radians(m_orientation[2])) * cos(glm::radians(m_orientation[0]))) - (cos(glm::radians(m_orientation[2])) * sin(glm::radians(m_orientation[1])) * sin(glm::radians(m_orientation[0])));
+		//front.y = (sin(glm::radians(m_orientation[2])) * sin(glm::radians(m_orientation[0]))) - (cos(glm::radians(m_orientation[2])) * sin(glm::radians(m_orientation[1])) * cos(glm::radians(m_orientation[0])));
+		//front.z = cos(glm::radians(m_orientation[2])) * cos(glm::radians(m_orientation[1]));
+		glm::vec3 front;//
+		front.x = cos(glm::radians(m_orientation[0])) * cos(glm::radians(m_orientation[1]));
+		front.y = sin(glm::radians(m_orientation[1]));
+		front.z = sin(glm::radians(m_orientation[0])) * cos(glm::radians(m_orientation[1]));
 		m_front = glm::normalize(front);
 		m_right = glm::normalize(glm::cross(m_front, m_worldup));
 		m_up = glm::normalize(glm::cross(m_right, m_front));
 	}
+
+
+
+
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int version)
+	{
+		ar& m_movementSpeed;
+		ar& m_mouseSensitivity;
+		ar& m_zoom;
+		ar& m_aspectRatio;
+		ar& m_nearZ;
+		ar& m_farZ;
+
+		ar& m_position;
+		ar& m_orientation;
+		ar& m_worldup;
+
+		ar& m_front;
+		ar& m_right;
+		ar& m_up;
+	}
+
 };

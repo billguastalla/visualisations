@@ -3,6 +3,7 @@
 #include "Recorder.h"
 #include <memory>
 #include <boost/property_tree/ptree_fwd.hpp>
+#include <boost/serialization/access.hpp>
 
 class Settings_AudioInterface;
 class Program;
@@ -37,5 +38,15 @@ private:
 
 	RecordMode m_recordMode;
 	Program * p_program;
+
+
+public:
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int version)
+	{
+		ar& m_recordMode;
+	}
+
 };
 

@@ -3,6 +3,38 @@
 #include <glm/gtc/quaternion.hpp>
 #include <string>
 
+namespace boost {
+	namespace serialization {
+		template<class Archive>
+		void serialize(Archive& ar, glm::vec3& v, const unsigned int version)
+		{
+			ar& v[0];
+			ar& v[1];
+			ar& v[2];
+		}
+		template<class Archive>
+		void serialize(Archive& ar, glm::quat& v, const unsigned int version)
+		{
+			ar& v[0];
+			ar& v[1];
+			ar& v[2];
+			ar& v[3];
+		}
+	} // namespace serialization
+} // namespace boost
+
+
+
+
+
+
+
+
+
+
+
+
+
 namespace Serialisation
 {
 	// TODO: Throw exception on conversion failure!

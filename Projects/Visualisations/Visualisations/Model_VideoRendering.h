@@ -2,6 +2,7 @@
 #include <memory>
 #include <string>
 #include <boost/property_tree/ptree_fwd.hpp>
+#include <boost/serialization/access.hpp>
 
 class Settings_VideoRendering;
 class FFMPEG_Encoder;
@@ -13,12 +14,12 @@ struct GLFWwindow;
 /* Not used yet: working out what's important about file rendering. */
 struct RenderSettings
 {
-	RenderSettings():
+	RenderSettings() :
 		width{ 1920 },
 		height{ 1080 },
 		fps{ 30 },
 		bitRate{ 4000000 },
-		filename{""}
+		filename{ "" }
 	{}
 	int width, height;
 	int fps;
@@ -50,12 +51,12 @@ public:
 			-> Handle the width/height of the framebuffer, and permit/forbid modification of
 				width & height during recording
 	*/
-	Model_VideoRendering(Program * p_program, GLFWwindow * window);
+	Model_VideoRendering(Program* p_program, GLFWwindow* window);
 	~Model_VideoRendering();
 
 	void renderFrame();
 
-	void takePicture(const std::string & filename);
+	void takePicture(const std::string& filename);
 
 	RecordState state() { return m_recordState; }
 	bool start();
@@ -94,7 +95,7 @@ private:
 	std::string m_fileName;
 	int m_frameRate;
 
-	/*	This is a duplicate of (m_currentFrame in FFMPEG_Encoder) 
+	/*	This is a duplicate of (m_currentFrame in FFMPEG_Encoder)
 		only to allow the user to see the last video's total framecount after finishing rendering. */
 	int m_frameCount;
 
@@ -104,4 +105,19 @@ private:
 
 	GLFWwindow* m_window;
 	Program* p_program;
+
+public:
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int version)
+	{
+		ar& m_recordState;
+		ar& m_frameCount;
+		ar& m_frameRate;
+		ar& m_fileName;
+		ar& m_recordAudio;
+		ar& m_renderUI;
+		ar& m_renderFromMainBuffer;
+	}
+
 };

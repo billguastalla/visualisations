@@ -41,3 +41,20 @@ glm::quat Geometry::quat(const Geometry::YawPitchRoll& _ypr)
 	q.z = cr * cp * sy - sr * sp * cy;
 	return q;
 }
+
+//glm::mat3 Geometry::rotMatrix(const YawPitchRoll& _ypr)// https://en.wikipedia.org/wiki/Rotation_matrix
+//{
+//	return glm::mat3 {
+//		cos(glm::radians(_ypr[0])) * cos(glm::radians(_ypr[1])),
+//		(cos(glm::radians(_ypr[0])) * sin(glm::radians(_ypr[1])) * sin(glm::radians(_ypr[2]))) - (sin(glm::radians(_ypr[0])) * cos(glm::radians(_ypr[2]))),
+//		(cos(glm::radians(_ypr[0])) * sin(glm::radians(_ypr[1])) * cos(glm::radians(_ypr[2]))) + (sin(glm::radians(_ypr[0])) * sin(glm::radians(_ypr[2]))),
+//
+//		sin(glm::radians(_ypr[0])) * cos(glm::radians(_ypr[1])),
+//		(sin(glm::radians(_ypr[0])) * sin(glm::radians(_ypr[1])) * sin(glm::radians(_ypr[2]))) + (cos(glm::radians(_ypr[0])) * cos(glm::radians(_ypr[2]))),
+//		(sin(glm::radians(_ypr[0])) * sin(glm::radians(_ypr[1])) * cos(glm::radians(_ypr[2]))) - (cos(glm::radians(_ypr[0])) * sin(glm::radians(_ypr[2]))),
+//
+//		-sin(glm::radians(_ypr[1])),
+//		cos(glm::radians(_ypr[1])) * sin(glm::radians(_ypr[2])),
+//		cos(glm::radians(_ypr[1])) * cos(glm::radians(_ypr[2]))
+//	};
+//}

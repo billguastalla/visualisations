@@ -30,4 +30,15 @@ private:
 
 	std::map<int, Event> m_events;
 	std::map<int, FunctionSource> m_mappings;
+
+
+public:
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int version)
+	{
+		ar& m_events;
+		ar& m_mappings;
+	}
+
 };

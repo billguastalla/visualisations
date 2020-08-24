@@ -35,4 +35,15 @@ private:
 	float m_lastX, m_lastY;		
 	bool m_mouseDown;	
 	bool m_firstMouse;	
+
+public:
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int version)
+	{
+		ar& m_freeCamera;
+		ar& m_cameraSystem;
+		ar& m_camera;
+	}
+
 };
