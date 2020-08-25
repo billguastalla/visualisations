@@ -56,9 +56,6 @@ struct InterpolatedEvent
 	float t_begin, t_end;
 	void drawUI(const std::string& name);
 
-	bool loadFileTree(const boost::property_tree::ptree& t);
-	bool saveFileTree(boost::property_tree::ptree& t) const;
-
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int version)
@@ -73,8 +70,6 @@ struct PositionEvent
 {
 	InterpolatedEvent first;
 	glm::vec3 second;
-	bool loadFileTree(const boost::property_tree::ptree& t);
-	bool saveFileTree(boost::property_tree::ptree& t) const;
 
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -89,8 +84,6 @@ struct RotationEvent
 {
 	InterpolatedEvent first;
 	glm::quat second; // removed vect: YAGNI
-	bool loadFileTree(const boost::property_tree::ptree& t);
-	bool saveFileTree(boost::property_tree::ptree& t) const;
 
 	friend class boost::serialization::access;
 	template<class Archive>

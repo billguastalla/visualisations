@@ -59,20 +59,3 @@ void Model_ViewportSystem::processCamera(Timestep ts)
 	//m_camera.m_right = p.orientation * m_camera.m_right;
 	//m_camera.m_front = p.orientation * m_camera.m_front;
 }
-
-bool Model_ViewportSystem::loadFileTree(const boost::property_tree::ptree& t)
-{
-	bool result{ true };
-	m_freeCamera = t.get_child("viewport.freecamera").get_value<bool>();
-	result |= m_camera.loadFileTree(t);
-	result |= m_cameraSystem.loadFileTree(t);
-	return result;
-}
-
-bool Model_ViewportSystem::saveFileTree(boost::property_tree::ptree& t) const
-{
-	t.put("viewport.freecamera",m_freeCamera);
-	m_camera.saveFileTree(t);
-	m_cameraSystem.saveFileTree(t);
-	return false;
-}

@@ -19,9 +19,6 @@
 class EventsSystem
 {
 public:
-	bool loadFileTree(const boost::property_tree::ptree& t);
-	bool saveFileTree(boost::property_tree::ptree& t) const;
-
 	bool validateConnections(std::string & log); // Check that events have mappings and sources, logging issues.
 
 	boost::property_tree::ptree buildValueTree() const;

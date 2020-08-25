@@ -18,8 +18,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
-#include <boost/property_tree/ptree_fwd.hpp>
-
 #include <boost/serialization/access.hpp>
 
 enum class Camera_Movement {
@@ -46,9 +44,6 @@ const float ZOOM = 45.0f;
 class Camera
 {
 public:
-	bool loadFileTree(const boost::property_tree::ptree& t);
-	bool saveFileTree(boost::property_tree::ptree& t) const;
-
 	void setPosition(const CameraPos& p)
 	{
 		m_position = p.position;

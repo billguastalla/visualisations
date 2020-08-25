@@ -8,14 +8,6 @@
 #include "Model_Transport.h"
 
 #include <fstream>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/xml_parser.hpp>
-#include <boost/property_tree/json_parser.hpp>
-#include <boost/property_tree/ini_parser.hpp>
-
-
-
-// include headers that implement a archive in simple text format
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 
@@ -25,9 +17,8 @@ Model_Session::Model_Session(Program & p)
 	:
 	p_program{p},
 	m_state{SessionState::Closed},
-	m_filename{"test.xml"},
-	m_filepath{"C:\\Users\\_\\Desktop\\"},
-	m_fileTree{ new boost::property_tree::ptree{} }
+	m_filename{"session.vis"},
+	m_filepath{"C:\\Users\\_\\Desktop\\"}
 {
 }
 
@@ -59,69 +50,18 @@ bool Model_Session::create()
 bool Model_Session::open()
 {
 	bool result{ true };
-	//// prompt to save in window before calling this
-	//m_fileTree->clear();
-	//read_xml(m_filepath + m_filename, *m_fileTree);
-
-	//ptree& sessionTree{ m_fileTree->get_child("visualisations") };
-	//m_title = sessionTree.get_child("<xmlattr>.title").get_value<std::string>();
-
-	//p_program.modelAudioInterface()->loadFileTree(sessionTree);
-	//p_program.modelTransport()->loadFileTree(sessionTree);
-	//p_program.modelVideoRendering()->loadFileTree(sessionTree);
-	//p_program.modelViewportSystem()->loadFileTree(sessionTree);
-	//p_program.modelVisualisation()->loadFileTree(sessionTree);
-
 	std::ifstream ifs{ m_filepath + m_filename };
 	boost::archive::text_iarchive ia{ifs};
-	ia >> *p_program.modelAudioInterface().operator->();
-	ia >> *p_program.modelTransport().operator->();
-	ia >> *p_program.modelVideoRendering().operator->();
-	ia >> *p_program.modelViewportSystem().operator->();
-	ia >> *p_program.modelVisualisation().operator->();
-
-
-
-
+	ia >> *this;
 	m_state = SessionState::Open;
 	return result;
 }
 
 bool Model_Session::save()
 {
-	//// todo: check existence of filepath.
-	//m_fileTree->clear();
-	//
-	//ptree& sessionTree{ m_fileTree->put("visualisations","") };
-	//sessionTree.add("<xmlattr>.title", m_title);
-	//sessionTree.add("<xmlattr>.filename", m_filename);
-	//sessionTree.add("<xmlattr>.filepath", m_filepath);
-
-	////m_fileTree->push_back(ptree::value_type("test", ptree{"123.456"}));
-	////m_fileTree->put("test.<xmlattr>.id","hello");
-
-	//p_program.modelAudioInterface()->saveFileTree(sessionTree);
-	//p_program.modelTransport()->saveFileTree(sessionTree);
-	//p_program.modelVideoRendering()->saveFileTree(sessionTree);
-	//p_program.modelViewportSystem()->saveFileTree(sessionTree);
-	//p_program.modelVisualisation()->saveFileTree(sessionTree);
-
-	//// add all objects/events/mappings here
-
-	//// TODO: Check file is accessible before writing.
-	//write_xml(m_filepath+m_filename,*m_fileTree);
-	//write_json(m_filepath+m_filename + ".json", *m_fileTree); // WARNING: It is non-standard json to have multiple nodes at the same level with the same element name
-	////write_ini(m_filepath+m_filename + ".ini", *m_fileTree); // NOTE: An exception is thrown on writing ini files: "ptree is too deep"
-
-
 	std::ofstream ifs{m_filepath + m_filename};
 	boost::archive::text_oarchive oa{ ifs };
-	oa << *p_program.modelAudioInterface().operator->();
-	oa << *p_program.modelTransport().operator->();
-	oa << *p_program.modelVideoRendering().operator->();
-	oa << *p_program.modelViewportSystem().operator->();
-	oa << *p_program.modelVisualisation().operator->();
-
+	oa << *this;
 	m_state = SessionState::Open;
 	return true;
 }

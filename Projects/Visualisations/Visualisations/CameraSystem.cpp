@@ -33,46 +33,6 @@ void CameraSystem::clear()
 	m_rotationEvents.clear();
 }
 
-bool CameraSystem::loadFileTree(const boost::property_tree::ptree& t)
-{
-	bool result{ true };
-	boost::optional<const boost::property_tree::ptree&> cameraSystemTree{ t.get_child_optional("camerasystem") };
-	if (result |= cameraSystemTree.is_initialized())
-	{
-		boost::optional<const boost::property_tree::ptree&> cameraPosTree{ t.get_child_optional("CameraPos") };
-		if (result &= cameraPosTree.is_initialized())
-			result |= m_begin.loadFileTree(cameraPosTree.value());
-		for (const boost::property_tree::ptree::value_type& posEventTree : cameraSystemTree.value().get_child("positionEvents"))
-		{
-			PositionEvent pEvent{};
-			if (result |= pEvent.loadFileTree(posEventTree.second))
-				m_positionEvents.push_back(pEvent);
-		}
-		for (const boost::property_tree::ptree::value_type& posEventTree : cameraSystemTree.value().get_child("rotationEvents"))
-		{
-			RotationEvent rEvent{};
-			if (result |= rEvent.loadFileTree(posEventTree.second))
-				m_rotationEvents.push_back(rEvent);
-		}
-	}
-	return result;
-}
-
-bool CameraSystem::saveFileTree(boost::property_tree::ptree& t) const
-{
-	bool result{ true };
-	boost::property_tree::ptree& cameraSystemTree{ t.put("camerasystem","") };
-	result |= m_begin.saveFileTree(cameraSystemTree);
-
-	boost::property_tree::ptree& posEventsTree{ cameraSystemTree.put("positionEvents","") };
-	for (const auto& pos : m_positionEvents)
-		result |= pos.saveFileTree(posEventsTree);
-	boost::property_tree::ptree& rotEventsTree{ cameraSystemTree.put("rotationEvents","") };
-	for (const auto& rot : m_rotationEvents)
-		result |= rot.saveFileTree(rotEventsTree);
-	return result;
-}
-
 CameraPos CameraSystem::cameraPos(float t) const
 {
 	CameraPos result{ m_begin };
@@ -117,25 +77,6 @@ void InterpolatedEvent::drawUI(const std::string& name)
 	interp.drawUI(name);
 }
 
-bool InterpolatedEvent::loadFileTree(const boost::property_tree::ptree& t)
-{
-	bool result{ true };
-	const boost::property_tree::ptree& ieTree{ t.get_child("InterpolationEvent",t) };
-	result |= interp.loadFileTree(ieTree);
-	t_begin = ieTree.get<float>("tBegin");
-	t_end = ieTree.get<float>("tEnd");
-	return result;
-}
-
-bool InterpolatedEvent::saveFileTree(boost::property_tree::ptree& t) const
-{
-	bool result{ true };
-	boost::property_tree::ptree& ieTree{ t.put("InterpolationEvent","") };
-	result |= interp.saveFileTree(ieTree);
-	ieTree.put("tBegin", t_begin);
-	ieTree.put("tEnd", t_end);
-	return result;
-}
 
 void CameraSystem::drawUI()
 {
@@ -261,58 +202,4 @@ void CameraSystem::drawUI()
 	//	if (rotDeletion[j])
 	//		m_rotationEvents.erase(m_rotationEvents.begin() + j);
 
-}
-
-bool CameraPos::loadFileTree(const boost::property_tree::ptree& t)
-{
-	// TODO: Make this safe.
-	position = Serialisation::vec3glmFromString(t.get<std::string>("position"));
-	orientation = Serialisation::quatglmFromString(t.get<std::string>("orientation"));
-	return true;
-}
-
-bool CameraPos::saveFileTree(boost::property_tree::ptree& t) const
-{
-	boost::property_tree::ptree& cameraPosTree{ t.add("CameraPos","") };
-	cameraPosTree.put("position", Serialisation::vec3glmToString(position));
-	cameraPosTree.put("orientation", Serialisation::quatglmToString(orientation));
-	return true;
-}
-
-bool PositionEvent::loadFileTree(const boost::property_tree::ptree& t)
-{
-	// ISSUE: If we're passed parent node, then we don't know which position event to read!
-	bool result{ true };
-	boost::optional<const boost::property_tree::ptree&> interpEventNode{ t.get_child_optional("InterpolatedEvent") };
-	if (interpEventNode.is_initialized())
-		result |= first.loadFileTree(t);
-	boost::optional<const boost::property_tree::ptree&> positionNode{ t.get_child_optional("position") };
-	if (positionNode.is_initialized())
-		second = Serialisation::vec3glmFromString(positionNode.value().get_value<std::string>());
-	return result;
-}
-
-bool PositionEvent::saveFileTree(boost::property_tree::ptree& t) const
-{
-	bool result{ true };
-	boost::property_tree::ptree& posEventTree{ t.add("PositionEvent","") }; // NOTE: this is an add() rather than a put() because put() will set to a preexisting node if found.
-	result |= first.saveFileTree(posEventTree);
-	posEventTree.put("position", Serialisation::vec3glmToString(second));
-	return result;
-}
-
-bool RotationEvent::loadFileTree(const boost::property_tree::ptree& t)
-{
-	bool result{ true };
-
-	return result;
-}
-
-bool RotationEvent::saveFileTree(boost::property_tree::ptree& t) const
-{
-	bool result{ true };
-	boost::property_tree::ptree& rotEventTree{ t.add("RotationEvent","") };
-	result |= first.saveFileTree(rotEventTree);
-	rotEventTree.put("rotation", Serialisation::quatglmToString(second));
-	return result;
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
-#include <boost/property_tree/ptree_fwd.hpp>
+#include <boost/serialization/access.hpp>
 
 class Program;
 /*
@@ -10,7 +10,7 @@ class Program;
 class Model_Session
 {
 public:
-	Model_Session(Program & p);
+	Model_Session(Program& p);
 
 	enum class SessionState
 	{
@@ -35,12 +35,23 @@ public:
 	void setFilename(const std::string& fn) { m_filename = fn; }; // note: I think you only need one of these
 	void setFilepath(const std::string& fp) { m_filepath = fp; };
 private:
-	Program & p_program;
-
-	std::shared_ptr<boost::property_tree::ptree> m_fileTree;
+	Program& p_program;
 
 	SessionState m_state;
 	std::string m_title;
 	std::string m_filename;
 	std::string m_filepath;
+
+public:
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int version)
+	{
+		ar& m_title;
+		ar& *p_program.modelAudioInterface().operator->();
+		ar& *p_program.modelTransport().operator->();
+		ar& *p_program.modelVideoRendering().operator->();
+		ar& *p_program.modelViewportSystem().operator->();
+		ar& *p_program.modelVisualisation().operator->();
+	}
 };

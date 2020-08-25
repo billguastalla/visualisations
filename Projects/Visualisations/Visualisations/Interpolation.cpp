@@ -57,17 +57,3 @@ void Interpolation::drawUI(const std::string& name)
 		ImGui::SliderFloat(std::string{ "c" + std::to_string(i) + " " + name }.c_str(), &m_coefficients[i], 0.f, 1.f);
 	// TODO: Safety check of coefficients to prevent division by zero.
 }
-
-bool Interpolation::loadFileTree(const boost::property_tree::ptree& t)
-{
-	m_coefficients = Serialisation::strToFloatingVect<float>(t.get<std::string>("coefficients"));
-	m_functionType = (FunctionType)t.get<int>("functionType");
-	return true;
-}
-
-bool Interpolation::saveFileTree(boost::property_tree::ptree& t) const
-{
-	t.put("coefficients", Serialisation::floatingVectToStr<float>(m_coefficients));
-	t.put("functionType", (int)m_functionType);
-	return true;
-}

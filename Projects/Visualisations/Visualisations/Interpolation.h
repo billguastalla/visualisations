@@ -18,10 +18,6 @@ struct Interpolation // TODO: Allow different coefficient sizes in UI. // NOTE: 
 	float value(float x) const; // expects x between [0,1], undefined behaviour outside.
 	FunctionType m_functionType;
 	std::vector<float> m_coefficients;
-
-	// TODO: read/write ptree 
-	bool loadFileTree(const boost::property_tree::ptree& t);
-	bool saveFileTree(boost::property_tree::ptree& t) const;
 	void drawUI(const std::string& name);
 
 	friend class boost::serialization::access;

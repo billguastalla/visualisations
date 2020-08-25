@@ -22,9 +22,6 @@ public:
 	bool freeCamera() { return m_freeCamera; }
 	void setFreeCamera(bool f) { m_freeCamera = f; }
 
-
-	bool loadFileTree(const boost::property_tree::ptree & t);
-	bool saveFileTree(boost::property_tree::ptree& t) const;
 private:
 	GLFWwindow* m_window;
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "CameraSystem.h" // TODO: move interpolation to its own header
 #include <boost/property_tree/ptree.hpp> // TODO: Compare perf with fwd decl + pointer type for interpolation.
+#include <boost/serialization/access.hpp>
 #include <map>
 
 /*
@@ -22,9 +23,6 @@ public:
 		m_attributes{},
 		m_mode{Mode::Assigned}
 	{}
-
-	bool loadFileTree(const boost::property_tree::ptree& t);
-	bool saveFileTree(boost::property_tree::ptree& t) const;
 
 	enum class Mode { Assigned, Multiplicative, Additive };
 private:
