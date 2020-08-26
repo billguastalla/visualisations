@@ -43,7 +43,7 @@ void Window_VideoRendering::draw()
 
 	char fnChar[256];
 	memcpy(fnChar, fn.c_str(), fn.size());
-	for (int c = fn.size(); c <= 255; ++c)
+	for (size_t c = fn.size(); c <= 255u; ++c)
 		fnChar[c] = '\0';
 
 	ImGui::Text("Output Filename");

@@ -210,23 +210,22 @@
     <ClCompile Include="Visualisation_Splinters.cpp" />
     <ClCompile Include="Visualisation_Surfaces.cpp" />
     <ClCompile Include="Visualisation_TreeField.cpp" />
+    <ClCompile Include="Visualisation_Cubes.cpp" />
+    <ClCompile Include="Visualisation_Oscilloscope.cpp" />
     <ClCompile Include="Window_Abstract.cpp" />
     <ClCompile Include="Window_AudioInterface.cpp" />
     <ClCompile Include="Window_PostProcessing.cpp" />
     <ClCompile Include="Window_Session.cpp" />
     <ClCompile Include="Window_Transport.cpp" />
-    <ClCompile Include="Window_Transport.h" />
     <ClCompile Include="Window_VideoRendering.cpp" />
+    <ClCompile Include="Window_ViewportSystem.cpp" />
+    <ClCompile Include="Window_Visualisation.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="UserInterface.cpp" />
-    <ClCompile Include="Visualisation_Cubes.cpp" />
-    <ClCompile Include="Visualisation_Oscilloscope.cpp" />
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="Recorder.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Window_ViewportSystem.cpp" />
-    <ClCompile Include="Window_Visualisation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Includes\imgui\imconfig.h" />
@@ -289,6 +288,7 @@
     <ClInclude Include="Window_AudioInterface.h" />
     <ClInclude Include="Window_PostProcessing.h" />
     <ClInclude Include="Window_Session.h" />
+    <ClCompile Include="Window_Transport.h" />
     <ClInclude Include="Window_VideoRendering.h" />
     <ClInclude Include="Program.h" />
     <ClInclude Include="Recorder.h" />

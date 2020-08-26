@@ -267,9 +267,6 @@
     <ClCompile Include="Model_Scene.cpp">
       <Filter>Source Files\Program\Model Systems</Filter>
     </ClCompile>
-    <ClCompile Include="Window_Transport.h">
-      <Filter>Header Files\UI\Windows</Filter>
-    </ClCompile>
     <ClCompile Include="Model_Session.cpp">
       <Filter>Source Files\Program\Model Systems</Filter>
     </ClCompile>
@@ -368,6 +365,9 @@
     <ClInclude Include="Window_AudioInterface.h">
       <Filter>Header Files\UI\Windows</Filter>
     </ClInclude>
+    <ClCompile Include="Window_Transport.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClCompile>
     <ClInclude Include="Settings_Visualisation.h">
       <Filter>Header Files\Program\Model Systems\Settings</Filter>
     </ClInclude>

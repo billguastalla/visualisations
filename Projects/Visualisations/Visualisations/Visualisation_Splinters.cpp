@@ -44,7 +44,7 @@ void Visualisation_Splinters::activate()
 	m_roots.push_back(root);
 	root->addChild(glm::vec3{ 0.0,0.0,10.0 }, 0.5);
 	root->addChild(glm::vec3{ 0.0,10.0,0.0 }, 0.5);
-	SplinterNode* c3 = root->addChild(glm::vec3{ 30.0,10.0,0.0 }, 0.2);
+	SplinterNode* c3 = root->addChild(glm::vec3{ 30.0,10.0,0.0 }, 0.2f);
 	c3->addChild(glm::vec3{ 35.0,15.0,2.0 }, 0.2f);
 	c3->addChild(glm::vec3{ 35.0,25.0,-8.0 }, 0.2f);
 
@@ -69,7 +69,7 @@ void Visualisation_Splinters::processSamples(const Buffer& buf, unsigned samples
 	auto fft{ buf.fft() };
 
 	auto fftLeft{ fft.front() };
-	size_t depth = (double)std::sqrt((double)fft.size());
+	size_t depth = (size_t)std::sqrt((double)fft.size());
 
 	SplinterNode* root = new SplinterNode{ glm::vec3{0.0} };
 	root->makeBranches(std::vector<unsigned>{}, depth);
