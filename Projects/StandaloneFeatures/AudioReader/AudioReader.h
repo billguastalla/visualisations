@@ -110,11 +110,11 @@ public:
 				return samples(0u, m_header.m_40_dataSubchunkSize - startSample_ch_bit);
 			}
 		}
-		if (startSample_ch_bit >= m_cachePos &&
+		else if (startSample_ch_bit >= m_cachePos &&
 			(startSample_ch_bit + sampleCount_ch_bit) <= (m_cachePos + m_data.size()))		// case2: within cache
 		{
 			std::vector<float> result{ samples(startSample_ch_bit - m_cachePos, sampleCount_ch_bit) };
-			if (startSample_ch_bit > (m_cachePos + (m_data.size() / 2)))		// case2A: approaching end of cache
+			if (startSample_ch_bit > (m_cachePos + (m_data.size() / 2)))						// case2A: approaching end of cache
 			{
 				//std::cout << "\n\t\t*** CALLING EXTEND " << m_cachePos + (m_cacheSize/2) << "-" << (m_cachePos + (3*m_cacheSize/2)) << "***\n";
 				std::thread extendBuffer{ &AudioReader::load,this,m_cachePos + (m_cacheSize / 2), m_cacheSize };
@@ -134,7 +134,8 @@ public:
 	WAV_HEADER header() const { return m_header; }
 private:
 	bool load(size_t pos, size_t size) // method will offset read by header size
-	{
+	{ // TODO: Make this safer & better defined.
+
 		std::lock_guard<std::mutex> lock{ m_dataMutex };
 		m_stream->seekg(((std::streampos)pos + (std::streampos)44u)); // add header size
 		m_data.resize(size);
