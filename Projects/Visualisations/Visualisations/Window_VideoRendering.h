@@ -15,5 +15,7 @@ public:
 	const std::string recordState() const;
 private:
 	std::shared_ptr<Model_VideoRendering> m_videoModel;
+
+	char ui_outputFilename[255];
 };
 

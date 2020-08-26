@@ -16,6 +16,13 @@
 
 #pragma warning(disable : 4996)
 
+auto strToCharArray = [](const std::string& str, char chr[256]) {
+	size_t s{ str.size() };
+	for (unsigned i = 0; i < 255u && i < s; ++i)
+		chr[i] = str[i];
+};
+
+
 Window_VideoRendering::Window_VideoRendering(std::shared_ptr<Model_VideoRendering>& Model)
 	:
 	m_videoModel{ Model }
@@ -39,16 +46,8 @@ void Window_VideoRendering::draw()
 		-> Checkbox: Record Audio
 		-> Buttons: Record/Pause & Stop. (held by Model and not settings?)
 	*/
-	std::string fn = m_videoModel->fileName();
-
-	char fnChar[256];
-	memcpy(fnChar, fn.c_str(), fn.size());
-	for (size_t c = fn.size(); c <= 255u; ++c)
-		fnChar[c] = '\0';
-
-	ImGui::Text("Output Filename");
-	ImGui::SameLine();
-	ImGui::InputText("", fnChar, 256);
+	strToCharArray(m_videoModel->fileName(), ui_outputFilename);
+	ImGui::InputText("Filename", ui_outputFilename, 255);
 
 
 	//bool recAudio{ m_videoModel->recordAudio() };
@@ -121,15 +120,9 @@ void Window_VideoRendering::draw()
 		m_videoModel->pause();
 
 
-	fn.clear();
-	for (int c = 0; c < 255; ++c)
-		if (fnChar[c] != '\0')
-			fn.push_back(fnChar[c]);
-		else
-			break;
-	m_videoModel->setFileName(fn);
-
-
+	std::string fileName{ ui_outputFilename };
+	if (fileName != m_videoModel->fileName())
+		m_videoModel->setFileName(fileName);
 
 	ImGui::End();
 }
