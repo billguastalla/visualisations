@@ -297,8 +297,11 @@
     <ClCompile Include="PostProcessing.cpp">
       <Filter>Source Files\Program\Model Systems</Filter>
     </ClCompile>
+    <ClCompile Include="UI_Recorder.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
     <ClCompile Include="Window_PostProcessing.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\UI\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -516,6 +519,9 @@
       <Filter>Header Files\Program\Model Systems</Filter>
     </ClInclude>
     <ClInclude Include="Window_PostProcessing.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_Recorder.h">
       <Filter>Header Files\UI\Windows</Filter>
     </ClInclude>
   </ItemGroup>

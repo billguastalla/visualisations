@@ -1,6 +1,5 @@
 #pragma once
 #include "Buffer.h"
-
 #include <portaudio/portaudio.h>
 
 class Recorder
@@ -48,18 +47,4 @@ private:
 	LockableBuffer *    m_lockedBuffer;
 	PaStreamParameters  m_inputParameters;
 	PaStream *          m_stream;
-};
-
-class RecorderUI
-{
-public:
-	RecorderUI(std::shared_ptr<Recorder>& recorder)
-		:
-		m_recorder{ recorder }
-	{
-	}
-
-	void draw() const;
-private:
-	std::shared_ptr<Recorder> m_recorder;
 };

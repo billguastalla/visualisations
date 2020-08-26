@@ -1,6 +1,7 @@
 #pragma once
 #include "Window_Abstract.h"
 #include "Recorder.h"
+#include "UI_Recorder.h"
 #include <memory>
 
 class Model_AudioInterface;

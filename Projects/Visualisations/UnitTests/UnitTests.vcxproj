@@ -152,6 +152,11 @@
     <ClInclude Include="catch.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Includes\glad\glad.c" />
+    <ClCompile Include="..\Includes\kissfft\kiss_fft.c" />
+    <ClCompile Include="..\Visualisations\Buffer.cpp" />
+    <ClCompile Include="..\Visualisations\FFMPEG_Encoder.cpp" />
+    <ClCompile Include="..\Visualisations\Recorder.cpp" />
     <ClCompile Include="TestSuite.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

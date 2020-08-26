@@ -200,6 +200,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Trajectory.cpp" />
     <ClCompile Include="Tree.cpp" />
+    <ClCompile Include="UI_Recorder.cpp" />
     <ClCompile Include="Visualisation_Fractal.cpp" />
     <ClCompile Include="Visualisation_GameOfLife.cpp" />
     <ClCompile Include="Visualisation_GOL\GameOfLife_Game.cpp" />
@@ -271,6 +272,7 @@
     <ClInclude Include="Settings_VideoRendering.h" />
     <ClInclude Include="Settings_Visualisation.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="UI_Recorder.h" />
     <ClInclude Include="VectorField.h" />
     <ClInclude Include="Visualisation_Fractal.h" />
     <ClInclude Include="Visualisation_GameOfLife.h" />
