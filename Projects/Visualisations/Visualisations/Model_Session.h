@@ -4,9 +4,7 @@
 #include <boost/serialization/access.hpp>
 
 class Program;
-/*
-	Entry point for serialisation and the file tree.
-*/
+
 class Model_Session
 {
 public:
@@ -26,10 +24,10 @@ public:
 	bool save();
 	bool close();
 
-	const SessionState& state() { return m_state; };
-	const std::string& title() { return m_title; };
-	const std::string& filename() { return m_filename; };
-	const std::string& filepath() { return m_filepath; };
+	const SessionState& state() const { return m_state; };
+	const std::string& title() const { return m_title; };
+	const std::string& filename() const { return m_filename; };
+	const std::string& filepath() const { return m_filepath; };
 
 	void setTitle(const std::string& t) { m_title = t; };
 	void setFilename(const std::string& fn) { m_filename = fn; }; // note: I think you only need one of these

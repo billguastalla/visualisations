@@ -22,7 +22,7 @@ public:
 	// Skybox
 	// ParticleSystems / settings
 
-
+	
 public:
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -35,4 +35,4 @@ public:
 
 /*
 	Are events their own system?
-*/
+*/	

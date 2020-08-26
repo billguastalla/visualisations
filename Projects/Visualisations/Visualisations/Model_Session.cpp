@@ -42,7 +42,6 @@ std::string Model_Session::sessionStateString(const SessionState& s)
 bool Model_Session::create()
 {
 	// prompt to save in window before calling this
-
 	m_state = SessionState::Initialised;
 	return false;
 }
@@ -68,8 +67,7 @@ bool Model_Session::save()
 
 bool Model_Session::close()
 {
-
-
+	// TODO: warn (in window), then close.
 	m_state = SessionState::Closed;
 	return false;
 }

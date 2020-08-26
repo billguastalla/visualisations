@@ -16,7 +16,6 @@ Model_ViewportSystem::Model_ViewportSystem(GLFWwindow* win)
 
 void Model_ViewportSystem::mouseMovement(float xPos, float yPos, bool mouseDown)
 {
-
 	if (mouseDown)
 	{
 		if (m_firstMouse)
@@ -46,16 +45,6 @@ void Model_ViewportSystem::keyMovement(Camera_Movement cm)
 void Model_ViewportSystem::processCamera(Timestep ts)
 {	// TODO: Camera is missing roll. This means it needs free/locked mode to function as a state for quaternion transforms
 	double time{ ts.current().count() };
-
 	CameraPos p{ m_cameraSystem.cameraPos((float)time) };
 	m_camera.setPosition(p);
-
-	//glm::vec3 orient{ glm::eulerAngles(p.orientation) };
-	//m_camera.m_pitch = orient.x;
-	//m_camera.m_yaw = orient.y;
-
-	//m_camera.m_position = p.position;
-	//m_camera.m_up = p.orientation * m_camera.m_up;
-	//m_camera.m_right = p.orientation * m_camera.m_right;
-	//m_camera.m_front = p.orientation * m_camera.m_front;
 }

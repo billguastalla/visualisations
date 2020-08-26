@@ -19,7 +19,7 @@ public:
 
 	void processCamera(Timestep ts);
 
-	bool freeCamera() { return m_freeCamera; }
+	bool freeCamera() const { return m_freeCamera; }
 	void setFreeCamera(bool f) { m_freeCamera = f; }
 
 private:
@@ -32,7 +32,6 @@ private:
 	float m_lastX, m_lastY;		
 	bool m_mouseDown;	
 	bool m_firstMouse;	
-
 public:
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -42,5 +41,4 @@ public:
 		ar& m_cameraSystem;
 		ar& m_camera;
 	}
-
 };
