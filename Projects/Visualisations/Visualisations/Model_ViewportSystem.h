@@ -19,12 +19,9 @@ public:
 
 	void processCamera(Timestep ts);
 
-	bool freeCamera() { return m_freeCamera; }
+	bool freeCamera() const { return m_freeCamera; }
 	void setFreeCamera(bool f) { m_freeCamera = f; }
 
-
-	bool loadFileTree(const boost::property_tree::ptree & t);
-	bool saveFileTree(boost::property_tree::ptree& t) const;
 private:
 	GLFWwindow* m_window;
 
@@ -35,4 +32,13 @@ private:
 	float m_lastX, m_lastY;		
 	bool m_mouseDown;	
 	bool m_firstMouse;	
+public:
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int version)
+	{
+		ar& m_freeCamera;
+		ar& m_cameraSystem;
+		ar& m_camera;
+	}
 };

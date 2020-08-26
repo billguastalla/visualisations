@@ -28,7 +28,7 @@ void Tree::setPositions()
 {
 	std::uniform_real_distribution<float> distLY{ 0, 1.0 };
 	std::uniform_real_distribution<float> distZX{ 0, 1.0 };
-	std::normal_distribution<float> branchScale{ 0.6,0.1 };
+	std::normal_distribution<float> branchScale{ 0.6f,0.1f };
 	std::random_device rd{};
 	std::mt19937 gen{ rd() };
 	for (Node* n : m_nodes)

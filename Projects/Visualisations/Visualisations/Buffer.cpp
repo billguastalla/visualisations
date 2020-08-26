@@ -11,7 +11,7 @@ Buffer::Buffer(unsigned int channels, size_t frameCount)
 	m_maxTotalFrames{ frameCount },
 	m_channelData{}
 {
-	clear(frameCount);
+	clear((int)frameCount);
 }
 
 
@@ -22,7 +22,7 @@ Buffer::Buffer(size_t totalFrames, PaStreamParameters params)
 	m_maxTotalFrames{ totalFrames },
 	m_channelData{}
 {
-	clear(totalFrames);
+	clear((int)totalFrames);
 }
 
 void Buffer::insertFrames(int totalFrames, const void * inputBuffer, const PaStreamCallbackTimeInfo * timeInfo)
@@ -131,9 +131,9 @@ std::vector<std::vector<kiss_fft_cpx>> Buffer::fft() const
 	int channelFrames = ((int)m_maxTotalFrames / (int)m_channelCount);
 	while (pow(2, nearestPower) < channelFrames)
 		++nearestPower;
-	int fftFrames = pow(2, nearestPower);
+	int fftFrames = (int)pow(2, nearestPower);
 
-	std::vector<std::vector<kiss_fft_cpx>> result;
+	std::vector<std::vector<kiss_fft_cpx>> result{};
 	for (int c = 0; c < m_channelCount; ++c)
 	{
 		/*std::vector<std::complex<float>> inputTimeDomain;

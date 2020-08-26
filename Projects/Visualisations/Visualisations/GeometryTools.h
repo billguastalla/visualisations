@@ -14,4 +14,7 @@ namespace Geometry
 	using YawPitchRoll = glm::vec3;
 	YawPitchRoll ypr(const glm::quat& q);
 	glm::quat quat(const YawPitchRoll & _ypr);
+
+	//glm::mat3 rotMatrix(const YawPitchRoll& _ypr);
+
 }

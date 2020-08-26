@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <vector>
+#include <boost/serialization/access.hpp>
 
 class Settings_Visualisation;
 class LockableBuffer;
@@ -35,5 +36,15 @@ private:
 	bool m_wireframe;
 
 	GLFWwindow* m_window;
+
+public:
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int version)
+	{
+		ar& m_currentVisualisaton;
+		ar& m_wireframe;
+	}
+
 };
 

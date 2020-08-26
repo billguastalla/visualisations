@@ -24,11 +24,17 @@ void Window_ViewportSystem::draw()
 	m_viewportSystem->setFreeCamera(f);
 
 	glm::vec3 cPos = m_viewportSystem->camera().m_position;
+	Geometry::YawPitchRoll _ypr{ m_viewportSystem->camera().m_orientation };
 	ImGui::Text("\tFramerate: %.3f ms/frame (%.1f fps)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	ImGui::Text(std::string{ "Camera Position = {" +
 		std::to_string(cPos.x).substr(0,5) + ", " +
 		std::to_string(cPos.y).substr(0,5) + ", " +
 		std::to_string(cPos.z).substr(0,5) + "} " }.c_str());
+
+	ImGui::Text(std::string{ "Camera Yaw/Pitch/Roll = {" +
+		std::to_string(_ypr.x).substr(0,5) + ", " +
+		std::to_string(_ypr.y).substr(0,5) + ", " +
+		std::to_string(_ypr.z).substr(0,5) + "} " }.c_str());
 
 	
 	ImGui::Text("Perspective");

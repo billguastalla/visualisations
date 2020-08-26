@@ -19,9 +19,6 @@
 class EventsSystem
 {
 public:
-	bool loadFileTree(const boost::property_tree::ptree& t);
-	bool saveFileTree(boost::property_tree::ptree& t) const;
-
 	bool validateConnections(std::string & log); // Check that events have mappings and sources, logging issues.
 
 	boost::property_tree::ptree buildValueTree() const;
@@ -30,4 +27,15 @@ private:
 
 	std::map<int, Event> m_events;
 	std::map<int, FunctionSource> m_mappings;
+
+
+public:
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int version)
+	{
+		ar& m_events;
+		ar& m_mappings;
+	}
+
 };

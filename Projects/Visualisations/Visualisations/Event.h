@@ -1,6 +1,7 @@
 #pragma once
 #include "CameraSystem.h" // TODO: move interpolation to its own header
 #include <boost/property_tree/ptree.hpp> // TODO: Compare perf with fwd decl + pointer type for interpolation.
+#include <boost/serialization/access.hpp>
 #include <map>
 
 /*
@@ -23,9 +24,6 @@ public:
 		m_mode{Mode::Assigned}
 	{}
 
-	bool loadFileTree(const boost::property_tree::ptree& t);
-	bool saveFileTree(boost::property_tree::ptree& t) const;
-
 	enum class Mode { Assigned, Multiplicative, Additive };
 private:
 	std::pair<double, double> t0_tf;
@@ -40,5 +38,16 @@ private:
 
 	// e.g. method for transition of value or higher-dim value, quaternion/position.
 	// TODO: Check if there is a lighter alternative to 3 ptrees.
+
+
+
+public:
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int version)
+	{
+		// TODO: serialise
+	}
+
 };
 
