@@ -503,9 +503,6 @@
     <ClInclude Include="Interpolation.h">
       <Filter>Header Files\Events System</Filter>
     </ClInclude>
-    <ClInclude Include="Timekeeping.h">
-      <Filter>Header Files\Graphics\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="About.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
@@ -523,6 +520,12 @@
     </ClInclude>
     <ClInclude Include="UI_Recorder.h">
       <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Timekeeping.h">
+      <Filter>Header Files\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Timestring.h">
+      <Filter>Header Files\General</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

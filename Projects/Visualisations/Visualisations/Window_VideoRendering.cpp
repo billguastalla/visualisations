@@ -1,6 +1,7 @@
 #include "Window_VideoRendering.h"
 
 #include "Model_VideoRendering.h"
+#include "Timestring.h"
 
 #include "imgui/imgui.h"
 #include "imgui/examples/imgui_impl_glfw.h"
@@ -9,23 +10,16 @@
 #include <vector>
 #include <string>
 
-#include <chrono>
-#include <ctime>
-#include <iomanip>
-#include <sstream>
-
-#pragma warning(disable : 4996)
-
 auto strToCharArray = [](const std::string& str, char chr[256]) {
 	size_t s{ str.size() };
 	for (unsigned i = 0; i < 255u && i < s; ++i)
 		chr[i] = str[i];
 };
 
-
 Window_VideoRendering::Window_VideoRendering(std::shared_ptr<Model_VideoRendering>& Model)
 	:
-	m_videoModel{ Model }
+	m_videoModel{ Model },
+	ui_outputFilename{}
 {
 }
 
@@ -46,28 +40,15 @@ void Window_VideoRendering::draw()
 		-> Checkbox: Record Audio
 		-> Buttons: Record/Pause & Stop. (held by Model and not settings?)
 	*/
-	strToCharArray(m_videoModel->fileName(), ui_outputFilename);
+	strToCharArray(m_videoModel->filename(), ui_outputFilename);
 	ImGui::InputText("Filename", ui_outputFilename, 255);
-
-
-	//bool recAudio{ m_videoModel->recordAudio() };
-	//ImGui::Checkbox("Record Audio", &recAudio);
-	//m_videoModel->setRecordAudio(recAudio);
 
 	bool renderUI{ m_videoModel->renderUI() };
 	ImGui::Checkbox("Render Interface", &renderUI);
 	m_videoModel->setRenderUI(renderUI);
 
-
 	if (ImGui::Button("Take Picture"))
-	{
-		std::time_t t = std::time(nullptr);
-		std::tm tm = *std::gmtime(&t);
-		std::stringstream dtSStream{};
-		dtSStream << std::put_time(&tm, "%Y%m%d%H%M%S.png");
-		m_videoModel->takePicture(dtSStream.str());
-	}
-
+		m_videoModel->takePicture(std::string{ getTimeStr() + ".png" });
 
 	ImGui::Text("Transport: ");
 	ImGui::SameLine();
@@ -121,8 +102,10 @@ void Window_VideoRendering::draw()
 
 
 	std::string fileName{ ui_outputFilename };
-	if (fileName != m_videoModel->fileName())
-		m_videoModel->setFileName(fileName);
+	if (fileName != m_videoModel->filename())
+		m_videoModel->setFilename(fileName);
+	else if (stopClicked)
+		m_videoModel->resetFilename();
 
 	ImGui::End();
 }

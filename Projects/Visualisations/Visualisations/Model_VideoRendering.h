@@ -10,7 +10,6 @@ class Program;
 
 struct GLFWwindow;
 
-
 /* Not used yet: working out what's important about file rendering. */
 struct RenderSettings
 {
@@ -29,10 +28,7 @@ struct RenderSettings
 
 class Model_VideoRendering
 {
-
 public:
-	bool loadFileTree(const boost::property_tree::ptree& t);
-	bool saveFileTree(boost::property_tree::ptree& t) const;
 
 	enum class RecordState
 	{
@@ -63,8 +59,9 @@ public:
 	bool pause();
 	bool stop();
 
-	std::string fileName() const { return m_fileName; }
-	void setFileName(std::string fn) { m_fileName = fn; }
+	std::string filename() const { return m_fileName; }
+	void setFilename(std::string fn) { m_fileName = fn; }
+	void resetFilename();
 
 	/* TODO: Connect this to the encoder and set it in the UI */
 	int frameRate() const { return m_frameRate; }

@@ -5,6 +5,7 @@
 
 #include "Settings_VideoRendering.h"
 #include "FFMPEG_Encoder.h"
+#include "Timestring.h"
 
 #include <GLFW/glfw3.h>
 #include <boost/property_tree/ptree.hpp>
@@ -12,17 +13,6 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stbimage/stb_image_write.h>
 
-bool Model_VideoRendering::loadFileTree(const boost::property_tree::ptree& t)
-{
-	m_fileName = t.get<std::string>("videorendering.filename", "");
-	return true;
-}
-
-bool Model_VideoRendering::saveFileTree(boost::property_tree::ptree& t) const
-{
-	t.put("videorendering.filename", m_fileName);
-	return true;
-}
 
 Model_VideoRendering::Model_VideoRendering(Program * program, GLFWwindow* window)
 	:
@@ -30,14 +20,14 @@ Model_VideoRendering::Model_VideoRendering(Program * program, GLFWwindow* window
 	m_recordState{ RecordState::Stopped },
 	m_frameRate{ 60 },
 	m_frameCount{ 0 },
-	m_fileName{ "VideoRenderModule.mpg" },
+	m_fileName{},
 	m_renderUI{ true },
 	m_recordAudio{ false },
 
 	m_window{ window },
 	p_program{program}
 {
-
+	resetFilename();
 }
 
 Model_VideoRendering::~Model_VideoRendering()
@@ -116,6 +106,11 @@ bool Model_VideoRendering::stop()
 		}
 	}
 	return false;
+}
+
+void Model_VideoRendering::resetFilename()
+{
+	m_fileName = std::string{ "video-" + getTimeStr() + ".mpg" };
 }
 
 bool Model_VideoRendering::setFrameRate(int fr)
