@@ -141,9 +141,13 @@
   <ItemGroup>
     <ClInclude Include="..\..\Visualisations\Includes\adamstark\AudioFile\AudioFile.h" />
     <ClInclude Include="AudioReader.h" />
+    <ClInclude Include="AudioTrack.h" />
+    <ClInclude Include="AudioTrackSystem.h" />
+    <ClInclude Include="Timekeeping.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioReader.cpp" />
+    <ClCompile Include="AudioTrackSystem.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

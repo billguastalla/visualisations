@@ -73,7 +73,7 @@ bool Model_VideoRendering::start()
 		//int width{ 1920 }, height{ 1080 };
 		//glfwGetWindowSize(m_window, &width, &height);
 		std::array<int, 2> mainResolution{ p_program->postProcessing()->mainFramebufferResolution() };
-		FFMPEG_Encoder::StartResult res = m_encoder->ffmpeg_encoder_start(m_fileName.c_str(), AVCodecID::AV_CODEC_ID_MPEG1VIDEO, m_frameRate, mainResolution[0], mainResolution[1]);
+		FFMPEG_Encoder::StartResult res = m_encoder->ffmpeg_encoder_start(m_fileName.c_str(), AVCodecID::AV_CODEC_ID_MPEG2VIDEO, m_frameRate, mainResolution[0], mainResolution[1]);
 		if (res == FFMPEG_Encoder::StartResult::Success)
 		{
 			m_recordState = RecordState::Started;

@@ -21,12 +21,24 @@
     <ClInclude Include="AudioReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AudioTrack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Timekeeping.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioTrackSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioTrackSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
