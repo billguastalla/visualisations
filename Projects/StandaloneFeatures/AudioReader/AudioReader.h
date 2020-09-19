@@ -115,7 +115,8 @@ public:
 		reset(m_stream);
 	}
 
-	std::vector<float> audio(size_t startSample, size_t sampleCount) // Do we want to guarantee size?
+	// NOTE: sample count is the number of samples you would receive with stride 0. so returned std::vector<> size is == samplecount / stride
+	std::vector<float> audio(size_t startSample, size_t sampleCount, size_t stride = 0u) // Do we want to guarantee size?
 	{
 		size_t startSample_ch_bit{ startSample * m_header.m_22_numChannels * (m_header.m_34_bitsPerSample / 8) };
 		size_t sampleCount_ch_bit{ sampleCount * m_header.m_22_numChannels * (m_header.m_34_bitsPerSample / 8) };
@@ -127,13 +128,13 @@ public:
 			else																				// case1B: read starts within bounds, ends out of bounds
 			{
 				load(startSample_ch_bit, m_header.m_40_dataSubchunkSize - startSample_ch_bit);
-				return samples(0u, m_header.m_40_dataSubchunkSize - startSample_ch_bit);
+				return samples(0u, m_header.m_40_dataSubchunkSize - startSample_ch_bit,stride);
 			}
 		}
 		else if (startSample_ch_bit >= m_cachePos &&
 			(startSample_ch_bit + sampleCount_ch_bit) <= (m_cachePos + m_data.size()))		// case2: within cache
 		{
-			std::vector<float> result{ samples(startSample_ch_bit - m_cachePos, sampleCount_ch_bit) };
+			std::vector<float> result{ samples(startSample_ch_bit - m_cachePos, sampleCount_ch_bit,stride) };
 			if (startSample_ch_bit > (m_cachePos + (m_data.size() / 2)))						// case2A: approaching end of cache
 			{
 				//std::cout << "\n\t\t*** CALLING EXTEND " << m_cachePos + (m_cacheSize/2) << "-" << (m_cachePos + (3*m_cacheSize/2)) << "***\n";
@@ -145,7 +146,7 @@ public:
 		else																				// case3: within file, outside of cache
 		{
 			if (load(startSample_ch_bit, m_cacheSize > sampleCount_ch_bit ? m_cacheSize : sampleCount_ch_bit)) // load samplecount or cachesize, whichever is greater.
-				return samples(0u, sampleCount_ch_bit);
+				return samples(0u, sampleCount_ch_bit,stride);
 			else
 				return std::vector<float>{};
 		}
@@ -169,13 +170,13 @@ private:
 		}
 		return false;
 	}
-	std::vector<float> samples(size_t posInCache, size_t size) // method doesn't know about channels. posInCache is pos relative to cachepos.
+	std::vector<float> samples(size_t posInCache, size_t size, size_t stride = 0u) // method doesn't know about channels. posInCache is pos relative to cachepos.
 	{
 		std::vector<float> result{};
 		if ((posInCache + size) <= m_data.size())
 		{
 			std::lock_guard<std::mutex> lock{ m_dataMutex };
-			for (size_t i{ posInCache }; i < size; i += 2u) // TODO: handle size vs bit depth
+			for (size_t i{ posInCache }; i < size; i += (2u * (stride + 1u))) // TODO: handle size vs bit depth
 			{
 				int16_t v{ (m_data[i] << 8) | m_data[i + 1u] };
 				float v2{ (float)v / (32768.f) };
