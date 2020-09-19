@@ -6,6 +6,13 @@
 #include <thread>
 #include <iostream>
 
+/*
+	- The reader IS responsible for loading WAV files into a data structure, and
+	handling a cache of buffer data.
+	- The reader is NOT responsible for organising the wav data into something understandable
+	  by an interface. This is the responisbility of AudioTrack, which contains an instance of an AudioReader.
+*/
+
 struct WAV_HEADER
 {
 	void read(std::istream& s)
@@ -145,6 +152,8 @@ public:
 	}
 
 	WAV_HEADER header() const { return m_header; }
+	std::shared_ptr<std::istream> stream() const { return m_stream; }
+
 private:
 	bool load(size_t pos, size_t size) // method will offset read by header size
 	{ // TODO: Make this safer & better defined.

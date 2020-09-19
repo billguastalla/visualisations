@@ -147,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioReader.cpp" />
+    <ClCompile Include="AudioTrack.cpp" />
     <ClCompile Include="AudioTrackSystem.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>

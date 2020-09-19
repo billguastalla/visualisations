@@ -1,31 +1,9 @@
 #pragma once
 #include "AudioTrack.h"
-#include "Timekeeping.h"
 #include <vector>
 #include <memory>
 #include <map>
 #include <set>
-
-struct AudioProperty
-{
-	AudioProperty(int tID = 0, int cID = 0, size_t bSize = 512u)
-		:
-		trackID{tID},
-		channelID{cID},
-		type{AttributeType::Amplitude},
-		offset{0}, 
-		stride{0},
-		bufsize{bSize}
-	{}
-	int trackID;
-	int channelID;
-	enum class AttributeType { Amplitude, Pitch /*..*/ } type;
-	int offset; // how many samples are we offset from when reading the track?
-				// (will be useful for effect where reactions to audio are staggered across objects!)
-	size_t stride; // Jump across samples by how much? (n.b. stride of 0 makes read one sample wide)
-	size_t bufsize; // how much of the buffer to read to evaluate the property.
-};
-
 class AudioTrackSystem
 {
 public:
@@ -44,10 +22,10 @@ public:
 	// NOTE: Expensive, call only once.
 	// TODO:	Use dt in timepoint to look ahead and calculate later timepoints.
 	//			mutex/lock for later points.
-	std::map<int, double> audioPropertyValues(Timestep ts) {}
+	std::map<int, double> audioPropertyValues(Timestep ts);
 
-	bool addTrack(std::string trackName); // TODO: return ids instead, -1 on error.
-	bool addAudioProperty(const AudioProperty& prop);
+	int addTrack(std::string trackName);
+	int registerAudioProperty(const AudioProperty& prop);
 
 	std::set<int> trackKeys();
 	int maxTrack();
