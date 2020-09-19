@@ -5,14 +5,8 @@
 std::map<int, double> AudioTrackSystem::audioPropertyValues(Timestep ts)
 {
 	std::map<int, double> result{};
-
-	for (const auto & prop : m_trackAttributes)
-	{
-		prop.second.trackID;
-
-		
-	}
-
+	for (const auto& prop : m_trackAttributes)		// We don't check trackID exists, because we should have ensured this already.
+		result.insert(std::pair<int, double>{prop.first, m_tracks[prop.second.trackID].audioPropValue(ts, prop.second)});
 	return result;
 }
 
@@ -22,12 +16,14 @@ int AudioTrackSystem::addTrack(std::string trackName)
 	if (trackStream->good()) // TODO: Is this the correct check? Why isn't there open()?
 	{
 		AudioTrack track{ trackStream, trackName };
+		if (track.open())
+		{
+			int newKey{ maxTrack() + 1 };
+			m_tracks.insert(std::pair<int, AudioTrack>{newKey, track}); // TODO: insert probably invalid due to lack of copy/move constructor.
+			m_trackStreams.insert(std::pair<int, std::shared_ptr<std::istream>>{newKey, trackStream});
 
-		int newKey{ maxTrack() + 1 };
-		m_tracks.insert(std::pair<int, AudioTrack>{newKey, track}); // TODO: insert probably invalid due to lack of copy/move constructor.
-		m_trackStreams.insert(std::pair<int, std::shared_ptr<std::istream>>{newKey, trackStream});
-
-		return newKey;
+			return newKey;
+		}
 	}
 	else
 		return -1;
@@ -35,11 +31,10 @@ int AudioTrackSystem::addTrack(std::string trackName)
 
 int AudioTrackSystem::registerAudioProperty(const AudioProperty& prop)
 {
-	// TODO: check CHANNEL TRACK EXIST
 	std::set<int> tKeys{ trackKeys() };
 	if (tKeys.find(prop.trackID) != tKeys.end())
 	{
-		if(m_tracks[prop.trackID].file_channelCount() > prop.channelID)
+		if (m_tracks[prop.trackID].file_channelCount() > prop.channelID)
 		{
 			int propertyID{ maxAttribute() + 1 };
 			m_trackAttributes.insert(std::pair<int, AudioProperty>{propertyID, prop});
@@ -64,7 +59,7 @@ int AudioTrackSystem::maxTrack()
 	if (!keys.empty())
 		return *keys.rbegin();
 	else
-		return 0;
+		return -1; // so that tracks are zero-indexed
 }
 
 std::set<int> AudioTrackSystem::attributeKeys()
@@ -82,5 +77,5 @@ int AudioTrackSystem::maxAttribute()
 	if (!keys.empty())
 		return *keys.rbegin();
 	else
-		return 0;
+		return -1;// so that audioproperties are zero-indexed
 }

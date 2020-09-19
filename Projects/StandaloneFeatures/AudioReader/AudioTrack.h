@@ -40,7 +40,7 @@ public:
 	{
 	}
 
-	void setStartTime(double t) {} // ..
+	void setStartTime(double t) {} // TODO: Implement.
 	size_t startTimeSamples() { return m_startTimeSamples; }
 	double startTimeSeconds() { return 0.0; }
 
@@ -51,6 +51,8 @@ public:
 
 
 	double audioPropValue(const Timestep& ts, const AudioProperty& prop);
+
+	bool open() { return m_reader.open(); }
 private:
 	AudioReader m_reader;
 	// At how many samples from the origin does the track begin.

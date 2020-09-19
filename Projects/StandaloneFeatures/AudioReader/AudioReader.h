@@ -109,6 +109,7 @@ public:
 			else
 				return false;
 		}
+		return true; // we didn't open it, but it was already opened.
 	}
 	void close()
 	{
@@ -121,9 +122,9 @@ public:
 		size_t startSample_ch_bit{ startSample * m_header.m_22_numChannels * (m_header.m_34_bitsPerSample / 8) };
 		size_t sampleCount_ch_bit{ sampleCount * m_header.m_22_numChannels * (m_header.m_34_bitsPerSample / 8) };
 
-		if ((startSample_ch_bit + sampleCount_ch_bit) >= m_header.m_40_dataSubchunkSize)	// case1: out of bounds of file
+		if ((startSample_ch_bit + sampleCount_ch_bit) >= (size_t)m_header.m_40_dataSubchunkSize)	// case1: out of bounds of file
 		{
-			if (startSample_ch_bit >= m_header.m_40_dataSubchunkSize)							// case1A: read starts out of bounds
+			if (startSample_ch_bit >= (size_t)m_header.m_40_dataSubchunkSize)							// case1A: read starts out of bounds
 				return std::vector<float>{};
 			else																				// case1B: read starts within bounds, ends out of bounds
 			{
