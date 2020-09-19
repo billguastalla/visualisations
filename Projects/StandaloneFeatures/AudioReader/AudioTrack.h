@@ -10,6 +10,13 @@ public:
 		m_startTimeSamples{0u},
 		m_reader{stream}
 	{}
+	AudioTrack(const AudioTrack& other)
+		:
+		m_startTimeSamples{other.m_startTimeSamples},
+		m_reader{other.m_reader}
+	{
+
+	}
 
 	void setStartTime(double t) {} // ..
 	size_t startTimeSamples() { return m_startTimeSamples; }

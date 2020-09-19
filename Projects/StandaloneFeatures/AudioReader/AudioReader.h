@@ -63,8 +63,21 @@ public:
 		m_data{},
 		m_dataMutex{},
 		m_cacheSize{ 2048u }, // 1048576u
-		m_cachePos{ 0u }
+		m_cachePos{ 0u },
+		m_opened{false}
 	{
+	}
+	AudioReader(const AudioReader& other)
+		:
+		m_stream{other.m_stream},
+		m_header{other.m_header},
+		m_data{other.m_data},
+		m_dataMutex{},
+		m_cacheSize{other.m_cacheSize},
+		m_cachePos{other.m_cachePos},
+		m_opened{other.m_opened}
+	{
+
 	}
 
 	void reset(const std::shared_ptr<std::istream>& stream)
