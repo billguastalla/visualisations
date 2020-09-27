@@ -25,7 +25,6 @@ int AudioTrackSystem::addTrack(std::string trackName)
 			return newKey;
 		}
 	}
-	else
 		return -1;
 }
 

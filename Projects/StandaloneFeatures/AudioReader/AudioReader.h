@@ -37,7 +37,9 @@ struct WAV_HEADER
 	{
 		return
 			m_20_audioFormat == 1 && // uncompressed
-			m_34_bitsPerSample == 16; // 16-bit
+			((m_34_bitsPerSample == 16) ||
+				(m_34_bitsPerSample == 24) ||
+				(m_34_bitsPerSample == 32)); // 16 or 24-bit
 	}
 
 	char m_0_headerChunkID[4];
@@ -71,18 +73,18 @@ public:
 		m_dataMutex{},
 		m_cacheSize{ 2048u }, // 1048576u
 		m_cachePos{ 0u },
-		m_opened{false}
+		m_opened{ false }
 	{
 	}
 	AudioReader(const AudioReader& other)
 		:
-		m_stream{other.m_stream},
-		m_header{other.m_header},
-		m_data{other.m_data},
+		m_stream{ other.m_stream },
+		m_header{ other.m_header },
+		m_data{ other.m_data },
 		m_dataMutex{},
-		m_cacheSize{other.m_cacheSize},
-		m_cachePos{other.m_cachePos},
-		m_opened{other.m_opened}
+		m_cacheSize{ other.m_cacheSize },
+		m_cachePos{ other.m_cachePos },
+		m_opened{ other.m_opened }
 	{
 
 	}
@@ -116,6 +118,8 @@ public:
 		reset(m_stream);
 	}
 
+	// TODO: Add channels by providing offset as a parameter..
+	// TODO: Sometimes caller audio() is careful about bounds of load() sometimes it isn't. Load is now made safe, but pick one on caller.
 	// NOTE: sample count is the number of samples you would receive with stride 0. so returned std::vector<> size is == samplecount / stride
 	std::vector<float> audio(size_t startSample, size_t sampleCount, size_t stride = 0u) // Do we want to guarantee size?
 	{
@@ -129,7 +133,7 @@ public:
 			else																				// case1B: read starts within bounds, ends out of bounds
 			{
 				load(startSample_ch_bit, m_header.m_40_dataSubchunkSize - startSample_ch_bit);
-				return samples(0u, m_header.m_40_dataSubchunkSize - startSample_ch_bit,stride);
+				return samples(0u, m_header.m_40_dataSubchunkSize - startSample_ch_bit, stride);
 			}
 		}
 		else if (startSample_ch_bit >= m_cachePos &&
@@ -147,7 +151,7 @@ public:
 		else																				// case3: within file, outside of cache
 		{
 			if (load(startSample_ch_bit, m_cacheSize > sampleCount_ch_bit ? m_cacheSize : sampleCount_ch_bit)) // load samplecount or cachesize, whichever is greater.
-				return samples(0u, sampleCount_ch_bit,stride);
+				return samples(0u, sampleCount_ch_bit, stride);
 			else
 				return std::vector<float>{};
 		}
@@ -160,14 +164,18 @@ private:
 	bool load(size_t pos, size_t size) // method will offset read by header size
 	{ // TODO: Make this safer & better defined.
 
-		std::lock_guard<std::mutex> lock{ m_dataMutex };
-		m_stream->seekg(((std::streampos)pos + (std::streampos)44u)); // add header size
-		m_data.resize(size);
-		if (m_stream->good())
+		size_t truncatedSize{ (pos + size) < (size_t)m_header.m_40_dataSubchunkSize ? size : (size_t)m_header.m_40_dataSubchunkSize - pos };
+		if (pos < m_header.m_40_dataSubchunkSize)
 		{
-			m_stream->read((char*)&m_data[0], size);
-			m_cachePos = pos;
-			return true;
+			std::lock_guard<std::mutex> lock{ m_dataMutex };
+			m_stream->seekg(((std::streampos)pos + (std::streampos)44u)); // add header size
+			m_data.resize(truncatedSize);
+			if (m_stream->good())
+			{
+				m_stream->read((char*)&m_data[0], truncatedSize);
+				m_cachePos = pos;
+				return true;
+			}
 		}
 		return false;
 	}
@@ -177,11 +185,43 @@ private:
 		if ((posInCache + size) <= m_data.size())
 		{
 			std::lock_guard<std::mutex> lock{ m_dataMutex };
-			for (size_t i{ posInCache }; i < size; i += (2u * (stride + 1u))) // TODO: handle size vs bit depth
+			switch (m_header.m_34_bitsPerSample)
 			{
-				int16_t v{ (m_data[i] << 8) | m_data[i + 1u] };
-				float v2{ (float)v / (32768.f) };
-				result.push_back(v2);
+			//case 8: // unsigned 8-bit
+			//	for (size_t i{ posInCache }; i < size; i += ((m_header.m_34_bitsPerSample / 8u) * (1u + stride)))
+			//	{
+			//		int16_t v{ (m_data[i] << 8) | m_data[i + 1u] };
+			//		float v2{ (float)v / (128.f) }; // TODO: WORK THIS OUT.
+			//		result.push_back(v2);
+			//	}
+			//	break;
+			case 16: // 16-bit
+				for (size_t i{ posInCache }; i < size; i += ((m_header.m_34_bitsPerSample / 8u) * (1u + stride)))
+				{
+					int16_t v{ (m_data[i]) | (m_data[i + 1u] << 8) };
+					float v2{ (float)v / (32768.f) }; // signed, so divide by 2^15
+					result.push_back(v2);
+				}
+				break;
+			case 24: // 24-bit
+				for (size_t i{ posInCache }; i < size; i += ((m_header.m_34_bitsPerSample / 8u) * (1u + stride)))
+				{
+					// 24-bit is different to others: put the value into a 32-bit int with zeros at the (LSB) end
+					int32_t v{ (m_data[i] << 8) | (m_data[i + 1u] << 16) | (m_data[i + 2u] << 24) };
+					float v2{ (float)v / (2147483648.f) }; // divide by 2^31
+					result.push_back(v2);
+				}
+				break;
+			case 32: // 32-bit
+				for (size_t i{ posInCache }; i < size; i += ((m_header.m_34_bitsPerSample / 8u) * (1u + stride)))
+				{
+					int32_t v{ m_data[i] | (m_data[i + 1u] << 8) | (m_data[i + 2u] << 16) | (m_data[i + 3u] << 24) };
+					float v2{ (float)v / (2147483648.f) }; // signed, so divide by 2^31
+					result.push_back(v2);
+				}
+				break;
+			default:
+				break;
 			}
 		}
 		return result;
