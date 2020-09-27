@@ -7,14 +7,13 @@ double AudioTrack::audioPropValue(const Timestep& ts, const AudioProperty& prop)
 	size_t real_sampleTime{ ts_SampleTime + prop.offset - startTimeSamples() };
 
 	double result{ 0.0 };
-	if (prop.channelID < file_channelCount())
+	//if (*prop.channelIDs.rbegin() < file_channelCount())
 	{
 		switch (prop.type)
 		{
 		case AudioProperty::AttributeType::Amplitude:
 		{
-			// TODO: PICK CHANNEL, OR CHANNELS! N.B. AUDIOPROPERTY should have std::set<> channels.
-			std::vector<float> data{ m_reader.audio(real_sampleTime,prop.bufsize,prop.stride) };
+			std::vector<float> data{ m_reader.audio(real_sampleTime,prop.bufsize,prop.channelIDs,prop.stride) };
 			for (const auto& s : data)
 				result += std::abs(s);
 			if (data.size() != 0u)

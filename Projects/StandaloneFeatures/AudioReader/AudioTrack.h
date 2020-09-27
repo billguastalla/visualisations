@@ -4,17 +4,20 @@
 
 struct AudioProperty
 {
-	AudioProperty(int tID = 0, int cID = 0, size_t bSize = 512u)
+	AudioProperty(
+		int tID = 0,
+		std::set<uint16_t> cID = std::set<uint16_t>{}, 
+		size_t bSize = 512u)
 		:
 		trackID{ tID },
-		channelID{ cID },
+		channelIDs{ cID },
 		type{ AttributeType::Amplitude },
 		offset{ 0 },
 		stride{ 0 },
 		bufsize{ bSize }
 	{}
 	int trackID;
-	int channelID;
+	std::set<uint16_t> channelIDs;
 	enum class AttributeType { Amplitude, Pitch /*..*/ } type;
 	int offset; // how many samples are we offset from when reading the track?
 				// (will be useful for effect where reactions to audio are staggered across objects!)
@@ -47,7 +50,7 @@ public:
 	int file_channelCount() { return m_reader.header().m_22_numChannels; }
 	int file_sampleRate() { return m_reader.header().m_24_sampleRate; }
 	int file_bps() { return m_reader.header().m_34_bitsPerSample; }
-	int file_totalSamplesPerChannel() { return m_reader.header().sampleCount(); }
+	int file_totalSamplesPerChannel() { return (int)(m_reader.header().m_40_dataSubchunkSize / ((m_reader.header().m_22_numChannels * m_reader.header().m_34_bitsPerSample) / 8)); }
 
 
 	double audioPropValue(const Timestep& ts, const AudioProperty& prop);

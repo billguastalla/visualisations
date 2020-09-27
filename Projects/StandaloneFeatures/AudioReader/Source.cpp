@@ -7,20 +7,25 @@ int main()
 	
 	AudioTrackSystem tSystem{};
 	//tSystem.addTrack("200426_0165.wav");
-	tSystem.addTrack("32-bitSine.wav");
+	tSystem.addTrack("samples/32-bit_signed_Sine_Stereo.wav");
 	//tSystem.addTrack("200913_0209.wav");
 	//tSystem.addTrack("invalidName");
 
 	AudioProperty p1;
 	p1.trackID = 0;
-	p1.channelID = 0;
-	p1.bufsize = 128;
+	p1.channelIDs = { 0 };
+	p1.bufsize = 4000;
 	p1.offset = 0;
 	p1.stride = 0;
 	p1.type = AudioProperty::AttributeType::Amplitude;
-	tSystem.registerAudioProperty(p1); // VALID ATTRIBUTE
-	//p1.trackID = 2; 
-	//tSystem.registerAudioProperty(p1); // INVALID TRACK
+	tSystem.registerAudioProperty(p1);
+	p1.channelIDs = { 1 };
+	tSystem.registerAudioProperty(p1);
+	p1.channelIDs = { 0,1 };
+	tSystem.registerAudioProperty(p1);
+	p1.channelIDs = { 1,3,5 };
+	tSystem.registerAudioProperty(p1);
+
 	//p1.trackID = 1;
 	//p1.channelID = 4;
 	//tSystem.registerAudioProperty(p1); // INVALID CHANNEL
