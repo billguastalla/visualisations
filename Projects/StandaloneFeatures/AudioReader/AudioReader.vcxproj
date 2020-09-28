@@ -140,9 +140,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Visualisations\Includes\adamstark\AudioFile\AudioFile.h" />
-    <ClInclude Include="AudioReader.h" />
     <ClInclude Include="AudioTrack.h" />
     <ClInclude Include="AudioTrackSystem.h" />
+    <ClInclude Include="reader\AudioReader.h" />
     <ClInclude Include="Timekeeping.h" />
   </ItemGroup>
   <ItemGroup>

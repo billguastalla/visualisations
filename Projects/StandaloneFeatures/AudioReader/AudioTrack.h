@@ -1,6 +1,6 @@
 #pragma once
 #include "Timekeeping.h"
-#include "AudioReader.h"
+#include "reader/AudioReader.h"
 
 struct AudioProperty
 {

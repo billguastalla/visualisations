@@ -1,38 +1,37 @@
 #pragma once
 #include <vector>
 #include <string>
-#include <istream>
 #include <mutex>
 #include <thread>
 #include <iostream>
+#include <istream>
 #include <set>
-
-/*
-	- The reader IS responsible for loading WAV files into a data structure, and
-	handling a cache of buffer data.
-	- The reader is NOT responsible for organising the wav data into something understandable
-	  by an interface. This is the responisbility of AudioTrack, which contains an instance of an AudioReader.
-*/
 
 struct WAV_HEADER
 {
-	void read(std::istream& s)
+	bool read(std::istream& s)
 	{
-		s.read(&m_0_headerChunkID[0], 4);
-		s.read((char*)&m_4_chunkSize, 4);
-		s.read(&m_8_format[0], 4);
-		s.read(&m_12_subchunk1ID[0], 4);
+		if (s.good())
+		{
+			s.seekg(0u);
 
-		s.read((char*)&m_16_subchunk1Size, 4);
-		s.read((char*)&m_20_audioFormat, 2);
-		s.read((char*)&m_22_numChannels, 2);
-		s.read((char*)&m_24_sampleRate, 4);
+			s.read(&m_0_headerChunkID[0], 4);
+			s.read((char*)&m_4_chunkSize, 4);
+			s.read(&m_8_format[0], 4);
+			s.read(&m_12_subchunk1ID[0], 4);
 
-		s.read((char*)&m_28_byteRate, 4);
-		s.read((char*)&m_32_bytesPerBlock, 2);
-		s.read((char*)&m_34_bitsPerSample, 2);
-		s.read(&m_36_dataSubchunkID[0], 4);
-		s.read((char*)&m_40_dataSubchunkSize, 4);
+			s.read((char*)&m_16_subchunk1Size, 4);
+			s.read((char*)&m_20_audioFormat, 2);
+			s.read((char*)&m_22_numChannels, 2);
+			s.read((char*)&m_24_sampleRate, 4);
+
+			s.read((char*)&m_28_byteRate, 4);
+			s.read((char*)&m_32_bytesPerBlock, 2);
+			s.read((char*)&m_34_bitsPerSample, 2);
+			s.read(&m_36_dataSubchunkID[0], 4);
+			s.read((char*)&m_40_dataSubchunkSize, 4);
+		}
+		return s.good();
 	}
 	bool valid() const
 	{
@@ -65,7 +64,8 @@ struct WAV_HEADER
 		strcpy_s(m_36_dataSubchunkID, none);
 		m_40_dataSubchunkSize = 0;
 	}
-	int sampleCount() const { return (int)(m_40_dataSubchunkSize / ((m_22_numChannels * m_34_bitsPerSample) / 8)); }
+	// Per channel
+	int samples() const { return (int)(m_40_dataSubchunkSize / ((m_22_numChannels * m_34_bitsPerSample) / 8)); }
 
 	char m_0_headerChunkID[4];
 	int32_t m_4_chunkSize;
@@ -101,7 +101,7 @@ public:
 		m_cachePos{ 0u },
 		m_opened{ false },
 		m_cacheSize{ cacheSize }, // 1MB == 1048576u
-		m_cacheExtensionThreshold{cacheExtensionThreshold}
+		m_cacheExtensionThreshold{ cacheExtensionThreshold }
 	{
 		if (m_cacheExtensionThreshold < 0.0)
 			m_cacheExtensionThreshold = 0.0;
@@ -119,9 +119,8 @@ public:
 		m_cachePos{ other.m_cachePos },
 		m_opened{ other.m_opened },
 		m_cacheSize{ other.m_cacheSize },
-		m_cacheExtensionThreshold{other.m_cacheExtensionThreshold}
+		m_cacheExtensionThreshold{ other.m_cacheExtensionThreshold }
 	{
-
 	}
 
 	void reset(const std::shared_ptr<std::istream>& stream)
@@ -192,7 +191,7 @@ public:
 		}
 	}
 
-	const WAV_HEADER & header() const { return m_header; }
+	const WAV_HEADER& header() const { return m_header; }
 	std::shared_ptr<std::istream> stream() const { return m_stream; }
 private:
 	bool load(size_t pos, size_t size) // method will offset read by header size
@@ -238,13 +237,13 @@ private:
 					for (auto ch : channels)
 					{
 						size_t cho{ (ch % m_header.m_22_numChannels) * bpc };
-						int8_t v{ m_data[i + cho] - (int8_t)128u };
+						int8_t v{ m_data[i + cho] - (int8_t)128u }; // unsigned, so offset by 2^7
 						float v2{ (float)v / (128.f) };
 						result.push_back(v2);
 					}
 				}
 				break;
-			case 16: // 16-bit
+			case 16: // signed 16-bit
 				for (size_t i{ posInCache }; i < size; i += (m_header.m_32_bytesPerBlock * (1u + stride)))
 				{
 					for (auto ch : channels)
@@ -256,7 +255,7 @@ private:
 					}
 				}
 				break;
-			case 24: // 24-bit
+			case 24: // signed 24-bit
 				for (size_t i{ posInCache }; i < size; i += (m_header.m_32_bytesPerBlock * (1u + stride)))
 				{
 					for (auto ch : channels)
@@ -269,7 +268,7 @@ private:
 					}
 				}
 				break;
-			case 32: // 32-bit
+			case 32: // signed 32-bit
 				for (size_t i{ posInCache }; i < size; i += (m_header.m_32_bytesPerBlock * (1u + stride)))
 				{
 					for (auto ch : channels)
