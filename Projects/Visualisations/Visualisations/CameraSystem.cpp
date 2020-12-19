@@ -95,6 +95,8 @@ void CameraSystem::drawUI()
 	else if (_ypr != Geometry::ypr(m_begin.orientation))
 		m_begin.orientation = Geometry::quat(_ypr);
 
+
+
 	ImGui::Text("Position Events");
 	ImGui::SameLine();
 	bool addPosition{ ImGui::Button("add p") };

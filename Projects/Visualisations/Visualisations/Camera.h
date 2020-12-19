@@ -50,6 +50,10 @@ public:
 		m_orientation = Geometry::ypr(p.orientation);
 		updateCameraVectors();
 	}
+	CameraPos position()
+	{
+		return CameraPos{m_position,m_orientation};
+	}
 
 	glm::vec3 m_position;
 	Geometry::YawPitchRoll m_orientation;

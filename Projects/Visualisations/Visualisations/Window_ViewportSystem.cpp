@@ -55,10 +55,10 @@ void Window_ViewportSystem::draw()
 		m_viewportSystem->camera().m_zoom = zoom;
 	}
 
-
-
+	bool currentAsStart{ ImGui::Button("Set current camera as start") };
 	m_viewportSystem->cameraSystem().drawUI();
-
+	if (currentAsStart)
+		m_viewportSystem->cameraSystem().setStartPos(m_viewportSystem->camera().position());
 	//ImGui::Text("Post Processing:");
 	///* Post-processing details: */
 	//bool wireframe = m_visualisation->postProcessing()->wireframe();

@@ -120,6 +120,8 @@ public:
 
 	void drawUI();
 
+	CameraPos startPos() const { return m_begin; }
+	void setStartPos(const CameraPos& cpos) { m_begin = cpos;}
 
 
 	friend class boost::serialization::access;
