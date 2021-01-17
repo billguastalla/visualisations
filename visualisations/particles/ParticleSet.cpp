@@ -49,23 +49,16 @@ void ParticleSet::draw(const Camera& camera)
 
 	m_particleShader.use();
 
-	glm::mat4 projection{ camera.projectionMatrix() };
-	glm::mat4 view = camera.GetViewMatrix();
-
-
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_particleTexture.id); // guess
-	for (Particle p : m_particles)
+	
+	m_particleShader.setVec3("cameraRight", camera.right());
+	m_particleShader.setVec3("cameraUp", camera.up());
+	m_particleShader.setMat4("projection", camera.projectionMatrix());
+	m_particleShader.setMat4("view", camera.GetViewMatrix());
+	
+	for (const Particle& p : m_particles)
 	{
-		glm::mat4 model{ 1.0 };
-		model = glm::translate(model, p.pos);
-
-		m_particleShader.setVec3("cameraRight", camera.right());
-		m_particleShader.setVec3("cameraUp", camera.up());
-
-		m_particleShader.setMat4("projection", projection);
-		m_particleShader.setMat4("view", view);
-
 		m_particleShader.setVec3("position", p.pos);
 		m_particleShader.setVec4("colour", p.col * p.lifeScale);
 		m_particleShader.setFloat("scale", 0.05f * p.scale * p.lifeScale);
