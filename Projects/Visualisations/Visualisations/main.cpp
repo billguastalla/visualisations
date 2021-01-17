@@ -1,8 +1,8 @@
-#include <glad\glad.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "Program.h"
-#include "About.h"
+#include "general/About.h"
+#include "program/Program.h"
 
 #include <string>
 #include <stdio.h>
@@ -22,8 +22,8 @@ static int mainInit(GLFWwindow * & window, int width, int height)
 	if (!glfwInit())
 		return 1;
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); /* 4.5 is our latest version, reduce this for public release. */
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); /* 4.5 is our latest version, reduce this for public release. */
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_SAMPLES, 8); /* MSAA */
